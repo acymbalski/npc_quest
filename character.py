@@ -1,4 +1,6 @@
 import random
+from item import Item
+from enum import Enum
 
 CLASS_PEASANT = 0
 CLASS_WARRIOR = 1
@@ -11,22 +13,36 @@ CLASS_SALESMAN = 7
 CLASS_DOCTOR = 8
 CLASS_MULE = 9
 
-STAT_STR = 0
-STAT_SPD = 1
-STAT_ACC = 2
-STAT_INT = 3
-STAT_DEF = 4
-STAT_STO = 5
-STAT_CHA = 6
-STAT_LIF = 7
-STAT_CAR = 8
 NUM_STATS = 9
+
+
+class STAT(Enum):
+    STR = 0
+    SPD = 1
+    ACC = 2
+    INT = 3
+    DEF = 4
+    STO = 5
+    CHA = 6
+    LIF = 7
+    CAR = 8
 
 
 class Character:
 
     def __init__(self):
-        self.stat = [1, 1, 1, 1, 1, 1, 1, 10, 20]
+        self.stat = {
+            STAT.STR: 1,
+            STAT.SPD: 1,
+            STAT.ACC: 1,
+            STAT.INT: 1,
+            STAT.DEF: 1,
+            STAT.STO: 1,
+            STAT.CHA: 1,
+            STAT.LIF: 10,
+            STAT.CAR: 20,
+        }
+
         self.xp = 0
         self.needXP = 10
         self.level = 1
@@ -37,8 +53,8 @@ class Character:
         self.food = 50
 
         self.inventory = [
-            255
-        ] * 20  # player has 20 inventory slots; value '255' means empty
+            None,
+        ] * 20  # player has 20 inventory slots; value '255' means empty. We have replaced it with None
         self.ptSpend = [0] * NUM_STATS
         self.chrClass = CLASS_PEASANT
         self.shouldExit = 0
@@ -48,11 +64,32 @@ class Character:
 
 
 def sortInventory():
-    pass
+    # sort inventory by item type, then by cost
+    inventory = player.inventory  # a list of Item objects, or None
+    inventory.sort(
+        key=lambda item: (
+            (item.type, item.cost) if item else (float("inf"), float("inf"))
+        )
+    )
 
 
-def roomToEquip(weight: int, type: int) -> int:
-    pass
+def roomToEquip(weight: int, type: Item) -> bool:
+    # return True or False if the player has room to equip an item
+    # TODO: think about this one
+    if type.type not in [ITM_POTION, ITM_RING, ITM_FOOD]:
+        # iterate over inventory, calculate net weights?
+        for item in player.inventory:
+            if item:
+                if item.type == type.type:
+                    weight -= netWeightEffect(item)
+
+    if weight + player.totalWeight > player.stat[STAT.CAR]:
+        # TODO: MakeSound(SND_HEAVY)
+        return False
+    if player.itemCount == 20:
+        # TODO: MakeSound(SND_HEAVY)
+        return False
+    return True
 
 
 def renderCharacterData():
@@ -147,20 +184,23 @@ def makeUpName() -> str:
     vowel = "aeiouy"
     consonant = "bcdfghjklmnpqrstvwxz"
 
-    t = random.randint(0, MAX_NAMETYPES - 1)
-    for i in range(len(name_format[t])):
-        if name_format[t][i] == "C":
-            player.name[i] = consonant[random.randint(0, 21)].upper()
-        elif name_format[t][i] == "c":
-            player.name[i] = consonant[random.randint(0, 21)]
-        elif name_format[t][i] == "V":
-            player.name[i] = vowel[random.randint(0, 6)].upper()
-        elif name_format[t][i] == "v":
-            player.name[i] = vowel[random.randint(0, 6)]
-        elif name_format[t][i] == " ":
-            player.name[i] = " "
-        elif name_format[t][i] == "'":
-            player.name[i] = "'"
+    name = random.choice(name_format)
+
+    for character in name:
+        if character == "C":
+            name = name.replace("C", random.choice(consonant).upper(), 1)
+        elif character == "c":
+            name = name.replace("c", random.choice(consonant), 1)
+        elif character == "V":
+            name = name.replace("V", random.choice(vowel).upper(), 1)
+        elif character == "v":
+            name = name.replace("v", random.choice(vowel), 1)
+        elif character == " ":
+            name = name.replace(" ", " ", 1)
+        elif character == "'":
+            name = name.replace("'", "'", 1)
+
+    return name
 
 
 def loadGame(w: int) -> int:
