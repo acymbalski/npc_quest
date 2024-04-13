@@ -2,16 +2,19 @@ import random
 from item import Item
 from enum import Enum
 
-CLASS_PEASANT = 0
-CLASS_WARRIOR = 1
-CLASS_THIEF = 2
-CLASS_RANGER = 3
-CLASS_WIZARD = 4
-CLASS_GUARD = 5
-CLASS_CHEF = 6
-CLASS_SALESMAN = 7
-CLASS_DOCTOR = 8
-CLASS_MULE = 9
+
+class CLASS(Enum):
+    PEASANT = 0
+    WARRIOR = 1
+    THIEF = 2
+    RANGER = 3
+    WIZARD = 4
+    GUARD = 5
+    CHEF = 6
+    SALESMAN = 7
+    DOCTOR = 8
+    MULE = 9
+
 
 NUM_STATS = 9
 
@@ -56,7 +59,7 @@ class Character:
             None,
         ] * 20  # player has 20 inventory slots; value '255' means empty. We have replaced it with None
         self.ptSpend = [0] * NUM_STATS
-        self.chrClass = CLASS_PEASANT
+        self.chrClass = CLASS.PEASANT
         self.shouldExit = 0
         self.name = makeUpName()
         self.deathCause = 0
@@ -102,25 +105,25 @@ def renderLevelUpLine(c: int, name: str, stat: int):
 
 def className(i: int) -> str:
 
-    if i == CLASS_PEASANT:
+    if i == CLASS.PEASANT:
         return "Peasant"
-    if i == CLASS_WARRIOR:
+    if i == CLASS.WARRIOR:
         return "Warrior"
-    if i == CLASS_THIEF:
+    if i == CLASS.THIEF:
         return "Thief"
-    if i == CLASS_RANGER:
+    if i == CLASS.RANGER:
         return "Ranger"
-    if i == CLASS_WIZARD:
+    if i == CLASS.WIZARD:
         return "Wizard"
-    if i == CLASS_GUARD:
+    if i == CLASS.GUARD:
         return "Guard"
-    if i == CLASS_CHEF:
+    if i == CLASS.CHEF:
         return "Chef"
-    if i == CLASS_SALESMAN:
+    if i == CLASS.SALESMAN:
         return "Used Car Salesman"
-    if i == CLASS_DOCTOR:
+    if i == CLASS.DOCTOR:
         return "Doctor"
-    if i == CLASS_MULE:
+    if i == CLASS.MULE:
         return "Pack Mule"
     return "Unknown"
 
