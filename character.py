@@ -67,6 +67,8 @@ class Character:
         self.deathCause = 0
         self.slot = 0
 
+        savegame(self)
+
 
 def sortInventory():
     # sort inventory by item type, then by cost

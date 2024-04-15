@@ -1,6 +1,8 @@
 import pygame
-from display import printMe
+from display import printMe, printMeIsClicked
 from character import loadGame
+from enums import GameState
+from character import Character
 
 NUM_SAVES = 10
 
@@ -49,6 +51,7 @@ class Title:
         printMe(screen, "Copyright 2003, by Hamumu Software", 20, 500)
 
         characters = findSaveGames()
+        active_character = None
 
         for i in range(NUM_SAVES):
             # if cursor == i:
@@ -61,14 +64,20 @@ class Title:
                 s = f"{i+1: >2}. Unused"
 
             # draw bounding box if mouseover
-            printMe(
+            if printMeIsClicked(
                 screen,
                 s,
                 40,
                 190 + i * 10,
                 draw_bounding_box=True,
                 bounding_box_width=268,
-            )
+            ):
+                if character:
+                    active_character = character
+                else:
+                    active_character = Character()
+                self.game.game_state = GameState.GAME
+                self.game.player = active_character
 
 
 if __name__ == "__main__":
