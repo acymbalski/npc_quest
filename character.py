@@ -1,6 +1,8 @@
 import random
 from item import Item
 from enum import Enum
+import pickle
+import os
 
 
 class CLASS(Enum):
@@ -206,13 +208,33 @@ def makeUpName() -> str:
     return name
 
 
-def loadGame(w: int) -> int:
-    pass
+def loadGame(w: int) -> Character:
+    # load game from save/save00X.sav
+    filename = f"save/save00{w}.sav"
+    try:
+        with open(filename, "rb") as file:
+            character = pickle.load(file)
+        return character
+    except Exception:
+        return None
 
 
-def delGame(w: int):
-    pass
+def delGame(w: int) -> bool:
+    # delete game from save/save00X.sav
+    filename = f"save/save00{w}.sav"
+    try:
+        os.remove(filename)
+        return True
+    except Exception:
+        return False
 
 
-def savegame(w: int):
-    pass
+def savegame(character: Character) -> bool:
+    # save game to save/save00X.sav
+    filename = f"save/save00{character.slot}.sav"
+    try:
+        with open(filename, "wb") as file:
+            pickle.dump(character, file)
+        return True
+    except Exception:
+        return False
