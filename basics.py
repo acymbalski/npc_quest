@@ -43,7 +43,6 @@ class TextButton(Button):
     def setText(self, text):
         """Set the text of the button, render with font, and set bounding rect."""
         self.text = text
-        print(text)
         self.rendered_text = self.font.render(self.text, True, self.color)
         self.rect = self.rendered_text.get_rect()
         self.rect.topleft = (self.x, self.y)
