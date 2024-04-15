@@ -9,8 +9,11 @@ background_image = pygame.image.load("graphics/title.tga")
 
 
 def title_screen(screen):
-    width, height = screen.get_size()
+    # width, height = screen.get_size()
     # Draw the background image
+    screen.blit(
+        background_image, (10, 40)
+    )  # currently matching the original game's offset
 
     # draw welcome text
     printMe(screen, "Select a game slot to play from!", 40, 160)
