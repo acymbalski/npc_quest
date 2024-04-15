@@ -23,7 +23,6 @@ def printMe(
         rect = text.get_rect()
         rect.topleft = (x, y)
         if rect.collidepoint(cursor_pos):
-            print("hello")
             if bounding_box_width:
                 rect.width = bounding_box_width
             if bounding_box_height:
