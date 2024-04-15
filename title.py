@@ -51,3 +51,9 @@ def title_screen(screen):
         )
 
     return GameState.TITLE
+
+
+if __name__ == "__main__":
+    import main
+
+    main.main()
