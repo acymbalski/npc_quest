@@ -34,37 +34,3 @@ def printMe(
     game.screen.blit(text, (x, y))
 
     return buffered_rect
-
-
-# hate this
-def printMeIsClicked(
-    screen,
-    text,
-    x,
-    y,
-    color=pygame.Color("WHITE"),
-    draw_bounding_box=False,
-    bounding_box_width=None,
-    bounding_box_height=None,
-    bounding_box_color=pygame.Color("YELLOW"),
-    buffer=2,
-):
-    rect = printMe(
-        screen,
-        text,
-        x,
-        y,
-        color,
-        draw_bounding_box,
-        bounding_box_width,
-        bounding_box_height,
-        bounding_box_color,
-        buffer,
-    )
-    cursor_pos = pygame.mouse.get_pos()
-    # this is bad. Maybe make a custom clickable object (text/image/whatever) that has some function associated with it
-    for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if rect.collidepoint(cursor_pos):
-                return True
-    return False

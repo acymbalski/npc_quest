@@ -1,8 +1,9 @@
 import pygame
-from display import printMe, printMeIsClicked
+from display import printMe
 from character import loadGame
 from enums import GameState
 from character import Character
+from basics import TextButton
 
 NUM_SAVES = 10
 
@@ -24,6 +25,29 @@ class Title:
 
     def __init__(self, game):
         self.game = game
+        self.buttons = []
+
+        characters = findSaveGames()
+        # active_character = None
+        for i in range(NUM_SAVES):
+            character = characters[i]
+            if character:
+                s = f"{i+1: >2}. {character.name}, Lvl {character.level}, Score: {character.score}"
+            else:
+                s = f"{i+1: >2}. Unused"
+
+            self.buttons.append(
+                TextButton(
+                    self.game,
+                    None,
+                    40,
+                    190 + i * 10,
+                    s,
+                )
+            )
+        # inflate button bounding rects to full width
+        for button in self.buttons:
+            button.setBoundingRectSize(width=268)
 
     def update(self):
 
@@ -50,34 +74,27 @@ class Title:
         printMe(self.game, "Credits: Everything by Mike Hommel", 20, 460)
         printMe(self.game, "Copyright 2003, by Hamumu Software", 20, 500)
 
-        characters = findSaveGames()
-        active_character = None
+        for button in self.buttons:
+            button.draw()
 
-        for i in range(NUM_SAVES):
-            # if cursor == i:
-            # pygame.draw.rect(screen, (255, 255, 0), (38, 188 + i * 10, 310, 188 + 10 + i * 10))
-            character = characters[i]
-            if character:
-                s = f"{i+1: >2}. {character.name}, Lvl {character.level}, Score: {character.score}"
+        for event in pygame.event.get():
+            # check for escape key
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.game.game_state = GameState.QUIT
 
-            else:
-                s = f"{i+1: >2}. Unused"
-
-            # draw bounding box if mouseover
-            if printMeIsClicked(
-                screen,
-                s,
-                40,
-                190 + i * 10,
-                draw_bounding_box=True,
-                bounding_box_width=268,
-            ):
-                if character:
-                    active_character = character
-                else:
-                    active_character = Character()
-                self.game.game_state = GameState.GAME
-                self.game.player = active_character
+            # check for left mouse click
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                cursor_pos = pygame.mouse.get_pos()
+                for i, button in enumerate(self.buttons):
+                    if button.bounding_rect.collidepoint(cursor_pos):
+                        character = findSaveGames()[i]
+                        if character:
+                            active_character = character
+                        else:
+                            active_character = Character()
+                        self.game.game_state = GameState.GAME
+                        self.game.player = active_character
 
 
 if __name__ == "__main__":
