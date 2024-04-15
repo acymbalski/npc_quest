@@ -4,6 +4,7 @@ from enums import GameState
 
 
 class Game:
+    """Main game class"""
 
     def __init__(self):
         # Initialize Pygame
@@ -29,7 +30,10 @@ class Game:
 
         self.game_state = GameState.TITLE
 
+        self.player = None
+
     def set_custom_cursor(self, cursor_surface, hotspot_x, hotspot_y):
+        """Set a custom cursor"""
         pygame.mouse.set_visible(False)
         cursor_size = cursor_surface.get_size()
         cursor_surface.set_colorkey((255, 0, 255))  # key out pink for transparancy
@@ -43,6 +47,7 @@ class Game:
         pygame.mouse.set_cursor(*cursor_tuple)
 
     def run(self):
+        """Run the game loop"""
 
         # Main game loop
         running = True
@@ -80,6 +85,7 @@ class Game:
 
 
 def main():
+    """Main function"""
     game = Game()
     game.run()
 
