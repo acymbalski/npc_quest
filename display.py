@@ -22,12 +22,12 @@ def printMe(
         cursor_pos = pygame.mouse.get_pos()
         rect = text.get_rect()
         rect.topleft = (x, y)
-        if rect.collidepoint(cursor_pos):
-            if bounding_box_width:
-                rect.width = bounding_box_width
-            if bounding_box_height:
-                rect.height = bounding_box_height
-            buffered_rect = rect.inflate(buffer, buffer)
+        if bounding_box_width:
+            rect.width = bounding_box_width
+        if bounding_box_height:
+            rect.height = bounding_box_height
+        buffered_rect = rect.inflate(buffer, buffer)
+        if buffered_rect.collidepoint(cursor_pos):
             pygame.draw.rect(screen, bounding_box_color, buffered_rect, 1)
 
     screen.blit(text, (x, y))
