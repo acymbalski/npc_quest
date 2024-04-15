@@ -19,6 +19,8 @@ class Game:
         icon_image = pygame.image.load("graphics/fatbird.tga")
         pygame.display.set_icon(icon_image)
 
+        self.font_8 = pygame.font.Font("font/prstartk.ttf", 8)
+
         self.title = title.Title(self)
 
         # Set the user's mouse cursor

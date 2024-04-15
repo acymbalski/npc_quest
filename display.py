@@ -2,7 +2,7 @@ import pygame
 
 
 def printMe(
-    screen,
+    game,
     text,
     x,
     y,
@@ -13,8 +13,7 @@ def printMe(
     bounding_box_color=pygame.Color("YELLOW"),
     buffer=2,
 ):
-    font = pygame.font.Font("font/prstartk.ttf", 8)
-    text = font.render(text, True, color)
+    text = game.font_8.render(text, True, color)
 
     rect = text.get_rect()
     # this is gnarly and could use a cleanup, probably
@@ -28,11 +27,11 @@ def printMe(
             rect.height = bounding_box_height
         buffered_rect = rect.inflate(buffer, buffer)
         if buffered_rect.collidepoint(cursor_pos):
-            pygame.draw.rect(screen, bounding_box_color, buffered_rect, 1)
+            pygame.draw.rect(game.screen, bounding_box_color, buffered_rect, 1)
     else:
         buffered_rect = rect
 
-    screen.blit(text, (x, y))
+    game.screen.blit(text, (x, y))
 
     return buffered_rect
 

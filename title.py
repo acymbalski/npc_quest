@@ -36,19 +36,19 @@ class Title:
         )  # currently matching the original game's offset
 
         # draw welcome text
-        printMe(screen, "Select a game slot to play from!", 40, 160)
-        printMe(screen, "(Right-click a slot to erase it)", 40, 170)
-        printMe(screen, "Press ESC to stop being entertained", 40, 320)
+        printMe(self.game, "Select a game slot to play from!", 40, 160)
+        printMe(self.game, "(Right-click a slot to erase it)", 40, 170)
+        printMe(self.game, "Press ESC to stop being entertained", 40, 320)
         printMe(
-            screen,
+            self.game,
             "Exit To Windows!",
             40,
             290,
             draw_bounding_box=True,
             bounding_box_width=268,
         )
-        printMe(screen, "Credits: Everything by Mike Hommel", 20, 460)
-        printMe(screen, "Copyright 2003, by Hamumu Software", 20, 500)
+        printMe(self.game, "Credits: Everything by Mike Hommel", 20, 460)
+        printMe(self.game, "Copyright 2003, by Hamumu Software", 20, 500)
 
         characters = findSaveGames()
         active_character = None
