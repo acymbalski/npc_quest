@@ -104,20 +104,22 @@ class Shop:
             # add item to player inventory
             # self.game.player.inventory.append(item)
             equipItem(self.game.player, item)
-        # remove item from shop
-        self.available_items.remove(item)
+            # remove item from shop
+            self.available_items.remove(item)
 
-        # remove button
-        self.buttons.remove(button)
-        # gold changed; update button backgrounds and positions
-        for button in self.buttons:
-            button.bounding_rect_bg_color = self.getItemHighlightColor(button.command)
-            button.y = 20 + 10 * self.buttons.index(button)
-            button.rect.topleft = (button.x, button.y)
-            button.bounding_rect.topleft = (button.x, button.y)
+            # remove button
+            self.buttons.remove(button)
+            # gold changed; update button backgrounds and positions
+            for button in self.buttons:
+                button.bounding_rect_bg_color = self.getItemHighlightColor(
+                    button.command
+                )
+                button.y = 20 + 10 * self.buttons.index(button)
+                button.rect.topleft = (button.x, button.y)
+                button.bounding_rect.topleft = (button.x, button.y)
 
-        # play sound effect
-        makeSound(SFX.CHACHING)
+            # play sound effect
+            makeSound(SFX.CHACHING)
 
     def update(self):
 
