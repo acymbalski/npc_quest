@@ -302,7 +302,6 @@ def get_item(name: str) -> Item:
         The item with the specified name, or None if not found.
     """
     for i, item in enumerate(all_items):
-        print(f"Checking item {i}: {item.name}")
         if item.name == name:
             return item
     raise Exception(f"Cannot find item '{name}'")
@@ -316,3 +315,20 @@ def sortItems(items: list) -> list:
         )
     )
     return items
+
+
+def getIcon(item):
+    # masked_blit(icons,screen2,(item[itm].type-1)*10,0,x,y,10,10);
+    icons = pygame.image.load("graphics/icons.tga")
+
+    icon_rect = pygame.Rect((item.type - 1) * 10, 0, 10, 10)
+    icon_surface = pygame.Surface((10, 10))
+    icon_surface.blit(icons, (0, 0), icon_rect)
+    icon_surface.set_colorkey((255, 0, 255))  # key out pink for transparancy
+    return icon_surface
+
+
+if __name__ == "__main__":
+    import main
+
+    main.main()

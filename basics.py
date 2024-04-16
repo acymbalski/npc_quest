@@ -13,6 +13,9 @@ class Button:
         self.bounding_rect_color = pygame.Color("YELLOW")
         self.bounding_rect_buffer = 2
         self.selection_highlight = True
+        self.bounding_rect_bg_color = None
+        self.mouseon_command = None
+        self.mouseoff_command = None
 
     def mouseover(self):
         """Called when the mouse is over the button."""
@@ -24,7 +27,7 @@ class Button:
 
 
 class TextButton(Button):
-    """Button with text."""
+    """Button with text and possibly an icon."""
 
     def __init__(
         self,
@@ -34,10 +37,13 @@ class TextButton(Button):
         y,
         text,
         color=pygame.Color("WHITE"),
+        icon=None,
     ):
         super().__init__(game, command, x, y)
         self.font = game.font_8
         self.color = color
+        self.icon = icon
+
         self.setText(str(text))
 
     def setText(self, text):
@@ -46,6 +52,11 @@ class TextButton(Button):
         self.rendered_text = self.font.render(self.text, True, self.color)
         self.rect = self.rendered_text.get_rect()
         self.rect.topleft = (self.x, self.y)
+
+        # Expand the bounding rectangle by the width of the icon if an icon is present
+        if self.icon:
+            self.rect.width += self.icon.get_width()
+
         self.bounding_rect = self.rect
 
     def setBoundingRectSize(self, width=None, height=None):
@@ -69,14 +80,26 @@ class TextButton(Button):
                 highlight_rect = self.bounding_rect.inflate(
                     self.bounding_rect_buffer, self.bounding_rect_buffer
                 )
-                pygame.draw.rect(
-                    self.game.screen, self.bounding_rect_color, highlight_rect, 1
-                )
+                # draw highlight edge
+                if self.bounding_rect_color:
+                    pygame.draw.rect(
+                        self.game.screen, self.bounding_rect_color, highlight_rect, 1
+                    )
+                if self.bounding_rect_bg_color:
+                    pygame.draw.rect(
+                        self.game.screen, self.bounding_rect_bg_color, highlight_rect
+                    )
 
             self.mouseover()
 
+        text_offset = 0
+        # draw the icon
+        if self.icon:
+            self.game.screen.blit(self.icon, (self.x, self.y))
+            text_offset = self.icon.get_width()
+
         # draw the text
-        self.game.screen.blit(self.rendered_text, (self.x, self.y))
+        self.game.screen.blit(self.rendered_text, (self.x + text_offset, self.y))
 
         # check mouse click within hosting screen, not here
 

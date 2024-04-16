@@ -2,7 +2,8 @@ import pygame
 import random
 from basics import TextButton
 from enums import GameState
-from item import all_items, get_item, sortItems
+from item import all_items, get_item, sortItems, getIcon, equipItem
+from character import renderCharacterData
 
 background_image = pygame.image.load("graphics/shop.tga")
 
@@ -28,18 +29,33 @@ class Shop:
         self.buttons = []
         self.available_items = []
         self.populateItems()
-        print(self.available_items)
+
+        max_text_width = 55
         for item in self.available_items:
-            print(item)
-            self.buttons.append(
-                TextButton(
-                    game,
-                    item.name,
-                    312,
-                    20 + 10 * len(self.buttons),
-                    item,
-                )
+            price_str = f"${item.cost}"
+            price_width = max_text_width - len(item.name)
+            # format item name to be left alinged with price right aligned
+            formatted_item_name = "{: >{}}".format(price_str, price_width)
+
+            item_button = TextButton(
+                game,
+                item,  # store item as command, this may change someday
+                300,
+                20 + 10 * len(self.buttons),
+                f"{item.name}{formatted_item_name}",
+                icon=getIcon(item),
             )
+
+            item_button.bounding_rect_bg_color = self.getItemHighlightColor(item)
+            item_button.bounding_rect_color = None
+
+            self.buttons.append(item_button)
+
+    def getItemHighlightColor(self, item):
+        # if player can afford item, it is highlighted green on mouseover
+        if item.cost > self.game.player.gold:
+            return pygame.Color("RED")
+        return pygame.Color("GREEN")
 
     def getValidItems(self):
         # ensure item is not already in shop
