@@ -107,8 +107,6 @@ class Shop:
             # remove item from shop
             self.available_items.remove(item)
 
-            # remove button
-            self.buttons.remove(button)
             # gold changed; update button backgrounds and positions
             for button in self.buttons:
                 button.bounding_rect_bg_color = self.getItemHighlightColor(
