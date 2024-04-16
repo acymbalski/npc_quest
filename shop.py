@@ -1,9 +1,10 @@
 import pygame
 import random
 from basics import TextButton
-from enums import GameState
+from enums import GameState, SFX
 from item import all_items, get_item, sortItems, getIcon, equipItem
 from character import renderCharacterData
+from sound import makeSound
 
 background_image = pygame.image.load("graphics/shop.tga")
 
@@ -114,6 +115,9 @@ class Shop:
             button.y = 20 + 10 * self.buttons.index(button)
             button.rect.topleft = (button.x, button.y)
             button.bounding_rect.topleft = (button.x, button.y)
+
+        # play sound effect
+        makeSound(SFX.CHACHING)
 
     def update(self):
 
