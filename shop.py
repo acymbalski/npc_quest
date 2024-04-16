@@ -52,6 +52,19 @@ class Shop:
 
             self.buttons.append(item_button)
 
+        # add buttons for loading levels
+        for i, level in enumerate(LEVELS):
+            level_button = TextButton(
+                game,
+                None,
+                312,
+                20 + 10 * SHOP_AMT + i * 10,
+                f"Enter {level}",
+            )
+            level_button.bounding_rect_bg_color = pygame.Color("BLUE")
+            level_button.bounding_rect_color = None
+            self.buttons.append(level_button)
+
     def getItemHighlightColor(self, item):
         # if player can afford item, it is highlighted green on mouseover
         if item.cost > self.game.player.gold:
@@ -76,7 +89,7 @@ class Shop:
         return valid_items
 
     def populateItems(self):
-        for _ in range(SHOP_AMT):
+        for _ in range(SHOP_AMT - 5):
             # select random valid item
             valid_item = random.choice(self.getValidItems())
             if valid_item:
