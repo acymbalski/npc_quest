@@ -203,8 +203,8 @@ def calcSell(player, item: Item) -> int:
 
 def specialEffect(player, item: Item, amt: int, mult: str):
     if item.type == EFF_ALL:
-        for i in range(8):
-            player.stat[i] += mult * amt
+        for stat in STAT:
+            player.stat[stat] += mult * amt
     elif item.type == EFF_STRENGTH:
         player.stat[STAT.STR] += mult * amt
     elif item.type == EFF_DEFENSE:
@@ -244,9 +244,8 @@ def statChangeFromItem(player, item: Item, mult: str):
 
 
 def equipItem(player, item: Item):
-    if item.type in [ITM_POTION, ITM_FOOD, ITM_RING]:
-        return  # can have multiples
-    else:  # can only have one
+    if item.type not in [ITM_POTION, ITM_FOOD, ITM_RING]:
+        # can only have one of each type unless it's a potion, food, or ring
         for i in range(20):
             # if we already have one, sell it and equip the new one
             if (
