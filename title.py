@@ -95,7 +95,7 @@ class Title:
                             active_character = Character()
                             active_character.slot = i
                             savegame(active_character)
-                        self.game.game_state = GameState.GAME
+                        self.game.game_state = GameState.SHOP
                         self.game.player = active_character
 
 

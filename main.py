@@ -1,5 +1,6 @@
 import pygame
 import title
+from shop import Shop
 from enums import GameState
 
 
@@ -22,6 +23,7 @@ class Game:
         self.font_8 = pygame.font.Font("font/prstartk.ttf", 8)
 
         self.title = title.Title(self)
+        self.shop = None
 
         # Set the user's mouse cursor
         self.cursor_image = pygame.image.load(
@@ -65,7 +67,10 @@ class Game:
                 self.title.update()
 
             elif self.game_state == GameState.SHOP:
-                pass
+                if not self.shop:
+                    # creating a shop populates the items
+                    self.shop = Shop(self)
+                self.shop.update()
 
             elif self.game_state == GameState.GAME:
                 pass
