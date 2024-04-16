@@ -69,16 +69,6 @@ class Character:
         self.score = 0
 
 
-def sortInventory():
-    # sort inventory by item type, then by cost
-    inventory = player.inventory  # a list of Item objects, or None
-    inventory.sort(
-        key=lambda item: (
-            (item.type, item.cost) if item else (float("inf"), float("inf"))
-        )
-    )
-
-
 def roomToEquip(weight: int, type: Item) -> bool:
     # return True or False if the player has room to equip an item
     # TODO: think about this one

@@ -45,10 +45,13 @@ class Item:
         self.effect2 = effect2
         self.eff2Value = eff2Value
 
+    def __str__(self) -> str:
+        return self.name
+
 
 # armor
 # {"Origami Gi",1,1,ITM_ARMOR,1,EFF_NONE,0,EFF_NONE,0},
-item = [
+all_items = [
     # armor
     Item("Origami Gi", 1, 1, ITM_ARMOR, 1, EFF_NONE, 0, EFF_NONE, 0),
     Item("Santa Claus Costume", 4, 3, ITM_ARMOR, 2, EFF_NONE, 0, EFF_NONE, 0),
@@ -286,3 +289,30 @@ def netWeightEffect(item: Item) -> int:
         result -= item.eff2Value
 
     return result
+
+
+def get_item(name: str) -> Item:
+    """
+    Get the item with the specified name.
+
+    Args:
+        name: The name of the item.
+
+    Returns:
+        The item with the specified name, or None if not found.
+    """
+    for i, item in enumerate(all_items):
+        print(f"Checking item {i}: {item.name}")
+        if item.name == name:
+            return item
+    raise Exception(f"Cannot find item '{name}'")
+
+
+def sortItems(items: list) -> list:
+    # sort inventory by item type, then by cost
+    items.sort(
+        key=lambda item: (
+            (item.type, item.cost) if item else (float("inf"), float("inf"))
+        )
+    )
+    return items
