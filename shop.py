@@ -93,6 +93,28 @@ class Shop:
 
         self.available_items = sortItems(self.available_items)
 
+    def buyItem(self, button):
+
+        # get item from button
+        item = button.command
+        # deduct cost of item from gold if affordable
+        if self.game.player.gold >= item.cost:
+            self.game.player.gold -= item.cost
+            # add item to player inventory
+            # self.game.player.inventory.append(item)
+            equipItem(self.game.player, item)
+        # remove item from shop
+        self.available_items.remove(item)
+
+        # remove button
+        self.buttons.remove(button)
+        # gold changed; update button backgrounds and positions
+        for button in self.buttons:
+            button.bounding_rect_bg_color = self.getItemHighlightColor(button.command)
+            button.y = 20 + 10 * self.buttons.index(button)
+            button.rect.topleft = (button.x, button.y)
+            button.bounding_rect.topleft = (button.x, button.y)
+
     def update(self):
 
         screen = self.game.screen
@@ -115,9 +137,9 @@ class Shop:
             # check for left mouse click
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 cursor_pos = pygame.mouse.get_pos()
-                for i, button in enumerate(self.buttons):
+                for _, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):
-                        pass
+                        self.buyItem(button)
 
 
 if __name__ == "__main__":

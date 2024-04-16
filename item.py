@@ -1,3 +1,6 @@
+import pygame
+from enums import STAT
+
 ITM_FOOD = 1
 ITM_POTION = 2
 ITM_WEAPON = 3
@@ -177,7 +180,7 @@ all_items = [
 
 def calcCost(item: Item) -> int:
     cost = item.cost
-    cost -= (cost * player.stat[STAT_CHA]) / 500
+    cost -= (cost * player.stat[STAT.STAT_CHA]) / 500
 
     if cost < 1:
         cost = 1
@@ -188,7 +191,7 @@ def calcCost(item: Item) -> int:
 def calcSell(item: Item) -> int:
     cost = item.cost / 2
 
-    cost = (item.cost * player.stat[STAT_CHA]) / 100
+    cost = (item.cost * player.stat[STAT.STAT_CHA]) / 100
     if cost > item.cost:
         cost = item.cost
 
@@ -198,64 +201,71 @@ def calcSell(item: Item) -> int:
     return cost
 
 
-def specialEffect(item: Item, amt: int, mult: str):
+def specialEffect(player, item: Item, amt: int, mult: str):
     if item.type == EFF_ALL:
         for i in range(8):
             player.stat[i] += mult * amt
     elif item.type == EFF_STRENGTH:
-        player.stat[STAT_STR] += mult * amt
+        player.stat[STAT.STR] += mult * amt
     elif item.type == EFF_DEFENSE:
-        player.stat[STAT_DEF] += mult * amt
+        player.stat[STAT.DEF] += mult * amt
     elif item.type == EFF_STOMACH:
-        player.stat[STAT_STO] += mult * amt
+        player.stat[STAT.STO] += mult * amt
     elif item.type == EFF_SPEED:
-        player.stat[STAT_SPD] += mult * amt
+        player.stat[STAT.SPD] += mult * amt
     elif item.type == EFF_ACCURACY:
-        player.stat[STAT_ACC] += mult * amt
+        player.stat[STAT.ACC] += mult * amt
     elif item.type == EFF_CHARISMA:
-        player.stat[STAT_CHA] += mult * amt
+        player.stat[STAT.CHA] += mult * amt
     elif item.type == EFF_LIFE:
-        player.stat[STAT_LIF] += mult * amt
-        if player.life > player.stat[STAT_LIF]:
-            player.life = player.stat[STAT_LIF]
+        player.stat[STAT.LIF] += mult * amt
+        if player.life > player.stat[STAT.LIF]:
+            player.life = player.stat[STAT.LIF]
     elif item.type == EFF_CARRY:
-        player.stat[STAT_CAR] += mult * amt
+        player.stat[STAT.CAR] += mult * amt
     elif item.type == EFF_IQ:
-        player.stat[STAT_INT] += mult * amt
+        player.stat[STAT.INT] += mult * amt
 
 
-def statChangeFromItem(item: Item, mult: str):
+def statChangeFromItem(player, item: Item, mult: str):
     player.totalWeight += mult * item.weight
 
     if item.type in [ITM_ARMOR, ITM_HELMET, ITM_SHIELD]:
-        player.stat[STAT_DEF] += mult * item.value
+        player.stat[STAT.DEF] += mult * item.value
     elif item.type == ITM_WEAPON:
-        player.stat[STAT_STR] += mult * item.value
+        player.stat[STAT.STR] += mult * item.value
     elif item.type == ITM_GAUNTLET:
-        player.stat[STAT_ACC] += mult * item.value
+        player.stat[STAT.ACC] += mult * item.value
     elif item.type == ITM_BOOTS:
-        player.stat[STAT_SPD] += mult * item.value
+        player.stat[STAT.SPD] += mult * item.value
 
-    specialEffect(item, item.effValue, mult)
-    specialEffect(item, item.eff2Value, mult)
+    specialEffect(player, item, item.effValue, mult)
+    specialEffect(player, item, item.eff2Value, mult)
 
 
-def equipItem(item: Item):
+def equipItem(player, item: Item):
     if item.type in [ITM_POTION, ITM_FOOD, ITM_RING]:
         return  # can have multiples
     else:  # can only have one
         for i in range(20):
-            if player.inventory[i] != 255 and player.inventory[i].type == item.type:
+            # if we already have one, sell it and equip the new one
+            if (
+                player.inventory[i] is not None
+                and item is not None
+                and player.inventory[i].type == item.type
+            ):
+                # TODO: implement calcSell
                 player.gold += calcSell(player.inventory[i])
-                statChangeFromItem(player.inventory[i], -1)  # unequip item
+                statChangeFromItem(player, player.inventory[i], -1)  # unequip item
                 player.inventory[i] = item
-                statChangeFromItem(item, 1)  # equip the new one, and done!
+                statChangeFromItem(player, item, 1)  # equip the new one, and done!
                 return
 
     for i in range(20):
-        if player.inventory[i] == 255:
-            statChangeFromItem(item, 1)
+        if player.inventory[i] is None:
+            statChangeFromItem(player, item, 1)
             player.inventory[i] = item
+            return
 
 
 # fake item equip, for effect calculation
@@ -264,7 +274,10 @@ def fakeEquipItem(item: Item):
         return  # can have multiples
     else:  # can only have one
         for i in range(20):
-            if player.inventory[i] != 255 and player.inventory[i].type == item.type:
+            if (
+                player.inventory[i] != 255
+                and player.inventory[i].item_type == item.item_type
+            ):
                 player.gold += calcSell(player.inventory[i])
                 statChangeFromItem(player.inventory[i], -1)  # unequip item
                 statChangeFromItem(item, 1)  # equip the new one, and done!
