@@ -100,6 +100,9 @@ class Shop:
         # Draw the background image
         screen.blit(background_image, (0, 0))
 
+        # Draw player info
+        renderCharacterData(self.game)
+
         for button in self.buttons:
             button.draw()
 

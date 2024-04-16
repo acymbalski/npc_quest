@@ -1,8 +1,10 @@
 import random
-from item import Item
+from item import Item, getIcon
 from enum import Enum
 import pickle
 import os
+from display import printMe
+from enums import STAT
 
 
 class CLASS(Enum):
@@ -21,16 +23,18 @@ class CLASS(Enum):
 NUM_STATS = 9
 
 
-class STAT(Enum):
-    STR = 0
-    SPD = 1
-    ACC = 2
-    INT = 3
-    DEF = 4
-    STO = 5
-    CHA = 6
-    LIF = 7
-    CAR = 8
+classBonus = [
+    "",  # peasant
+    "Berserk Rage",  # warrior
+    "Pickpocket",  # thief
+    "Bow Attack",  # ranger
+    "Infernal Blast",  # wizard
+    "Spinning Strike",  # guard
+    "Snack Attack",  # chef
+    "Chicken Out",  # salesman
+    "Preemptive Autopsy",  # doctor
+    "Mule Kick",  # pack mule
+]
 
 
 class Character:
@@ -88,8 +92,37 @@ def roomToEquip(weight: int, type: Item) -> bool:
     return True
 
 
-def renderCharacterData():
-    pass
+def renderCharacterData(game):
+    character = game.player
+    printMe(game, character.name, 8, 8)
+    printMe(game, f"Level: {character.level}", 8, 18)
+    printMe(game, f"Strength: {character.stat[STAT.STR]}", 8, 28)
+    printMe(game, f"Speed: {character.stat[STAT.SPD]}", 8, 38)
+    printMe(game, f"Accuracy: {character.stat[STAT.ACC]}", 8, 48)
+    printMe(game, f"Intellect: {character.stat[STAT.INT]}", 8, 58)
+    printMe(game, f"Defense: {character.stat[STAT.DEF]}", 8, 68)
+    printMe(game, f"Stomach: {character.stat[STAT.STO]}", 8, 78)
+    printMe(game, f"Charisma: {character.stat[STAT.CHA]}", 8, 88)
+
+    printMe(game, f"XP needed: {character.needXP-character.xp}", 8, 108)
+    printMe(game, f"Life: {character.stat[STAT.LIF]}", 8, 118)
+
+    printMe(game, f"Weight: {character.stat[STAT.CAR]}", 8, 128)
+    printMe(game, f"Gold: {character.gold}", 8, 138)
+
+    printMe(game, "Inventory", 8, 158)
+    for i in range(20):
+        if character.inventory[i]:
+            game.screen.blit(getIcon(character.inventory[i]), (8, 178 + i * 10))
+            printMe(game, character.inventory[i].name, 19, 178 + i * 10)
+        else:
+            printMe(game, "......", 19, 178 + i * 10)
+
+    if character.chrClass != CLASS.PEASANT:
+        printMe(game, "Special Ability:", 8, 400)
+        printMe(game, classBonus[character.chrClass], 20, 410)
+
+    printMe(game, f"Food In Tummy: {character.food}", 8, 580)
 
 
 def renderLevelUpLine(c: int, name: str, stat: int):
@@ -138,6 +171,8 @@ def renderItemEffects():
 
 
 def calcItemEffects(itm: int):
+    # calculate the effects of an item without actually equipping it
+    # there is a better way to do this once some logic is ironed out
     pass
 
 
