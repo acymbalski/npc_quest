@@ -2,7 +2,7 @@ import pygame
 from display import printMe
 from character import loadGame
 from enums import GameState
-from character import Character
+from character import Character, savegame
 from basics import TextButton
 
 NUM_SAVES = 10
@@ -93,6 +93,8 @@ class Title:
                             active_character = character
                         else:
                             active_character = Character()
+                            active_character.slot = i
+                            savegame(active_character)
                         self.game.game_state = GameState.GAME
                         self.game.player = active_character
 

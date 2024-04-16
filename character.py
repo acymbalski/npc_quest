@@ -66,8 +66,7 @@ class Character:
         self.name = makeUpName()
         self.deathCause = 0
         self.slot = 0
-
-        savegame(self)
+        self.score = 0
 
 
 def sortInventory():
@@ -233,10 +232,14 @@ def delGame(w: int) -> bool:
 
 def savegame(character: Character) -> bool:
     # save game to save/save00X.sav
-    filename = f"save/save00{character.slot}.sav"
+    saveDir = "save"
+    if not os.path.exists(saveDir):
+        os.makedirs(saveDir)
+    filename = f"{saveDir}/save00{character.slot}.sav"
     try:
         with open(filename, "wb") as file:
             pickle.dump(character, file)
         return True
-    except Exception:
+    except Exception as e:
+        print(f"Error saving game: {e}")
         return False
