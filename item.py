@@ -178,9 +178,9 @@ all_items = [
 ]
 
 
-def calcCost(item: Item) -> int:
+def calcCost(player, item: Item) -> int:
     cost = item.cost
-    cost -= (cost * player.stat[STAT.STAT_CHA]) / 500
+    cost -= (cost * player.stat[STAT.CHA]) / 500
 
     if cost < 1:
         cost = 1
@@ -188,10 +188,10 @@ def calcCost(item: Item) -> int:
     return cost
 
 
-def calcSell(item: Item) -> int:
+def calcSell(player, item: Item) -> int:
     cost = item.cost / 2
 
-    cost = (item.cost * player.stat[STAT.STAT_CHA]) / 100
+    cost = (item.cost * player.stat[STAT.CHA]) / 100
     if cost > item.cost:
         cost = item.cost
 
@@ -255,7 +255,7 @@ def equipItem(player, item: Item):
                 and player.inventory[i].type == item.type
             ):
                 # TODO: implement calcSell
-                player.gold += calcSell(player.inventory[i])
+                player.gold += calcSell(player, player.inventory[i])
                 statChangeFromItem(player, player.inventory[i], -1)  # unequip item
                 player.inventory[i] = item
                 statChangeFromItem(player, item, 1)  # equip the new one, and done!
@@ -269,7 +269,7 @@ def equipItem(player, item: Item):
 
 
 # fake item equip, for effect calculation
-def fakeEquipItem(item: Item):
+def fakeEquipItem(player, item: Item):
     if item.type in [ITM_POTION, ITM_FOOD, ITM_RING]:
         return  # can have multiples
     else:  # can only have one
@@ -278,19 +278,14 @@ def fakeEquipItem(item: Item):
                 player.inventory[i] != 255
                 and player.inventory[i].item_type == item.item_type
             ):
-                player.gold += calcSell(player.inventory[i])
-                statChangeFromItem(player.inventory[i], -1)  # unequip item
-                statChangeFromItem(item, 1)  # equip the new one, and done!
+                player.gold += calcSell(player, player.inventory[i])
+                statChangeFromItem(player, player.inventory[i], -1)  # unequip item
+                statChangeFromItem(player, item, 1)  # equip the new one, and done!
                 return
 
     for i in range(20):
         if player.inventory[i] == 255:
-            statChangeFromItem(item, 1)
-
-
-def showItemIcon(item: Item, x: int, y: int):
-    # masked_blit(icons,screen2,(item[itm].type-1)*10,0,x,y,10,10);
-    pass
+            statChangeFromItem(player, item, 1)
 
 
 def netWeightEffect(item: Item) -> int:
