@@ -1033,7 +1033,7 @@ def sortItems(items: list) -> list:
     # sort inventory by item type, then by cost
     items.sort(
         key=lambda item: (
-            (item.type, item.cost) if item else (float("inf"), float("inf"))
+            (item.type.value, item.cost) if item else (float("inf"), float("inf"))
         )
     )
     return items
@@ -1043,7 +1043,7 @@ def getIcon(item):
     # masked_blit(icons,screen2,(item[itm].type-1)*10,0,x,y,10,10);
     icons = pygame.image.load("graphics/icons.tga")
 
-    icon_rect = pygame.Rect((item.type - 1) * 10, 0, 10, 10)
+    icon_rect = pygame.Rect((item.type.value - 1) * 10, 0, 10, 10)
     icon_surface = pygame.Surface((10, 10))
     icon_surface.blit(icons, (0, 0), icon_rect)
     icon_surface.set_colorkey((255, 0, 255))  # key out pink for transparancy

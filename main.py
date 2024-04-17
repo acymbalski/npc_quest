@@ -1,6 +1,6 @@
 import pygame
 import title
-from constants import EXIT_CODE, GameState, MAP_HEIGHT, MAP_WIDTH
+from constants import EXIT_CODE, GameState, XRES, YRES
 from map import Map
 from monster import monsters
 from shop import Shop
@@ -14,8 +14,8 @@ class Game:
         pygame.init()
 
         # Set up the window dimensions
-        width = MAP_WIDTH
-        height = MAP_HEIGHT
+        width = XRES
+        height = YRES
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption("NPC Quest R")
         # Set the window icon

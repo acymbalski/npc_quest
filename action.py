@@ -98,12 +98,6 @@ class Action:
                         pass
 
 
-def gotKilled(game, how):
-    game.player.life = 0
-    game.exitCode = EXIT_CODE.DIED + how.value  # TODO: cause of death needs rework
-    # TODO: rankEarned = AddHiScore()
-
-
 if __name__ == "__main__":
     import main
 

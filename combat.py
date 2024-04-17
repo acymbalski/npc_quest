@@ -1,10 +1,35 @@
 import random
 
-from action import gotKilled
 from character import CLASS
-from constants import DEATH_CAUSE, GUYS, SFX, STAT
-from critter import getKicked
+from constants import DEATH_CAUSE, EXIT_CODE, GUYS, SFX, STAT
+from critter import moveMe
 from sound import makeSound
+
+
+def gotKilled(game, how):
+    game.player.life = 0
+    game.exitCode = EXIT_CODE.DIED + how.value  # TODO: cause of death needs rework
+    # TODO: rankEarned = AddHiScore()
+
+
+def getKicked(game, me, kicker):
+    dx = 0
+    dy = 0
+    if kicker.x > me.x:
+        dx = -1
+        dy = 0
+    elif kicker.x < me.x:
+        dx = 1
+        dy = 0
+    else:
+        if kicker.y < me.y:
+            dx = 0
+            dy = 1
+        else:
+            dx = 0
+            dy = -1
+    moveMe(game, me, dx, dy)
+    moveMe(game, me, dx, dy)
 
 
 def playerAttack(game, me, you):

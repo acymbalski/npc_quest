@@ -8,6 +8,7 @@ from constants import (
     MAP_HEIGHT,
     MAP_WIDTH,
     MAP_X,
+    MAX_GUYS,
     offX,
     offY,
     TILE_HEIGHT,
@@ -16,7 +17,6 @@ from constants import (
     XRES,
     YRES,
 )
-from critter import MAX_GUYS
 
 
 def getTileImage(tile):

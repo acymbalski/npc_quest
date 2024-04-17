@@ -1,7 +1,7 @@
 import random
 
 from character import CLASS, eatFood, foodLeft
-from combat import monsterAttack, playerAttack
+from combat import gotKilled, monsterAttack, playerAttack
 from constants import (
     DEATH_CAUSE,
     EXIT_CODE,
@@ -17,7 +17,6 @@ from constants import (
     STAT,
     TILE_TYPE,
 )
-from critter import gotKilled
 from sound import makeSound
 
 
@@ -351,23 +350,3 @@ def moveMe(game, guy, dx, dy):
     guy.x += dx
     guy.y += dy
     return True
-
-
-def getKicked(game, me, kicker):
-    dx = 0
-    dy = 0
-    if kicker.x > me.x:
-        dx = -1
-        dy = 0
-    elif kicker.x < me.x:
-        dx = 1
-        dy = 0
-    else:
-        if kicker.y < me.y:
-            dx = 0
-            dy = 1
-        else:
-            dx = 0
-            dy = -1
-    moveMe(game, me, dx, dy)
-    moveMe(game, me, dx, dy)

@@ -115,12 +115,14 @@ class Shop:
 
             # gold changed; update button backgrounds and positions
             for button in self.buttons:
-                button.bounding_rect_bg_color = self.getItemHighlightColor(
-                    button.command
-                )
-                button.y = 20 + 10 * self.buttons.index(button)
-                button.rect.topleft = (button.x, button.y)
-                button.bounding_rect.topleft = (button.x, button.y)
+                # if button.command is an item...
+                if button.command.__class__.__name__ == "Item":
+                    button.bounding_rect_bg_color = self.getItemHighlightColor(
+                        button.command
+                    )
+                    button.y = 20 + 10 * self.buttons.index(button)
+                    button.rect.topleft = (button.x, button.y)
+                    button.bounding_rect.topleft = (button.x, button.y)
 
             # play sound effect
             makeSound(SFX.CHACHING)
