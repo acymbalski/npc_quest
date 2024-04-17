@@ -1,8 +1,11 @@
 import random
 
+import pygame
+
 from character import CLASS, eatFood, foodLeft
-from combat import gotKilled, monsterAttack, playerAttack
+from combat import gotKilled, monsterAttack, moveMe, playerAttack
 from constants import (
+    berserkerGfx,
     DEATH_CAUSE,
     EXIT_CODE,
     FIXAMT,
@@ -10,13 +13,16 @@ from constants import (
     MAP_HEIGHT,
     MAP_WIDTH,
     MAX_GUYS,
+    MONSTER_GFX,
     offX,
     offY,
     PLAN,
+    PLAYER_GFX,
     SFX,
     STAT,
     TILE_TYPE,
 )
+from display import printMe
 from sound import makeSound
 
 
@@ -27,6 +33,7 @@ def initGuys():
 class Guy:
     def __init__(
         self,
+        game,
         type=None,
         x=0,
         y=0,
@@ -38,6 +45,7 @@ class Guy:
         foodClock=0,
         level=0,
     ):
+        self.game = game
         self.type = type
         self.x = x
         self.y = y
@@ -49,17 +57,38 @@ class Guy:
         self.foodClock = foodClock
         self.level = level
 
+    def draw(self):
+        if self.type == GUYS.PLAYER:
+            player = self.game.player
+            if player.chrClass != CLASS.WARRIOR or player.life > (
+                player.stat[STAT.LIF] / 4
+            ):
+                # AddToDispList(playerGfx[player.chrClass],MAP_X+me->x*TILE_WIDTH+TILE_WIDTH/2,me->y*TILE_HEIGHT+TILE_HEIGHT*3/4,-9,-22);
+                image = pygame.image.load(PLAYER_GFX[player.chrClass]).convert_alpha()
+                self.game.screen.blit(image, (self.x, self.y))
+            else:
+                self.game.screen.blit(berserkerGfx, (self.x, self.y))
 
-def addGuy(game, guy_type):
+            if self.plan == PLAN.HUNT:
+                printMe(self.game, 8, 570, "Hunting...")
+            elif self.plan == PLAN.WANDER:
+                printMe(self.game, 8, 570, "Wandering...")
+            elif self.plan == PLAN.EXIT:
+                printMe(self.game, 8, 570, "Finding a way out!")
+
+
+def addGuy(game, guy_type, level):
     for i in range(MAX_GUYS):
         if game.map.guys[i] is None:
-            guy = Guy()
+            guy = Guy(game)
             guy.type = guy_type
             guy.x, guy.y = findReallyEmptySpot(game)
-            guy.life = game.monster[guy_type.value].maxLife * (1 + game.level * 3)
-            guy.level = (game.level * 5) + 1
+            guy.level = (level * 5) + 1
             if guy_type == GUYS.PLAYER:
                 makeSound(SFX.HUZZAH)
+                guy.life = 1  # I think this does nothing
+            else:
+                guy.life = game.monster[guy_type.value].maxLife * (1 + level * 3)
 
             game.map.guys[i] = guy
             return
@@ -332,22 +361,3 @@ def followNose2(game, guy):
         ):
             best = a
     return moveMe(game, guy, offX[best], offY[best])
-
-
-def moveMe(game, guy, dx, dy):
-    if (
-        guy.x + dx < 0
-        or guy.y + dy < 0
-        or guy.x + dx >= MAP_WIDTH
-        or guy.y + dy >= MAP_HEIGHT
-        or (game.map.map[guy.x + dx + (guy.y + dy) * MAP_WIDTH].type != TILE_TYPE.FLOOR)
-        and game.map.map[guy.x + dx + (guy.y + dy) * MAP_WIDTH].type != TILE_TYPE.DOOR
-    ):
-        return False
-    for i in range(MAX_GUYS):
-        if game.map.guys[i] is not None:
-            if game.map.guys[i].x == guy.x + dx and game.map.guys[i].y == guy.y + dy:
-                return False
-    guy.x += dx
-    guy.y += dy
-    return True

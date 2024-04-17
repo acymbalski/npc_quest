@@ -1,8 +1,17 @@
 import random
 
 from character import CLASS
-from constants import DEATH_CAUSE, EXIT_CODE, GUYS, SFX, STAT
-from critter import moveMe
+from constants import (
+    DEATH_CAUSE,
+    EXIT_CODE,
+    GUYS,
+    MAP_HEIGHT,
+    MAP_WIDTH,
+    MAX_GUYS,
+    SFX,
+    STAT,
+    TILE_TYPE,
+)
 from sound import makeSound
 
 
@@ -106,3 +115,22 @@ def badGuyDie(game, me):
     me.type = GUYS.NONE
     makeSound(SFX.DEADGUY)
     game.levelUp()
+
+
+def moveMe(game, guy, dx, dy):
+    if (
+        guy.x + dx < 0
+        or guy.y + dy < 0
+        or guy.x + dx >= MAP_WIDTH
+        or guy.y + dy >= MAP_HEIGHT
+        or (game.map.map[guy.x + dx + (guy.y + dy) * MAP_WIDTH].type != TILE_TYPE.FLOOR)
+        and game.map.map[guy.x + dx + (guy.y + dy) * MAP_WIDTH].type != TILE_TYPE.DOOR
+    ):
+        return False
+    for i in range(MAX_GUYS):
+        if game.map.guys[i] is not None:
+            if game.map.guys[i].x == guy.x + dx and game.map.guys[i].y == guy.y + dy:
+                return False
+    guy.x += dx
+    guy.y += dy
+    return True

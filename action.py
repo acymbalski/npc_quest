@@ -13,43 +13,52 @@ class Action:
         self.shouldExit = False
         self.level = self.game.level
 
+        # have to init late due to a wacko circular reference I think
+        self.is_initialized = False
+
+    def finishInit(self):
+        self.is_initialized = True
+
         # add guys
-        addGuy(GUYS.PLAYER, 0)
-        if self.level >= 3:
-            j = random.randint(0, self.level + 1)
-            if self.level > 4:
-                j += self.level * 2
-            if self.level == 9:
+        addGuy(self.game, GUYS.PLAYER, 0)
+        if self.level.value >= 3:
+            j = random.randint(0, self.level.value + 1)
+            if self.level.value > 4:
+                j += self.level.value * 2
+            if self.level.value == 9:
                 j += 10
 
             for _ in range(j):
                 if random.randint(0, 5) == 0:
-                    addGuy(GUYS.DOLPHIN, self.level)
+                    addGuy(self.game, GUYS.DOLPHIN, self.level.value)
                 else:
-                    addGuy(GUYS.HOTDOG, self.level)
-        if self.level >= 2:
-            j = random.randint(0, self.level * 2 + 1)
+                    addGuy(self.game, GUYS.HOTDOG, self.level.value)
+        if self.level.value >= 2:
+            j = random.randint(0, self.level.value * 2 + 1)
             for i in range(j):
                 if random.randint(0, 5) == 0:
-                    addGuy(GUYS.REINDEER, self.level)
+                    addGuy(self.game, GUYS.REINDEER, self.level.value)
                 else:
-                    addGuy(GUYS.BLUEY, self.level)
+                    addGuy(self.game, GUYS.BLUEY, self.level.value)
         else:
             j = 0
 
         j = 10 - j
         if j < 1:
             j = 1
-        j += self.level * 2
-        if self.level == 9:
+        j += self.level.value * 2
+        if self.level.value == 9:
             j *= 5
         for _ in range(j):
-            if random.randint(0, 7) == 0 or self.level == 0:
-                addGuy(GUYS.GNOME, self.level)
+            if random.randint(0, 7) == 0 or self.level.value == 0:
+                addGuy(self.game, GUYS.GNOME, self.level.value)
             else:
-                addGuy(GUYS.FATBIRD, self.level)
+                addGuy(self.game, GUYS.FATBIRD, self.level.value)
 
     def update(self):
+
+        if not self.is_initialized:
+            self.finishInit()
 
         screen = self.game.screen
 
@@ -65,18 +74,18 @@ class Action:
         if amount < 1:
             amount = 1
 
-        while (
-            ticksLeft()
-        ):  # we can probably ignore this, it is trying to just do a game loop at 60fps
-            # self.game.map.updateMap()
-            # if lmb is held...
-            # updateCombatNums()
-            # updateGuys(amount * 8, 8)
-            # else:
-            # updateCombatNums()
-            # updateGuys(amount, 1)
-            # if rmb is held...
-            self.game.player.shouldExit = True
+        # while (
+        #     ticksLeft()
+        # ):  # we can probably ignore this, it is trying to just do a game loop at 60fps
+        # self.game.map.updateMap()
+        # if lmb is held...
+        # updateCombatNums()
+        # updateGuys(amount * 8, 8)
+        # else:
+        # updateCombatNums()
+        # updateGuys(amount, 1)
+        # if rmb is held...
+        # self.game.player.shouldExit = True
 
         # Draw the background image
         # screen.blit(background_image, (0, 0))

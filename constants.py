@@ -39,6 +39,64 @@ class CLASS(Enum):
     MULE = 9
 
 
+class MONSTER(Enum):
+    NONE = 0
+    NONEEITHER = 1
+    GNOME = 2
+    FATBIRD = 3
+    DOLPHIN = 4
+    HOTDOG = 5
+    REINDEER = 6
+    BLUEY = 7
+
+
+PLAYER_GFX = {
+    CLASS.PEASANT: "graphics/peasant.tga",
+    CLASS.WARRIOR: "graphics/knight.tga",
+    CLASS.THIEF: "graphics/thief.tga",
+    CLASS.RANGER: "graphics/ranger.tga",
+    CLASS.WIZARD: "graphics/wizard.tga",
+    CLASS.GUARD: "graphics/guard.tga",
+    CLASS.CHEF: "graphics/chef.tga",
+    CLASS.SALESMAN: "graphics/salesman.tga",
+    CLASS.DOCTOR: "graphics/doctor.tga",
+    CLASS.MULE: "graphics/mule.tga",
+}
+berserkerGfx = "graphics/knight2.tga"
+MONSTER_GFX = {
+    MONSTER.GNOME: "graphics/gnome.tga",
+    MONSTER.DOLPHIN: "graphics/dolphin.tga",
+    MONSTER.REINDEER: "graphics/reindeer.tga",
+    MONSTER.FATBIRD: "graphics/fatbird.tga",
+    MONSTER.HOTDOG: "graphics/hotdog.tga",
+    MONSTER.BLUEY: "graphics/bluey.tga",
+}
+
+
+# PLAYER_GFX = {
+#     CLASS.PEASANT: pygame.image.load("graphics/peasant.tga").convert_alpha(),
+#     CLASS.WARRIOR: pygame.image.load("graphics/knight.tga").convert_alpha(),
+#     CLASS.THIEF: pygame.image.load("graphics/thief.tga").convert_alpha(),
+#     CLASS.RANGER: pygame.image.load("graphics/ranger.tga").convert_alpha(),
+#     CLASS.WIZARD: pygame.image.load("graphics/wizard.tga").convert_alpha(),
+#     CLASS.GUARD: pygame.image.load("graphics/guard.tga").convert_alpha(),
+#     CLASS.CHEF: pygame.image.load("graphics/chef.tga").convert_alpha(),
+#     CLASS.SALESMAN: pygame.image.load("graphics/salesman.tga").convert_alpha(),
+#     CLASS.DOCTOR: pygame.image.load("graphics/doctor.tga").convert_alpha(),
+#     CLASS.MULE: pygame.image.load("graphics/mule.tga").convert_alpha(),
+# }
+# berserkerGfx = pygame.image.load("graphics/knight2.tga").convert_alpha()
+
+# MONSTER_GFX = {
+#     MONSTER.GNOME: pygame.image.load("graphics/gnome.tga").convert_alpha(),
+#     MONSTER.DOLPHIN: pygame.image.load("graphics/dolphin.tga").convert_alpha(),
+#     MONSTER.REINDEER: pygame.image.load("graphics/reindeer.tga").convert_alpha(),
+#     MONSTER.FATBIRD: pygame.image.load("graphics/fatbird.tga").convert_alpha(),
+#     MONSTER.HOTDOG: pygame.image.load("graphics/hotdog.tga").convert_alpha(),
+#     MONSTER.BLUEY: pygame.image.load("graphics/bluey.tga").convert_alpha(),
+# }
+
+
 classBonus = [
     "",  # peasant
     "Berserk Rage",  # warrior
@@ -167,17 +225,6 @@ class EXIT_CODE(Enum):
 class GUYS(Enum):
     NONE = 0
     PLAYER = 1
-    GNOME = 2
-    FATBIRD = 3
-    DOLPHIN = 4
-    HOTDOG = 5
-    REINDEER = 6
-    BLUEY = 7
-
-
-class MONSTER(Enum):
-    NONE = 0
-    NONEEITHER = 1
     GNOME = 2
     FATBIRD = 3
     DOLPHIN = 4

@@ -1,6 +1,7 @@
 import random
 
 import pygame
+from action import Action
 from constants import (
     GameState,
     GUYS,
@@ -79,6 +80,8 @@ class Map:
 
         # reset player's berserk status
         self.game.player.goneBerserk = False
+
+        self.action = Action(self.game)
 
     def genMap(self):
 
@@ -284,6 +287,8 @@ class Map:
         # Draw the background image
         # screen.blit(background_image, (0, 0))
         self.updateMap()
+
+        self.action.update()
         # draw all tiles
         x = MAP_X
         y = 0
@@ -297,6 +302,8 @@ class Map:
         pygame.draw.rect(
             screen, (0, 0, 0), (MAP_X, TILE_HEIGHT * MAP_HEIGHT, XRES - 1, YRES - 1)
         )
+
+        self.drawGuys()
 
         for button in self.buttons:
             button.draw()
@@ -313,6 +320,12 @@ class Map:
                 for _, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):
                         pass
+
+    def drawGuys(self):
+        for i in range(MAX_GUYS):
+            if self.guys[i] is not None:
+                # draw guy
+                self.guys[i].draw()
 
 
 if __name__ == "__main__":
