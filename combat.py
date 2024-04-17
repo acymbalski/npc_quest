@@ -31,7 +31,7 @@ def playerAttack(game, me, you):
         if you.life > damage:
             you.life -= damage
             if game.player.chrClass == CLASS.MULE:
-                getKicked(you, me)
+                getKicked(game, you, me)
         else:
             you.life = 0
             badGuyDie(game, you)

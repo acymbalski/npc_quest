@@ -185,7 +185,7 @@ def updatePlayer(game):
         a = neighbors[0]
     # attack nearby monster
     if a is not None:
-        playerAttack(player, a)
+        playerAttack(game, player, a)
         if player.chrClass == CLASS.THIEF:  # pickpocket
             gotIt = False
             for _ in neighbors:
@@ -203,7 +203,7 @@ def updatePlayer(game):
             player.stat[STAT.ACC] /= 2  # dumb
             hit_second_enemy = False
             for neighbor in neighbors:
-                playerAttack(player, neighbor)
+                playerAttack(game, player, neighbor)
                 hit_second_enemy = True
             if hit_second_enemy:
                 makeSound(SFX.CIRCLE)
@@ -341,3 +341,23 @@ def moveMe(game, guy, dx, dy):
     guy.x += dx
     guy.y += dy
     return True
+
+
+def getKicked(game, me, kicker):
+    dx = 0
+    dy = 0
+    if kicker.x > me.x:
+        dx = -1
+        dy = 0
+    elif kicker.x < me.x:
+        dx = 1
+        dy = 0
+    else:
+        if kicker.y < me.y:
+            dx = 0
+            dy = 1
+        else:
+            dx = 0
+            dy = -1
+    moveMe(game, me, dx, dy)
+    moveMe(game, me, dx, dy)
