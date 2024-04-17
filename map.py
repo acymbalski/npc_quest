@@ -19,13 +19,15 @@ LEVELS = {
 
 def getTileImage(tile):
     tiles = pygame.image.load("graphics/tiles.tga")
-    print(tile.level)
-    l = int(tile.level)
+
+    l = tile.level.value
     if l > 9:
         l = 10
 
-    tile_rect = pygame.Rect(tile.type * TILE_WIDTH, l * 16, TILE_WIDTH, TILE_HEIGHT)
-    tile_surface = pygame.Surface((10, 10))
+    tile_rect = pygame.Rect(
+        tile.type.value * TILE_WIDTH, l * 16, TILE_WIDTH, TILE_HEIGHT
+    )
+    tile_surface = pygame.Surface((16, 16))
     tile_surface.blit(tiles, (0, 0), tile_rect)
     tile_surface.set_colorkey((255, 0, 255))  # key out pink for transparancy
     return tile_surface
@@ -33,14 +35,19 @@ def getTileImage(tile):
 
 class Tile:
     def __init__(
-        self, level=LEVEL.GNOMEY_PLAINS, tile_type=0, critter=0, monsNum=0, code=0
+        self,
+        level=LEVEL.GNOMEY_PLAINS,
+        tile_type=TILE_TYPE.FLOOR,
+        critter=0,
+        monsNum=0,
+        code=0,
     ):
         self._type = tile_type
         self.critter = critter
         self.monsNum = monsNum
         self.code = code
-        self.image = None
         self.level = level
+        self.image = getTileImage(self)
 
     @property
     def type(self):
@@ -138,7 +145,7 @@ class Map:
             y = random.randint(0, MAP_HEIGHT - 2) + 1
 
         # now we have a floor
-        a = random.randint(0, 4)
+        a = random.randint(0, 3)
         startA = a
         while True:
             if (
@@ -159,7 +166,7 @@ class Map:
             return
 
     def digTunnel(self, x, y, code, a):
-        a = random.randint(0, 4)
+        a = random.randint(0, 3)
         if self.map[x + y * MAP_WIDTH].type != TILE_TYPE.FLOOR:
             self.map[x + y * MAP_WIDTH].type = TILE_TYPE.FLOOR
             self.map[x + y * MAP_WIDTH].code = code
@@ -174,7 +181,7 @@ class Map:
                     or y + offY[a] >= MAP_HEIGHT - 1
                     or self.map[(x + offX[a]) + (y + offY[a]) * MAP_WIDTH].code == code
                 ):
-                    a = random.randint(0, 4)
+                    a = random.randint(0, 3)
                     if tries + 1 == 10:
                         return  # got stuck
                     tries += 1
@@ -200,7 +207,7 @@ class Map:
                 self.floodFillCode(x + offX[a], y + offY[a], code)
 
     def placeDoors(self):
-        a = random.randint(0, 4) + 1
+        a = random.randint(0, 3) + 1
 
         while a > 0:
             x = random.randint(0, MAP_WIDTH - 2) + 1
