@@ -1,25 +1,15 @@
 import pygame
 import random
 from basics import TextButton
-from enums import GameState, SFX
+from enums import GameState, SFX, LEVEL
 from item import all_items, get_item, sortItems, getIcon, equipItem
 from character import renderCharacterData
 from sound import makeSound
+from map import LEVELS
 
 background_image = pygame.image.load("graphics/shop.tga")
 
-LEVELS = [
-    "Gnomey Plains",
-    "Floofy Woods",
-    "The Isle Of Terror",
-    "Rocky Dirtville",
-    "Lavalava Hot Springs",
-    "The Temple Of Spoon",
-    "Frosty Hill",
-    "Deadly Dungeon",
-    "A Weird Place",
-    "The Evilness Pit",
-]
+
 SHOP_AMT = 40
 
 
@@ -53,15 +43,21 @@ class Shop:
             self.buttons.append(item_button)
 
         # add buttons for loading levels
-        for i, level in enumerate(LEVELS):
+        for i, level in enumerate(LEVEL):
+            # don't show Shift Q
+            if level == LEVEL.SHIFT_Q:
+                continue
+
             level_button = TextButton(
                 game,
-                None,
-                312,
+                level,
+                300,
                 20 + 10 * SHOP_AMT + i * 10,
-                f"Enter {level}",
+                f"Enter {LEVELS[level]}",
+                icon=pygame.Surface((10, 10), pygame.SRCALPHA),
             )
-            level_button.bounding_rect_bg_color = pygame.Color("BLUE")
+            level_button.setBoundingRectSize(width=450)
+            level_button.bounding_rect_bg_color = pygame.Color("GREEN")
             level_button.bounding_rect_color = None
             self.buttons.append(level_button)
 
@@ -156,7 +152,15 @@ class Shop:
                 cursor_pos = pygame.mouse.get_pos()
                 for _, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):
-                        self.buyItem(button)
+                        # if button.command is an "Item" type, buy it
+                        if button.command.__class__.__name__ == "Item":
+                            self.buyItem(button)
+                        else:
+                            # otherwise, load level
+                            self.game.game_state = GameState.GAME
+                            self.game.level = button.command
+                            # destroy Shop
+                            self.game.shop = None
 
 
 if __name__ == "__main__":

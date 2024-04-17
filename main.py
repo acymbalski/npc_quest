@@ -1,6 +1,7 @@
 import pygame
 import title
 from shop import Shop
+from map import Map
 from enums import GameState
 
 
@@ -24,6 +25,8 @@ class Game:
 
         self.title = title.Title(self)
         self.shop = None
+        self.level = None
+        self.map = None
 
         # Set the user's mouse cursor
         self.cursor_image = pygame.image.load(
@@ -73,7 +76,9 @@ class Game:
                 self.shop.update()
 
             elif self.game_state == GameState.GAME:
-                pass
+                if not self.map:
+                    self.map = Map(self)
+                self.map.update()
 
             # Event handling
             for event in pygame.event.get():

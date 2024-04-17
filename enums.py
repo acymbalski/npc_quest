@@ -42,3 +42,23 @@ class SFX(Enum):
     CHICKEN = 18
     CRITICAL = 19
     BERSERK = 20
+
+
+class LEVEL(Enum):
+    GNOMEY_PLAINS = 0
+    FLOOFY_WOODS = 1
+    THE_ISLE_OF_TERROR = 2
+    ROCKY_DIRTVILLE = 3
+    LAVALAVA_HOT_SPRINGS = 4
+    THE_TEMPLE_OF_SPOON = 5
+    FROSTY_HILL = 6
+    DEADLY_DUNGEON = 7
+    A_WEIRD_PLACE = 8
+    THE_EVILNESS_PIT = 9
+    SHIFT_Q = 10
+
+
+class TILE_TYPE(Enum):
+    FLOOR = 0
+    WALL = 1
+    DOOR = 2
