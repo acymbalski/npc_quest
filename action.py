@@ -1,5 +1,8 @@
 import pygame
-from enums import GameState
+from enums import GameState, GUYS, STAT
+import random
+from critter import addGuy
+from basics import FIXAMT
 
 
 class Action:
@@ -7,10 +10,73 @@ class Action:
     def __init__(self, game):
         self.game = game
         self.buttons = []
+        self.shouldExit = False
+        self.level = self.game.level
+
+        # add guys
+        addGuy(GUYS.PLAYER, 0)
+        if self.level >= 3:
+            j = random.randint(0, self.level + 1)
+            if self.level > 4:
+                j += self.level * 2
+            if self.level == 9:
+                j += 10
+
+            for _ in range(j):
+                if random.randint(0, 5) == 0:
+                    addGuy(GUYS.DOLPHIN, self.level)
+                else:
+                    addGuy(GUYS.HOTDOG, self.level)
+        if self.level >= 2:
+            j = random.randint(0, self.level * 2 + 1)
+            for i in range(j):
+                if random.randint(0, 5) == 0:
+                    addGuy(GUYS.REINDEER, self.level)
+                else:
+                    addGuy(GUYS.BLUEY, self.level)
+        else:
+            j = 0
+
+        j = 10 - j
+        if j < 1:
+            j = 1
+        j += self.level * 2
+        if self.level == 9:
+            j *= 5
+        for _ in range(j):
+            if random.randint(0, 7) == 0 or self.level == 0:
+                addGuy(GUYS.GNOME, self.level)
+            else:
+                addGuy(GUYS.FATBIRD, self.level)
 
     def update(self):
 
         screen = self.game.screen
+
+        speed = self.game.player.stat[STAT.SPD]
+        if speed < 1:
+            speed = 1
+
+        amount = 120 * FIXAMT / speed
+        if amount > 120 * FIXAMT:
+            amount = 120 * FIXAMT
+
+        amount /= 30
+        if amount < 1:
+            amount = 1
+
+        while (
+            ticksLeft()
+        ):  # we can probably ignore this, it is trying to just do a game loop at 60fps
+            # updateMap()
+            # if lmb is held...
+            # updateCombatNums()
+            # updateGuys(amount * 8, 8)
+            # else:
+            # updateCombatNums()
+            # updateGuys(amount, 1)
+            # if rmb is held...
+            self.game.player.shouldExit = True
 
         # Draw the background image
         # screen.blit(background_image, (0, 0))
