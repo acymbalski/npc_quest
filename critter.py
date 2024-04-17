@@ -1,4 +1,4 @@
-from enums import GUYS, PLAN, SFX, TILE_TYPE, STAT
+from enums import GUYS, PLAN, SFX, TILE_TYPE, STAT, DEATH_CAUSE
 from character import CLASS, eatFood
 from sound import makeSound
 import random
@@ -108,7 +108,82 @@ def updateGuys(game, timePassed, food):
 
 
 def updatePlayer(game):
-    pass
+    player = game.player
+    haveSaidFood = False
+
+    if (
+        player.chrClass == CLASS.WARRIOR
+        and player.life <= (player.stat[STAT.LIF] / 4)
+        and not player.goneBerserk
+    ):
+        makeSound(SFX.BERSERK)
+        player.goneBerserk = True
+
+    moreBadGuysLive()
+    drinkPotion()
+
+    if player.food == 0:
+        player.deathCause = DEATH_CAUSE.HUNGER
+        gotKilled(player.deathCause)
+
+    # get adjacent monster
+    a = neighboringFoe(player)
+    # attack nearby monster
+    if a is not None:
+        playerAttack(player, game.map.guys[a])
+        if player.chrClass == CLASS.THIEF:  # pickpocket
+            gotIt = False
+            if random.randint(0, 10) == 0:
+                gotIt = True
+                player.gold += game.level.value + 1
+                # TODO: draw value on screen
+
+            b = otherNeighboringFoe(player, a, 255, 255)
+            if b is not None:
+                # and so on for three other neighbors. Redo this!
+                pass
+            if gotIt:
+                makeSound(SFX.CHACHING)
+        elif player.chrClass == CLASS.GUARD:  # circular strike
+            str = player.stat[STAT.STR]
+            player.stat[STAT.STR] /= 2  # why?
+            acc = player.stat[STAT.ACC]
+            player.stat[STAT.ACC] /= 2  # dumb
+            b = otherNeighboringFoe(player, a, 255, 255)
+            if b is not None:
+                makeSound(SFX.CIRCLE)
+                playerAttack(player, b)
+                c = otherNeighboringFoe(player, a, b, 255)
+                if c is not None:
+                    playerAttack(player, c)
+                    d = otherNeighboringFoe(player, a, b, c)
+                    if d is not None:
+                        playerAttack(player, d)
+            player.stat[STAT.STR] = str
+            player.stat[STAT.ACC] = acc
+    else:
+        # no foe
+        player.planTime -= 1
+        if player.planTime == 0:
+            player.planTime = 3
+            if foodLeft() and not levelEmpty and not player.shouldExit:
+                player.plan = PLAN.HUNT
+            else:
+                if not foodLeft() and not haveSaidFood:
+                    haveSaidFood = True
+                    makeSound(SFX.NEEDFOOD)
+                player.plan = PLAN.EXIT
+        if player.plan == PLAN.WANDER:
+            a = random.randInt(0, 3)
+            moveMe(player, offX[a], offY[a])
+        elif player.plan == PLAN.HUNT:
+            if not followNose2(player):
+                player.plan = PLAN.WANDER
+                player.planTime = 3
+        elif player.plan == PLAN.EXIT:
+            followNose(player)
+            if game.map.map[player.x + player.y * MAP_WIDTH].type == TILE_TYPE.DOOR:
+                escapedDungeon()
 
 
 def updateGuy(guy):

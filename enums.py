@@ -95,3 +95,7 @@ class PLAN(Enum):
     WANDER = 0
     HUNT = 1
     EXIT = 2
+
+
+class DEATH_CAUSE(Enum):
+    HUNGER = 0
