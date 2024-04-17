@@ -1,4 +1,4 @@
-from enums import LEVEL, GameState, TILE_TYPE
+from enums import LEVEL, GameState, TILE_TYPE, GUYS
 import pygame
 import random
 from critter import MAX_GUYS
@@ -113,6 +113,14 @@ class Map:
             self.makeTunnel()
 
         self.placeDoors()
+
+    def levelEmpty(self):
+        for i in range(MAX_GUYS):
+            if self.guys[i] is not None:
+                if self.guys[i].type != GUYS.PLAYER:
+                    return False
+
+        return True
 
     def addRoom(self):
         x = random.randint(0, MAP_WIDTH - 2) + 1
