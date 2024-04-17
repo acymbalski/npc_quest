@@ -225,13 +225,65 @@ class Map:
             else:
                 self.map[i].code = 0
 
+    def spreadToNeighbors(self, x, y, code):
+        for a in range(4):
+            if (
+                x + offX[a] < 1
+                or y + offY[a] < 1
+                or x + offX[a] >= MAP_WIDTH - 1
+                or y + offY[a] >= MAP_HEIGHT - 1
+                or self.map[(x + offX[a]) + (y + offY[a]) * MAP_WIDTH].type
+                != TILE_TYPE.FLOOR
+            ):
+                continue
+            if self.map[(x + offX[a]) + (y + offY[a]) * MAP_WIDTH].code < code - 1:
+                self.map[(x + offX[a]) + (y + offY[a]) * MAP_WIDTH].code = code - 1
+
+    def spreadToNeighbors2(self, x, y, code):
+        for a in range(4):
+            if (
+                x + offX[a] < 1
+                or y + offY[a] < 1
+                or x + offX[a] >= MAP_WIDTH - 1
+                or y + offY[a] >= MAP_HEIGHT - 1
+                or (
+                    self.map[(x + offX[a]) + (y + offY[a]) * MAP_WIDTH].type
+                    != TILE_TYPE.FLOOR
+                    and self.map[(x + offX[a]) + (y + offY[a]) * MAP_WIDTH].type
+                    != TILE_TYPE.DOOR
+                )
+            ):
+                continue
+            if self.map[(x + offX[a]) + (y + offY[a]) * MAP_WIDTH].monsNum < code - 1:
+                self.map[(x + offX[a]) + (y + offY[a]) * MAP_WIDTH].monsNum = code - 1
+
+    def stinkUpTheMap(self):
+        for i in range(MAX_GUYS):
+            if self.guys[i] is not None:
+                if self.guys[i].type != GUYS.PLAYER:
+                    self.map[self.guys[i].x + self.guys[i].y * MAP_WIDTH].monsNum = 200
+
+    def updateMap(self):  # yep this one is different!
+        self.stinkUpTheMap()
+
+        for i in range(MAP_WIDTH * MAP_HEIGHT):
+            if self.map[i].code > 0:
+                self.spreadToNeighbors(
+                    i % MAP_WIDTH, int(i / MAP_WIDTH), self.map[i].code
+                )
+            if self.map[i].monsNum > 0:
+                self.map[i].monsNum -= 1
+                self.spreadToNeighbors2(
+                    i % MAP_WIDTH, int(i / MAP_WIDTH), self.map[i].monsNum
+                )
+
     def update(self):
 
         screen = self.game.screen
 
         # Draw the background image
         # screen.blit(background_image, (0, 0))
-
+        self.updateMap()
         # draw all tiles
         x = MAP_X
         y = 0

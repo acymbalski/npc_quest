@@ -68,7 +68,7 @@ class Action:
         while (
             ticksLeft()
         ):  # we can probably ignore this, it is trying to just do a game loop at 60fps
-            # updateMap()
+            # self.game.map.updateMap()
             # if lmb is held...
             # updateCombatNums()
             # updateGuys(amount * 8, 8)

@@ -180,6 +180,7 @@ def updatePlayer(game):
         makeSound(SFX.BERSERK)
         player.goneBerserk = True
 
+    # updateMap()
     moreBadGuysLive(game)
     player.drinkPotion()
 
