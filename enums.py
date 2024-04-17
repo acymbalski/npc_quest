@@ -100,3 +100,4 @@ class PLAN(Enum):
 
 class DEATH_CAUSE(Enum):
     HUNGER = 0
+    MONSTER = 1
