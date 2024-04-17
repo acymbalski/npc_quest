@@ -1,10 +1,11 @@
-from enums import GUYS, PLAN, SFX, TILE_TYPE, STAT, DEATH_CAUSE
-from character import CLASS, eatFood
+from enums import GUYS, PLAN, SFX, TILE_TYPE, STAT, DEATH_CAUSE, EXIT_CODE
+from character import CLASS, eatFood, foodLeft
 from sound import makeSound
 import random
 from map import MAP_WIDTH, MAP_HEIGHT, offX, offY
 from basics import FIXAMT
 from combat import playerAttack, addNum, monsterAttack
+from critter import gotKilled
 
 
 def initGuys():
@@ -171,11 +172,11 @@ def updatePlayer(game):
         player.goneBerserk = True
 
     moreBadGuysLive(game)
-    drinkPotion()
+    player.drinkPotion()
 
     if player.food == 0:
         player.deathCause = DEATH_CAUSE.HUNGER
-        gotKilled(player.deathCause)
+        gotKilled(game, player.deathCause)
 
     # get adjacent monsters
     neighbors = getNeighbors(game, player.x, player.y)
@@ -213,7 +214,7 @@ def updatePlayer(game):
         player.planTime -= 1
         if player.planTime == 0:
             player.planTime = 3
-            if foodLeft() and not levelEmpty and not player.shouldExit:
+            if foodLeft() and not game.map.levelEmpty and not player.shouldExit:
                 player.plan = PLAN.HUNT
             else:
                 if not foodLeft() and not haveSaidFood:
@@ -221,17 +222,61 @@ def updatePlayer(game):
                     makeSound(SFX.NEEDFOOD)
                 player.plan = PLAN.EXIT
         if player.plan == PLAN.WANDER:
-            a = random.randInt(0, 3)
-            moveMe(player, offX[a], offY[a])
+            a = random.randint(0, 3)
+            moveMe(game, player, offX[a], offY[a])
         elif player.plan == PLAN.HUNT:
-            if not followNose2(player):
+            if not followNose2(game, player):
                 player.plan = PLAN.WANDER
                 player.planTime = 3
         elif player.plan == PLAN.EXIT:
-            followNose(player)
+            followNose(game, player)
             if game.map.map[player.x + player.y * MAP_WIDTH].type == TILE_TYPE.DOOR:
-                escapedDungeon()
+                game.exitCode = EXIT_CODE.ESCAPED
 
 
 def updateGuy(guy):
     pass
+
+
+def followNose(game, guy):
+    best = 0
+
+    for a in range(1, 4):
+        if (
+            game.map.map[guy.x + offX[a] + (guy.y + offY[a]) * MAP_WIDTH].code
+            > game.map.map[guy.x + offX[best] + (guy.y + offY[best]) * MAP_WIDTH].code
+        ):
+            best = a
+    return moveMe(game, guy, offX[best], offY[best])
+
+
+def followNose2(game, guy):
+    best = 0
+    for a in range(1, 4):
+        if (
+            game.map.map[guy.x + offX[a] + (guy.y + offY[a]) * MAP_WIDTH].monsNum
+            > game.map.map[
+                guy.x + offX[best] + (guy.y + offY[best]) * MAP_WIDTH
+            ].monsNum
+        ):
+            best = a
+    return moveMe(game, guy, offX[best], offY[best])
+
+
+def moveMe(game, guy, dx, dy):
+    if (
+        guy.x + dx < 0
+        or guy.y + dy < 0
+        or guy.x + dx >= MAP_WIDTH
+        or guy.y + dy >= MAP_HEIGHT
+        or (game.map.map[guy.x + dx + (guy.y + dy) * MAP_WIDTH].type != TILE_TYPE.FLOOR)
+        and game.map.map[guy.x + dx + (guy.y + dy) * MAP_WIDTH].type != TILE_TYPE.DOOR
+    ):
+        return False
+    for i in range(MAX_GUYS):
+        if game.map.guys[i] is not None:
+            if game.map.guys[i].x == guy.x + dx and game.map.guys[i].y == guy.y + dy:
+                return False
+    guy.x += dx
+    guy.y += dy
+    return True
