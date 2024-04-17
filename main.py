@@ -1,9 +1,9 @@
 import pygame
 import title
-from shop import Shop
+from constants import EXIT_CODE, GameState, MAP_HEIGHT, MAP_WIDTH
 from map import Map
-from constants import GameState, EXIT_CODE, MAP_WIDTH, MAP_HEIGHT
 from monster import monsters
+from shop import Shop
 
 
 class Game:

@@ -1,23 +1,24 @@
+import random
+
+from character import CLASS, eatFood, foodLeft
+from combat import monsterAttack, playerAttack
 from constants import (
-    GUYS,
-    PLAN,
-    SFX,
-    TILE_TYPE,
-    STAT,
     DEATH_CAUSE,
     EXIT_CODE,
+    FIXAMT,
+    GUYS,
+    MAP_HEIGHT,
+    MAP_WIDTH,
     MAX_GUYS,
     offX,
     offY,
-    MAP_WIDTH,
-    MAP_HEIGHT,
-    FIXAMT,
+    PLAN,
+    SFX,
+    STAT,
+    TILE_TYPE,
 )
-from character import CLASS, eatFood, foodLeft
-from sound import makeSound
-import random
-from combat import playerAttack, addNum, monsterAttack
 from critter import gotKilled
+from sound import makeSound
 
 
 def initGuys():

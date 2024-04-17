@@ -1,10 +1,11 @@
-import random
-from item import Item, getIcon, sortItems, statChangeFromItem, ITEM_TYPE
-from enum import Enum
-import pickle
 import os
+import pickle
+import random
+from enum import Enum
+
+from constants import CLASS, classBonus, NUM_STATS, SFX, STAT
 from display import printMe
-from constants import STAT, SFX, NUM_STATS, CLASS, classBonus
+from item import getIcon, Item, ITEM_TYPE, sortItems, statChangeFromItem
 from sound import makeSound
 
 

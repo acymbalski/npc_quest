@@ -1,9 +1,8 @@
 import pygame
-from display import printMe
-from character import loadGame
-from constants import GameState
-from character import Character, savegame
 from basics import TextButton
+from character import Character, loadGame, savegame
+from constants import GameState
+from display import printMe
 
 NUM_SAVES = 10
 

@@ -1,9 +1,10 @@
-from constants import STAT, SFX, GUYS, DEATH_CAUSE
-from character import CLASS
-from sound import makeSound
 import random
-from critter import getKicked
+
 from action import gotKilled
+from character import CLASS
+from constants import DEATH_CAUSE, GUYS, SFX, STAT
+from critter import getKicked
+from sound import makeSound
 
 
 def playerAttack(game, me, you):
@@ -45,7 +46,7 @@ def playerAttack(game, me, you):
         makeSound(SFX.WHIFF)
 
 
-def badGuyAttack(game, me, you):
+def monsterAttack(game, me, you):
     hitChance = (
         game.monster[me.type].accuracy + me.level
     ) * 20 - game.player.level * 10

@@ -1,20 +1,21 @@
+import random
+
+import pygame
 from constants import (
-    LEVEL,
     GameState,
-    TILE_TYPE,
     GUYS,
-    TILE_WIDTH,
-    TILE_HEIGHT,
-    MAP_WIDTH,
+    LEVEL,
     MAP_HEIGHT,
+    MAP_WIDTH,
     MAP_X,
-    XRES,
-    YRES,
     offX,
     offY,
+    TILE_HEIGHT,
+    TILE_TYPE,
+    TILE_WIDTH,
+    XRES,
+    YRES,
 )
-import pygame
-import random
 from critter import MAX_GUYS
 
 

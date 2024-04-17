@@ -1,5 +1,5 @@
 import pygame
-from constants import STAT, ITEM_EFFECT, ITEM_TYPE
+from constants import ITEM_EFFECT, ITEM_TYPE, STAT
 
 
 class Item:

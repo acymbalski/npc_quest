@@ -1,9 +1,10 @@
-import pygame
 import random
+
+import pygame
 from basics import TextButton
-from constants import GameState, SFX, LEVEL, LEVELS, SHOP_AMT
-from item import all_items, get_item, sortItems, getIcon, equipItem
 from character import renderCharacterData
+from constants import GameState, LEVEL, LEVELS, SFX, SHOP_AMT
+from item import all_items, equipItem, get_item, getIcon, sortItems
 from sound import makeSound
 
 background_image = pygame.image.load("graphics/shop.tga")

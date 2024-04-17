@@ -1,7 +1,8 @@
+import random
+
+import numpy
 import pygame
 from constants import SFX
-import random
-import numpy
 
 SOUNDS = {
     SFX.HUZZAH: "huzzah.wav",
