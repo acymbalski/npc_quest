@@ -17,23 +17,55 @@ LEVELS = {
 }
 
 
+def getTileImage(tile):
+    tiles = pygame.image.load("graphics/tiles.tga")
+    print(tile.level)
+    l = int(tile.level)
+    if l > 9:
+        l = 10
+
+    tile_rect = pygame.Rect(tile.type * TILE_WIDTH, l * 16, TILE_WIDTH, TILE_HEIGHT)
+    tile_surface = pygame.Surface((10, 10))
+    tile_surface.blit(tiles, (0, 0), tile_rect)
+    tile_surface.set_colorkey((255, 0, 255))  # key out pink for transparancy
+    return tile_surface
+
+
 class Tile:
-    def __init__(self, tile_type=0, critter=0, monsNum=0, code=0):
-        self.type = tile_type
+    def __init__(
+        self, level=LEVEL.GNOMEY_PLAINS, tile_type=0, critter=0, monsNum=0, code=0
+    ):
+        self._type = tile_type
         self.critter = critter
         self.monsNum = monsNum
         self.code = code
+        self.image = None
+        self.level = level
 
-    def draw(self):
-        pass
+    @property
+    def type(self):
+        return self._type
+
+    @type.setter
+    def type(self, tile_type):
+        if tile_type in TILE_TYPE:
+            self._type = tile_type
+            self.image = getTileImage(self)
+        else:
+            raise ValueError("Invalid tile type")
 
 
 TILE_WIDTH = 16
 TILE_HEIGHT = 16
 
+XRES = 800
+YRES = 600
+
 MAP_X = 800 - 576  # 800 is technically supposed to be the screen width
-MAP_WIDTH = 576 / TILE_WIDTH
-MAP_HEIGHT = 600 / TILE_HEIGHT  # 600 is technically supposed to be the screen height
+MAP_WIDTH = int(576 / TILE_WIDTH)
+MAP_HEIGHT = int(
+    600 / TILE_HEIGHT
+)  # 600 is technically supposed to be the screen height
 
 offX = [1, 0, -1, 0]
 offY = [0, 1, 0, -1]
@@ -46,14 +78,14 @@ class Map:
         self.buttons = []
 
         self.map = []  # size MAP_WIDTH * MAP_HEIGHT
-        for i in range(MAP_WIDTH * MAP_HEIGHT):
+        for i in range(int(MAP_WIDTH * MAP_HEIGHT)):
             self.map.append(Tile())
         self.genMap()
 
     def genMap(self):
 
-        for i in range(MAP_WIDTH * MAP_HEIGHT):
-            self.map[i] = Tile(tile_type=TILE_TYPE.WALL)
+        for i in range(int(MAP_WIDTH * MAP_HEIGHT)):
+            self.map[i] = Tile(level=self.game.level, tile_type=TILE_TYPE.WALL)
             self.map[i].code = i
 
         j = 2 + random.randint(0, 6)
@@ -194,6 +226,20 @@ class Map:
         # Draw the background image
         # screen.blit(background_image, (0, 0))
 
+        # draw all tiles
+        x = MAP_X
+        y = 0
+        for j in range(MAP_HEIGHT):
+            for i in range(MAP_WIDTH):
+                screen.blit(self.map[i + j * MAP_WIDTH].image, (x, y))
+                x += TILE_WIDTH
+            x = MAP_X
+            y += TILE_HEIGHT
+
+        pygame.draw.rect(
+            screen, (0, 0, 0), (MAP_X, TILE_HEIGHT * MAP_HEIGHT, XRES - 1, YRES - 1)
+        )
+
         for button in self.buttons:
             button.draw()
 
@@ -209,3 +255,9 @@ class Map:
                 for _, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):
                         pass
+
+
+if __name__ == "__main__":
+    import main
+
+    main.main()
