@@ -72,6 +72,8 @@ class Character:
         self.slot = 0
         self.score = 0
 
+        self.goneBerserk = False
+
 
 def roomToEquip(weight: int, type: Item) -> bool:
     # return True or False if the player has room to equip an item

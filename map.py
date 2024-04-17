@@ -92,6 +92,9 @@ class Map:
 
         self.guys = [None] * MAX_GUYS  # list 128 long, yikes
 
+        # reset player's berserk status
+        self.game.player.goneBerserk = False
+
     def genMap(self):
 
         for i in range(int(MAP_WIDTH * MAP_HEIGHT)):
