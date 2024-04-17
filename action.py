@@ -1,5 +1,5 @@
 import pygame
-from enums import GameState, GUYS, STAT
+from enums import GameState, GUYS, STAT, EXIT_CODE
 import random
 from critter import addGuy
 from basics import FIXAMT
@@ -96,6 +96,12 @@ class Action:
                 for _, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):
                         pass
+
+
+def gotKilled(game, how):
+    game.player.life = 0
+    game.exitCode = EXIT_CODE.DIED + how.value  # TODO: cause of death needs rework
+    # TODO: rankEarned = AddHiScore()
 
 
 if __name__ == "__main__":

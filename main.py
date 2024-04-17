@@ -2,7 +2,7 @@ import pygame
 import title
 from shop import Shop
 from map import Map
-from enums import GameState
+from enums import GameState, EXIT_CODE
 from monster import monsters
 
 
@@ -39,6 +39,8 @@ class Game:
         self.set_custom_cursor(self.cursor_image, hotspot_x=0, hotspot_y=0)
 
         self.game_state = GameState.TITLE
+
+        self.exitCode = EXIT_CODE.NONE
 
         self.player = None
 

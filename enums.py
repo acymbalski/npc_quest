@@ -65,6 +65,7 @@ class TILE_TYPE(Enum):
 
 
 class EXIT_CODE(Enum):
+    NONE = 0
     ESCAPED = 2
     DIED = 3
 
