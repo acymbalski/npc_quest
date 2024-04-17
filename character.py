@@ -1,10 +1,11 @@
 import random
-from item import Item, getIcon
+from item import Item, getIcon, sortItems, statChangeFromItem, ITM_FOOD, ITM_POTION
 from enum import Enum
 import pickle
 import os
 from display import printMe
-from enums import STAT
+from enums import STAT, SFX
+from sound import makeSound
 
 
 class CLASS(Enum):
@@ -73,6 +74,33 @@ class Character:
         self.score = 0
 
         self.goneBerserk = False
+
+    def drinkPotion(self):
+        # iterate through inventory
+        for item in self.inventory:
+            # if item is not None
+            if item:
+                # if item is a potion
+                if item.type == ITM_POTION:
+                    if self.life < self.stat[STAT.LIF] - item.value or self.life < (
+                        self.stat[STAT.LIF] / 3
+                    ):
+                        amount = self.stat[STAT.LIF] - self.life
+                        # TODO: healPlayerNum(amount)
+                        self.life += amount
+                        statChangeFromItem(self, item, -1)
+                        self.inventory[item] = None
+                        makeSound(SFX.DRINK)
+                        # sort inventory
+                        self.inventory = sortItems(self.inventory)
+                        return
+
+    def foodLeft(self):
+        for item in self.inventory:
+            if item:
+                if item.type == ITM_FOOD:
+                    return True
+        return False
 
 
 def roomToEquip(weight: int, type: Item) -> bool:
@@ -191,10 +219,6 @@ def foodLeft():
 
 
 def levelUp():
-    pass
-
-
-def drinkPotion():
     pass
 
 
