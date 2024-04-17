@@ -1,5 +1,7 @@
 import pygame
 
+FIXAMT = 256
+
 
 class Button:
     """Base class for buttons, should not be used by itself."""

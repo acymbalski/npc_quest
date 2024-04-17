@@ -3,6 +3,7 @@ import title
 from shop import Shop
 from map import Map
 from enums import GameState
+from monster import monsters
 
 
 class Game:
@@ -27,6 +28,8 @@ class Game:
         self.shop = None
         self.level = None
         self.map = None
+
+        self.monster = monsters
 
         # Set the user's mouse cursor
         self.cursor_image = pygame.image.load(

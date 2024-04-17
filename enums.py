@@ -62,3 +62,36 @@ class TILE_TYPE(Enum):
     FLOOR = 0
     WALL = 1
     DOOR = 2
+
+
+class EXIT_CODE(Enum):
+    ESCAPED = 2
+    DIED = 3
+
+
+class GUYS(Enum):
+    NONE = 0
+    PLAYER = 1
+    GNOME = 2
+    FATBIRD = 3
+    DOLPHIN = 4
+    HOTDOG = 5
+    REINDEER = 6
+    BLUEY = 7
+
+
+class MONSTER(Enum):
+    NONE = 0
+    NONEEITHER = 1
+    GNOME = 2
+    FATBIRD = 3
+    DOLPHIN = 4
+    HOTDOG = 5
+    REINDEER = 6
+    BLUEY = 7
+
+
+class PLAN(Enum):
+    WANDER = 0
+    HUNT = 1
+    EXIT = 2

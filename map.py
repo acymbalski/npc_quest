@@ -1,6 +1,7 @@
 from enums import LEVEL, GameState, TILE_TYPE
 import pygame
 import random
+from critter import MAX_GUYS
 
 LEVELS = {
     LEVEL.GNOMEY_PLAINS: "Gnomey Plains",
@@ -88,6 +89,8 @@ class Map:
         for i in range(int(MAP_WIDTH * MAP_HEIGHT)):
             self.map.append(Tile())
         self.genMap()
+
+        self.guys = [None] * MAX_GUYS  # list 128 long, yikes
 
     def genMap(self):
 
