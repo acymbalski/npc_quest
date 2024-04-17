@@ -2,8 +2,9 @@ from enums import GUYS, PLAN, SFX, TILE_TYPE, STAT, DEATH_CAUSE
 from character import CLASS, eatFood
 from sound import makeSound
 import random
-from map import MAP_WIDTH, MAP_HEIGHT
+from map import MAP_WIDTH, MAP_HEIGHT, offX, offY
 from basics import FIXAMT
+from combat import playerAttack, addNum, monsterAttack
 
 
 def initGuys():
@@ -107,6 +108,56 @@ def updateGuys(game, timePassed, food):
             break
 
 
+def isEnemy(me, you):
+    if me.type == GUYS.PLAYER and you.type != GUYS.PLAYER:
+        return True
+    if you.type == GUYS.PLAYER and me.type != GUYS.PLAYER:
+        return True
+    return False
+
+
+def getNeighbors(game, x, y):
+    neighbors = []
+    player = game.player
+    for a in range(3):
+        x = player.x + offX[a]
+        y = player.y + offY[a]
+        if x < 0 or x >= MAP_WIDTH or y < 0 or y >= MAP_HEIGHT:
+            continue
+        for i in range(MAX_GUYS):
+            if game.map.guys[i] is not None:
+                if (
+                    game.map.guys[i].x == x
+                    and game.map.guys[i].y == y
+                    and isEnemy(player, game.map.guys[i])
+                ):
+                    neighbors.append(i)
+
+    # sort neighbors by life. Lowest first
+    neighbors.sort(key=lambda x: game.map.guys[x].life)
+
+    return neighbors
+
+
+def moreBadGuysLive(game):
+    if game.map.levelEmpty():
+        return
+    x = 0
+    y = 0
+
+    for i in range(MAX_GUYS):
+        if game.map.guys[i] is not None:
+            if game.map.guys[i].type != GUYS.PLAYER:
+                return False
+            if game.map.guys[i].type == GUYS.PLAYER:
+                x = game.map.guys[i].x
+                y = game.map.guys[i].y
+
+    makeSound(SFX.VICTORY)
+    game.player.gold += (game.level.value + 1) * 10
+    # TODO: addNum
+
+
 def updatePlayer(game):
     player = game.player
     haveSaidFood = False
@@ -119,47 +170,43 @@ def updatePlayer(game):
         makeSound(SFX.BERSERK)
         player.goneBerserk = True
 
-    moreBadGuysLive()
+    moreBadGuysLive(game)
     drinkPotion()
 
     if player.food == 0:
         player.deathCause = DEATH_CAUSE.HUNGER
         gotKilled(player.deathCause)
 
-    # get adjacent monster
-    a = neighboringFoe(player)
+    # get adjacent monsters
+    neighbors = getNeighbors(game, player.x, player.y)
+    a = None
+    if len(neighbors) > 0:
+        a = neighbors[0]
     # attack nearby monster
     if a is not None:
-        playerAttack(player, game.map.guys[a])
+        playerAttack(player, a)
         if player.chrClass == CLASS.THIEF:  # pickpocket
             gotIt = False
-            if random.randint(0, 10) == 0:
-                gotIt = True
-                player.gold += game.level.value + 1
-                # TODO: draw value on screen
+            for _ in neighbors:
+                if random.randint(0, 10) == 0:
+                    gotIt = True
+                    player.gold += game.level.value + 1
+                    # TODO: draw value on screen
 
-            b = otherNeighboringFoe(player, a, 255, 255)
-            if b is not None:
-                # and so on for three other neighbors. Redo this!
-                pass
             if gotIt:
                 makeSound(SFX.CHACHING)
         elif player.chrClass == CLASS.GUARD:  # circular strike
-            str = player.stat[STAT.STR]
+            strength = player.stat[STAT.STR]
             player.stat[STAT.STR] /= 2  # why?
             acc = player.stat[STAT.ACC]
             player.stat[STAT.ACC] /= 2  # dumb
-            b = otherNeighboringFoe(player, a, 255, 255)
-            if b is not None:
+            hit_second_enemy = False
+            for neighbor in neighbors:
+                playerAttack(player, neighbor)
+                hit_second_enemy = True
+            if hit_second_enemy:
                 makeSound(SFX.CIRCLE)
-                playerAttack(player, b)
-                c = otherNeighboringFoe(player, a, b, 255)
-                if c is not None:
-                    playerAttack(player, c)
-                    d = otherNeighboringFoe(player, a, b, c)
-                    if d is not None:
-                        playerAttack(player, d)
-            player.stat[STAT.STR] = str
+            player.stat[STAT.STR] = strength
             player.stat[STAT.ACC] = acc
     else:
         # no foe
