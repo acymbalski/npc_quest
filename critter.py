@@ -101,7 +101,7 @@ def updateGuys(game, timePassed, food):
                 if guy.type == GUYS.PLAYER:
                     updatePlayer(game)
                 else:
-                    updateGuy(guy)
+                    updateGuy(game, guy)
                 guy.moves -= 120 * FIXAMT
                 if game.player.life == 0:
                     break
@@ -234,8 +234,69 @@ def updatePlayer(game):
                 game.exitCode = EXIT_CODE.ESCAPED
 
 
-def updateGuy(guy):
-    pass
+def getTarget(game, guy):
+    x = 0
+    y = 0
+
+    bestdist = -1
+    for i in range(MAX_GUYS):
+        other_guy = game.map.guys[i]
+        if other_guy is not None:
+            if (other_guy.type == GUYS.PLAYER and guy.type != GUYS.PLAYER) or (
+                other_guy.type != GUYS.PLAYER and guy.type == GUYS.PLAYER
+            ):
+                if bestdist == -1:
+                    dist = (other_guy.x - guy.x) * (other_guy.x - guy.x) + (
+                        other_guy.y - guy.y
+                    ) * (other_guy.y - guy.y)
+                    x = other_guy.x
+                    y = other_guy.y
+                    bestdist = dist
+                else:
+                    dist = (other_guy.x - guy.x) * (other_guy.x - guy.x) + (
+                        other_guy.y - guy.y
+                    ) * (other_guy.y - guy.y)
+                    if dist < bestdist:
+                        x = other_guy.x
+                        y = other_guy.y
+                        bestdist = dist
+
+    return x, y
+
+
+def updateGuy(game, guy):
+
+    # updateMap()
+    neighbors = getNeighbors(game, guy.x, guy.y)
+    a = None
+    if len(neighbors) > 0:
+        a = neighbors[0]
+    if a:
+        monsterAttack(game, guy)
+    else:
+        guy.planTime -= 1
+        if guy.planTime == 0:
+            guy.planTime = 25
+            guy.plan = PLAN.HUNT
+
+        if guy.plan == PLAN.WANDER:
+            a = random.randint(0, 3)
+            moveMe(game, guy, offX[a], offY[a])
+        elif guy.plan == PLAN.HUNT:
+            tx, ty = getTarget(game, guy)
+            if abs(tx - guy.x) > abs(ty - guy.y):
+                if tx < guy.x:
+                    a = 2
+                else:
+                    a = 0
+            else:
+                if ty < guy.y:
+                    a = 3
+                else:
+                    a = 1
+            if not moveMe(game, guy, offX[a], offY[a]):
+                guy.plan = PLAN.WANDER
+                guy.planTime = random.randint(0, 4)
 
 
 def followNose(game, guy):
