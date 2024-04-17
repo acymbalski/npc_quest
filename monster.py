@@ -1,4 +1,4 @@
-from enums import MONSTER
+from constants import MONSTER
 
 
 class Monster:

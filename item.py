@@ -1,5 +1,5 @@
 import pygame
-from enums import STAT
+from constants import STAT
 
 ITM_FOOD = 1
 ITM_POTION = 2

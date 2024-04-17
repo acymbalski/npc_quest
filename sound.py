@@ -1,5 +1,5 @@
 import pygame
-from enums import SFX
+from constants import SFX
 import random
 import numpy
 

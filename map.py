@@ -1,4 +1,4 @@
-from enums import LEVEL, GameState, TILE_TYPE, GUYS
+from constants import LEVEL, GameState, TILE_TYPE, GUYS
 import pygame
 import random
 from critter import MAX_GUYS

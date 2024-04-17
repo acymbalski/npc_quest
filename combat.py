@@ -1,4 +1,4 @@
-from enums import STAT, SFX, GUYS, DEATH_CAUSE
+from constants import STAT, SFX, GUYS, DEATH_CAUSE
 from character import CLASS
 from sound import makeSound
 import random

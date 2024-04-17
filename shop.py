@@ -1,7 +1,7 @@
 import pygame
 import random
 from basics import TextButton
-from enums import GameState, SFX, LEVEL
+from constants import GameState, SFX, LEVEL
 from item import all_items, get_item, sortItems, getIcon, equipItem
 from character import renderCharacterData
 from sound import makeSound

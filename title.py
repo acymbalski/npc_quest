@@ -1,7 +1,7 @@
 import pygame
 from display import printMe
 from character import loadGame
-from enums import GameState
+from constants import GameState
 from character import Character, savegame
 from basics import TextButton
 

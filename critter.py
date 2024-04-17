@@ -1,4 +1,4 @@
-from enums import GUYS, PLAN, SFX, TILE_TYPE, STAT, DEATH_CAUSE, EXIT_CODE
+from constants import GUYS, PLAN, SFX, TILE_TYPE, STAT, DEATH_CAUSE, EXIT_CODE
 from character import CLASS, eatFood, foodLeft
 from sound import makeSound
 import random

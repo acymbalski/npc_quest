@@ -4,7 +4,7 @@ from enum import Enum
 import pickle
 import os
 from display import printMe
-from enums import STAT, SFX
+from constants import STAT, SFX
 from sound import makeSound
 
 

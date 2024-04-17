@@ -1,5 +1,5 @@
 import pygame
-from enums import GameState, GUYS, STAT, EXIT_CODE
+from constants import GameState, GUYS, STAT, EXIT_CODE
 import random
 from critter import addGuy
 from basics import FIXAMT

@@ -2,7 +2,7 @@ import pygame
 import title
 from shop import Shop
 from map import Map
-from enums import GameState, EXIT_CODE
+from constants import GameState, EXIT_CODE
 from monster import monsters
 
 
