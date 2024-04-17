@@ -1,21 +1,21 @@
-from constants import LEVEL, GameState, TILE_TYPE, GUYS
+from constants import (
+    LEVEL,
+    GameState,
+    TILE_TYPE,
+    GUYS,
+    TILE_WIDTH,
+    TILE_HEIGHT,
+    MAP_WIDTH,
+    MAP_HEIGHT,
+    MAP_X,
+    XRES,
+    YRES,
+    offX,
+    offY,
+)
 import pygame
 import random
 from critter import MAX_GUYS
-
-LEVELS = {
-    LEVEL.GNOMEY_PLAINS: "Gnomey Plains",
-    LEVEL.FLOOFY_WOODS: "Floofy Woods",
-    LEVEL.THE_ISLE_OF_TERROR: "The Isle Of Terror",
-    LEVEL.ROCKY_DIRTVILLE: "Rocky Dirtville",
-    LEVEL.LAVALAVA_HOT_SPRINGS: "Lavalava Hot Springs",
-    LEVEL.THE_TEMPLE_OF_SPOON: "The Temple Of Spoon",
-    LEVEL.FROSTY_HILL: "Frosty Hill",
-    LEVEL.DEADLY_DUNGEON: "Deadly Dungeon",
-    LEVEL.A_WEIRD_PLACE: "A Weird Place",
-    LEVEL.THE_EVILNESS_PIT: "The Evilness Pit",
-    LEVEL.SHIFT_Q: "Shift Q",
-}
 
 
 def getTileImage(tile):
@@ -61,22 +61,6 @@ class Tile:
             self.image = getTileImage(self)
         else:
             raise ValueError("Invalid tile type")
-
-
-TILE_WIDTH = 16
-TILE_HEIGHT = 16
-
-XRES = 800
-YRES = 600
-
-MAP_X = 800 - 576  # 800 is technically supposed to be the screen width
-MAP_WIDTH = int(576 / TILE_WIDTH)
-MAP_HEIGHT = int(
-    600 / TILE_HEIGHT
-)  # 600 is technically supposed to be the screen height
-
-offX = [1, 0, -1, 0]
-offY = [0, 1, 0, -1]
 
 
 class Map:

@@ -1,5 +1,84 @@
 from enum import Enum
 
+FIXAMT = 256
+
+NUM_STATS = 9
+
+MAX_NUMS = 16
+
+MAX_GUYS = 128
+
+TILE_WIDTH = 16
+TILE_HEIGHT = 16
+
+XRES = 800
+YRES = 600
+
+MAP_X = 800 - 576  # 800 is technically supposed to be the screen width
+MAP_WIDTH = int(576 / TILE_WIDTH)
+MAP_HEIGHT = int(
+    600 / TILE_HEIGHT
+)  # 600 is technically supposed to be the screen height
+
+offX = [1, 0, -1, 0]
+offY = [0, 1, 0, -1]
+
+SHOP_AMT = 40
+
+
+class CLASS(Enum):
+    PEASANT = 0
+    WARRIOR = 1
+    THIEF = 2
+    RANGER = 3
+    WIZARD = 4
+    GUARD = 5
+    CHEF = 6
+    SALESMAN = 7
+    DOCTOR = 8
+    MULE = 9
+
+
+classBonus = [
+    "",  # peasant
+    "Berserk Rage",  # warrior
+    "Pickpocket",  # thief
+    "Bow Attack",  # ranger
+    "Infernal Blast",  # wizard
+    "Spinning Strike",  # guard
+    "Snack Attack",  # chef
+    "Chicken Out",  # salesman
+    "Preemptive Autopsy",  # doctor
+    "Mule Kick",  # pack mule
+]
+
+
+class ITEM_TYPE(Enum):
+    FOOD = 1
+    POTION = 2
+    WEAPON = 3
+    ARMOR = 4
+    SHIELD = 5
+    HELMET = 6
+    BOOTS = 7
+    GAUNTLET = 8
+    RING = 9
+    AMULET = 10
+
+
+class ITEM_EFFECT(Enum):
+    NONE = 0
+    ALL = 1  # boost all stats
+    STRENGTH = 2
+    SPEED = 3
+    ACCURACY = 4
+    CHARISMA = 5
+    CARRY = 6
+    DEFENSE = 7
+    STOMACH = 8
+    LIFE = 9
+    IQ = 10
+
 
 class GameState(Enum):
     QUIT = -1
@@ -56,6 +135,21 @@ class LEVEL(Enum):
     A_WEIRD_PLACE = 8
     THE_EVILNESS_PIT = 9
     SHIFT_Q = 10
+
+
+LEVELS = {
+    LEVEL.GNOMEY_PLAINS: "Gnomey Plains",
+    LEVEL.FLOOFY_WOODS: "Floofy Woods",
+    LEVEL.THE_ISLE_OF_TERROR: "The Isle Of Terror",
+    LEVEL.ROCKY_DIRTVILLE: "Rocky Dirtville",
+    LEVEL.LAVALAVA_HOT_SPRINGS: "Lavalava Hot Springs",
+    LEVEL.THE_TEMPLE_OF_SPOON: "The Temple Of Spoon",
+    LEVEL.FROSTY_HILL: "Frosty Hill",
+    LEVEL.DEADLY_DUNGEON: "Deadly Dungeon",
+    LEVEL.A_WEIRD_PLACE: "A Weird Place",
+    LEVEL.THE_EVILNESS_PIT: "The Evilness Pit",
+    LEVEL.SHIFT_Q: "Shift Q",
+}
 
 
 class TILE_TYPE(Enum):

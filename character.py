@@ -1,41 +1,11 @@
 import random
-from item import Item, getIcon, sortItems, statChangeFromItem, ITM_FOOD, ITM_POTION
+from item import Item, getIcon, sortItems, statChangeFromItem, ITEM_TYPE
 from enum import Enum
 import pickle
 import os
 from display import printMe
-from constants import STAT, SFX
+from constants import STAT, SFX, NUM_STATS, CLASS, classBonus
 from sound import makeSound
-
-
-class CLASS(Enum):
-    PEASANT = 0
-    WARRIOR = 1
-    THIEF = 2
-    RANGER = 3
-    WIZARD = 4
-    GUARD = 5
-    CHEF = 6
-    SALESMAN = 7
-    DOCTOR = 8
-    MULE = 9
-
-
-NUM_STATS = 9
-
-
-classBonus = [
-    "",  # peasant
-    "Berserk Rage",  # warrior
-    "Pickpocket",  # thief
-    "Bow Attack",  # ranger
-    "Infernal Blast",  # wizard
-    "Spinning Strike",  # guard
-    "Snack Attack",  # chef
-    "Chicken Out",  # salesman
-    "Preemptive Autopsy",  # doctor
-    "Mule Kick",  # pack mule
-]
 
 
 class Character:
@@ -98,7 +68,7 @@ class Character:
     def foodLeft(self):
         for item in self.inventory:
             if item:
-                if item.type == ITM_FOOD:
+                if item.type == ITEM_TYPE.FOOD:
                     return True
         return False
 
@@ -106,7 +76,7 @@ class Character:
 def roomToEquip(weight: int, type: Item) -> bool:
     # return True or False if the player has room to equip an item
     # TODO: think about this one
-    if type.type not in [ITM_POTION, ITM_RING, ITM_FOOD]:
+    if type.type not in [ITEM_TYPE.POTION, ITEM_TYPE.RING, ITEM_TYPE.FOOD]:
         # iterate over inventory, calculate net weights?
         for item in player.inventory:
             if item:

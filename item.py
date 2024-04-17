@@ -1,28 +1,5 @@
 import pygame
-from constants import STAT
-
-ITM_FOOD = 1
-ITM_POTION = 2
-ITM_WEAPON = 3
-ITM_ARMOR = 4
-ITM_SHIELD = 5
-ITM_HELMET = 6
-ITM_BOOTS = 7
-ITM_GAUNTLET = 8
-ITM_RING = 9
-ITM_AMULET = 10
-
-EFF_NONE = 0
-EFF_ALL = 1  # boost all stats
-EFF_STRENGTH = 2
-EFF_SPEED = 3
-EFF_ACCURACY = 4
-EFF_CHARISMA = 5
-EFF_CARRY = 6
-EFF_DEFENSE = 7
-EFF_STOMACH = 8
-EFF_LIFE = 9
-EFF_IQ = 10
+from constants import STAT, ITEM_EFFECT, ITEM_TYPE
 
 
 class Item:
@@ -53,128 +30,866 @@ class Item:
 
 
 # armor
-# {"Origami Gi",1,1,ITM_ARMOR,1,EFF_NONE,0,EFF_NONE,0},
+# {"Origami Gi",1,1,ITEM_TYPE.ARMOR,1,ITEM_EFFECT.NONE,0,ITEM_EFFECT.NONE,0},
 all_items = [
     # armor
-    Item("Origami Gi", 1, 1, ITM_ARMOR, 1, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Santa Claus Costume", 4, 3, ITM_ARMOR, 2, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Leatherwear", 12, 5, ITM_ARMOR, 4, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Heavy Metal T-Shirt", 30, 6, ITM_ARMOR, 8, EFF_STOMACH, 4, EFF_NONE, 0),
-    Item("Fuschia Housecoat", 100, 4, ITM_ARMOR, 12, EFF_CHARISMA, -3, EFF_CARRY, 10),
-    Item("Technicolor Dreamcoat", 777, 15, ITM_ARMOR, 20, EFF_ALL, 1, EFF_LIFE, 10),
-    Item("Diving Bell", 2800, 20, ITM_ARMOR, 70, EFF_SPEED, -3, EFF_LIFE, 20),
-    Item("Armor Of All", 4950, 20, ITM_ARMOR, 80, EFF_ALL, 2, EFF_LIFE, 15),
-    # helmets
-    Item("Paper Bag", 1, 1, ITM_HELMET, 1, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Baseball Cap", 4, 2, ITM_HELMET, 3, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Gimp Mask", 8, 3, ITM_HELMET, 5, EFF_STOMACH, 3, EFF_NONE, 0),
-    Item("Cool Shades", 16, 3, ITM_HELMET, 7, EFF_CHARISMA, 2, EFF_NONE, 0),
-    Item("Thinking Cap", 192, 3, ITM_HELMET, 13, EFF_IQ, 6, EFF_NONE, 0),
-    Item("Safety Helmet", 58, 4, ITM_HELMET, 10, EFF_LIFE, 2, EFF_NONE, 0),
-    Item("Hardhat", 130, 4, ITM_HELMET, 20, EFF_LIFE, 8, EFF_NONE, 0),
-    Item("Iron Mask", 280, 7, ITM_HELMET, 45, EFF_CHARISMA, -1, EFF_NONE, 0),
     Item(
-        "Enchanted Helm Of Glip", 400, 7, ITM_HELMET, 30, EFF_LIFE, 10, EFF_STOMACH, 10
+        "Origami Gi", 1, 1, ITEM_TYPE.ARMOR, 1, ITEM_EFFECT.NONE, 0, ITEM_EFFECT.NONE, 0
     ),
-    Item("Sun Mask Of Solee", 3400, 8, ITM_HELMET, 35, EFF_ALL, 3, EFF_CHARISMA, 17),
+    Item(
+        "Santa Claus Costume",
+        4,
+        3,
+        ITEM_TYPE.ARMOR,
+        2,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Leatherwear",
+        12,
+        5,
+        ITEM_TYPE.ARMOR,
+        4,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Heavy Metal T-Shirt",
+        30,
+        6,
+        ITEM_TYPE.ARMOR,
+        8,
+        ITEM_EFFECT.STOMACH,
+        4,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Fuschia Housecoat",
+        100,
+        4,
+        ITEM_TYPE.ARMOR,
+        12,
+        ITEM_EFFECT.CHARISMA,
+        -3,
+        ITEM_EFFECT.CARRY,
+        10,
+    ),
+    Item(
+        "Technicolor Dreamcoat",
+        777,
+        15,
+        ITEM_TYPE.ARMOR,
+        20,
+        ITEM_EFFECT.ALL,
+        1,
+        ITEM_EFFECT.LIFE,
+        10,
+    ),
+    Item(
+        "Diving Bell",
+        2800,
+        20,
+        ITEM_TYPE.ARMOR,
+        70,
+        ITEM_EFFECT.SPEED,
+        -3,
+        ITEM_EFFECT.LIFE,
+        20,
+    ),
+    Item(
+        "Armor Of All",
+        4950,
+        20,
+        ITEM_TYPE.ARMOR,
+        80,
+        ITEM_EFFECT.ALL,
+        2,
+        ITEM_EFFECT.LIFE,
+        15,
+    ),
+    # helmets
+    Item(
+        "Paper Bag", 1, 1, ITEM_TYPE.HELMET, 1, ITEM_EFFECT.NONE, 0, ITEM_EFFECT.NONE, 0
+    ),
+    Item(
+        "Baseball Cap",
+        4,
+        2,
+        ITEM_TYPE.HELMET,
+        3,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Gimp Mask",
+        8,
+        3,
+        ITEM_TYPE.HELMET,
+        5,
+        ITEM_EFFECT.STOMACH,
+        3,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Cool Shades",
+        16,
+        3,
+        ITEM_TYPE.HELMET,
+        7,
+        ITEM_EFFECT.CHARISMA,
+        2,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Thinking Cap",
+        192,
+        3,
+        ITEM_TYPE.HELMET,
+        13,
+        ITEM_EFFECT.IQ,
+        6,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Safety Helmet",
+        58,
+        4,
+        ITEM_TYPE.HELMET,
+        10,
+        ITEM_EFFECT.LIFE,
+        2,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Hardhat",
+        130,
+        4,
+        ITEM_TYPE.HELMET,
+        20,
+        ITEM_EFFECT.LIFE,
+        8,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Iron Mask",
+        280,
+        7,
+        ITEM_TYPE.HELMET,
+        45,
+        ITEM_EFFECT.CHARISMA,
+        -1,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Enchanted Helm Of Glip",
+        400,
+        7,
+        ITEM_TYPE.HELMET,
+        30,
+        ITEM_EFFECT.LIFE,
+        10,
+        ITEM_EFFECT.STOMACH,
+        10,
+    ),
+    Item(
+        "Sun Mask Of Solee",
+        3400,
+        8,
+        ITEM_TYPE.HELMET,
+        35,
+        ITEM_EFFECT.ALL,
+        3,
+        ITEM_EFFECT.CHARISMA,
+        17,
+    ),
     # shields
-    Item("Week-Old Pizza", 1, 1, ITM_SHIELD, 1, EFF_STOMACH, 1, EFF_NONE, 0),
-    Item("Trash Can Lid", 2, 3, ITM_SHIELD, 2, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Wooden Shield", 4, 4, ITM_SHIELD, 3, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Iron Shield", 14, 6, ITM_SHIELD, 7, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Diamond Shield", 250, 8, ITM_SHIELD, 14, EFF_STRENGTH, 5, EFF_IQ, 5),
-    Item("Unobtainium Shield", 999, 10, ITM_SHIELD, 29, EFF_STRENGTH, 8, EFF_LIFE, 10),
-    Item("Supreme Shield W/Cheese", 4950, 12, ITM_SHIELD, 35, EFF_ALL, 2, EFF_LIFE, 5),
+    Item(
+        "Week-Old Pizza",
+        1,
+        1,
+        ITEM_TYPE.SHIELD,
+        1,
+        ITEM_EFFECT.STOMACH,
+        1,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Trash Can Lid",
+        2,
+        3,
+        ITEM_TYPE.SHIELD,
+        2,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Wooden Shield",
+        4,
+        4,
+        ITEM_TYPE.SHIELD,
+        3,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Iron Shield",
+        14,
+        6,
+        ITEM_TYPE.SHIELD,
+        7,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Diamond Shield",
+        250,
+        8,
+        ITEM_TYPE.SHIELD,
+        14,
+        ITEM_EFFECT.STRENGTH,
+        5,
+        ITEM_EFFECT.IQ,
+        5,
+    ),
+    Item(
+        "Unobtainium Shield",
+        999,
+        10,
+        ITEM_TYPE.SHIELD,
+        29,
+        ITEM_EFFECT.STRENGTH,
+        8,
+        ITEM_EFFECT.LIFE,
+        10,
+    ),
+    Item(
+        "Supreme Shield W/Cheese",
+        4950,
+        12,
+        ITEM_TYPE.SHIELD,
+        35,
+        ITEM_EFFECT.ALL,
+        2,
+        ITEM_EFFECT.LIFE,
+        5,
+    ),
     # weapons
     Item(
-        "Glittering Axe Of Eternity", 3800, 10, ITM_WEAPON, 50, EFF_ALL, 5, EFF_NONE, 0
+        "Glittering Axe Of Eternity",
+        3800,
+        10,
+        ITEM_TYPE.WEAPON,
+        50,
+        ITEM_EFFECT.ALL,
+        5,
+        ITEM_EFFECT.NONE,
+        0,
     ),
-    Item("Pointy Stick", 1, 1, ITM_WEAPON, 1, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Spatula", 5, 2, ITM_WEAPON, 2, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Safety Scissors", 45, 3, ITM_WEAPON, 4, EFF_NONE, 0, EFF_LIFE, 2),
-    Item("Wind Spatula +3", 70, 4, ITM_WEAPON, 10, EFF_SPEED, 3, EFF_NONE, 0),
-    Item("Razor Sharp Wit", 220, 5, ITM_WEAPON, 20, EFF_ACCURACY, 5, EFF_NONE, 0),
+    Item(
+        "Pointy Stick",
+        1,
+        1,
+        ITEM_TYPE.WEAPON,
+        1,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Spatula", 5, 2, ITEM_TYPE.WEAPON, 2, ITEM_EFFECT.NONE, 0, ITEM_EFFECT.NONE, 0
+    ),
+    Item(
+        "Safety Scissors",
+        45,
+        3,
+        ITEM_TYPE.WEAPON,
+        4,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.LIFE,
+        2,
+    ),
+    Item(
+        "Wind Spatula +3",
+        70,
+        4,
+        ITEM_TYPE.WEAPON,
+        10,
+        ITEM_EFFECT.SPEED,
+        3,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Razor Sharp Wit",
+        220,
+        5,
+        ITEM_TYPE.WEAPON,
+        20,
+        ITEM_EFFECT.ACCURACY,
+        5,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
     Item(
         "Very Large Celery Stalk",
         400,
         7,
-        ITM_WEAPON,
+        ITEM_TYPE.WEAPON,
         30,
-        EFF_SPEED,
+        ITEM_EFFECT.SPEED,
         -2,
-        EFF_STOMACH,
+        ITEM_EFFECT.STOMACH,
         20,
     ),
-    Item("Miracle Whip", 100, 4, ITM_WEAPON, 9, EFF_SPEED, 5, EFF_LIFE, 3),
-    Item("WoMD", 9544, 15, ITM_WEAPON, 100, EFF_ALL, 50, EFF_CHARISMA, -400),
+    Item(
+        "Miracle Whip",
+        100,
+        4,
+        ITEM_TYPE.WEAPON,
+        9,
+        ITEM_EFFECT.SPEED,
+        5,
+        ITEM_EFFECT.LIFE,
+        3,
+    ),
+    Item(
+        "WoMD",
+        9544,
+        15,
+        ITEM_TYPE.WEAPON,
+        100,
+        ITEM_EFFECT.ALL,
+        50,
+        ITEM_EFFECT.CHARISMA,
+        -400,
+    ),
     # gauntlets
-    Item("Polka-Dot Garden Gloves", 1, 1, ITM_GAUNTLET, 1, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Latex Gloves", 5, 2, ITM_GAUNTLET, 2, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Batting Gloves", 30, 3, ITM_GAUNTLET, 4, EFF_LIFE, 2, EFF_NONE, 0),
-    Item("Racing Gloves", 150, 3, ITM_GAUNTLET, 8, EFF_SPEED, 4, EFF_NONE, 0),
-    Item("Gauntlets Of Pain", 300, 5, ITM_GAUNTLET, 10, EFF_STRENGTH, 6, EFF_NONE, 0),
-    Item("Nifty Gauntlets", 1900, 8, ITM_GAUNTLET, 30, EFF_STRENGTH, 2, EFF_SPEED, 3),
-    Item("Oven Mitts Of Asbestos", 5700, 9, ITM_GAUNTLET, 35, EFF_ALL, 2, EFF_IQ, 10),
+    Item(
+        "Polka-Dot Garden Gloves",
+        1,
+        1,
+        ITEM_TYPE.GAUNTLET,
+        1,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Latex Gloves",
+        5,
+        2,
+        ITEM_TYPE.GAUNTLET,
+        2,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Batting Gloves",
+        30,
+        3,
+        ITEM_TYPE.GAUNTLET,
+        4,
+        ITEM_EFFECT.LIFE,
+        2,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Racing Gloves",
+        150,
+        3,
+        ITEM_TYPE.GAUNTLET,
+        8,
+        ITEM_EFFECT.SPEED,
+        4,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Gauntlets Of Pain",
+        300,
+        5,
+        ITEM_TYPE.GAUNTLET,
+        10,
+        ITEM_EFFECT.STRENGTH,
+        6,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Nifty Gauntlets",
+        1900,
+        8,
+        ITEM_TYPE.GAUNTLET,
+        30,
+        ITEM_EFFECT.STRENGTH,
+        2,
+        ITEM_EFFECT.SPEED,
+        3,
+    ),
+    Item(
+        "Oven Mitts Of Asbestos",
+        5700,
+        9,
+        ITEM_TYPE.GAUNTLET,
+        35,
+        ITEM_EFFECT.ALL,
+        2,
+        ITEM_EFFECT.IQ,
+        10,
+    ),
     # food
-    Item("Ramen Noodles", 5, 1, ITM_FOOD, 1, EFF_NONE, 0, EFF_NONE, 0),
-    Item("McNuggets", 4, 1, ITM_FOOD, 1, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Soylent Blue", 8, 2, ITM_FOOD, 2, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Mac & Cheese", 10, 2, ITM_FOOD, 3, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Filet Mignon", 50, 3, ITM_FOOD, 10, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Chef's Special", 200, 4, ITM_FOOD, 20, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Hungry Man Dinner", 500, 5, ITM_FOOD, 70, EFF_NONE, 0, EFF_NONE, 0),
+    Item(
+        "Ramen Noodles",
+        5,
+        1,
+        ITEM_TYPE.FOOD,
+        1,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "McNuggets", 4, 1, ITEM_TYPE.FOOD, 1, ITEM_EFFECT.NONE, 0, ITEM_EFFECT.NONE, 0
+    ),
+    Item(
+        "Soylent Blue",
+        8,
+        2,
+        ITEM_TYPE.FOOD,
+        2,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Mac & Cheese",
+        10,
+        2,
+        ITEM_TYPE.FOOD,
+        3,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Filet Mignon",
+        50,
+        3,
+        ITEM_TYPE.FOOD,
+        10,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Chef's Special",
+        200,
+        4,
+        ITEM_TYPE.FOOD,
+        20,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Hungry Man Dinner",
+        500,
+        5,
+        ITEM_TYPE.FOOD,
+        70,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
     # potion
-    Item("Potion Of Health", 10, 1, ITM_POTION, 5, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Potion Of Ginseng", 40, 1, ITM_POTION, 10, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Ocean Lotion Potion", 150, 1, ITM_POTION, 30, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Emotion Potion", 200, 1, ITM_POTION, 50, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Love Potion #9", 500, 1, ITM_POTION, 100, EFF_NONE, 0, EFF_NONE, 0),
+    Item(
+        "Potion Of Health",
+        10,
+        1,
+        ITEM_TYPE.POTION,
+        5,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Potion Of Ginseng",
+        40,
+        1,
+        ITEM_TYPE.POTION,
+        10,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Ocean Lotion Potion",
+        150,
+        1,
+        ITEM_TYPE.POTION,
+        30,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Emotion Potion",
+        200,
+        1,
+        ITEM_TYPE.POTION,
+        50,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Love Potion #9",
+        500,
+        1,
+        ITEM_TYPE.POTION,
+        100,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
     # ring
-    Item("Ring Of Strength (+1)", 20, 1, ITM_RING, 0, EFF_STRENGTH, 1, EFF_NONE, 0),
-    Item("Ring Of Speed (+2)", 37, 1, ITM_RING, 0, EFF_SPEED, 2, EFF_NONE, 0),
-    Item("Ring Of Aim (+5)", 60, 1, ITM_RING, 0, EFF_ACCURACY, 5, EFF_NONE, 0),
-    Item("Rainbow Ring Of Joy", 850, 1, ITM_RING, 0, EFF_ALL, 2, EFF_NONE, 0),
-    Item("Ring Of Uppityness", 150, 1, ITM_RING, 0, EFF_CARRY, 10, EFF_NONE, 0),
-    Item("Ring Of Saturn (+4)", 326, 1, ITM_RING, 0, EFF_ACCURACY, 4, EFF_SPEED, 4),
-    Item("Toilet Bowl Ring (-1)", 1, 1, ITM_RING, 0, EFF_ALL, -1, EFF_NONE, 0),
     Item(
-        "Ring Around The Collar", 110, 1, ITM_RING, 0, EFF_CHARISMA, -2, EFF_STRENGTH, 7
+        "Ring Of Strength (+1)",
+        20,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.STRENGTH,
+        1,
+        ITEM_EFFECT.NONE,
+        0,
     ),
-    Item("Fruit Loop", 200, 1, ITM_RING, 0, EFF_STOMACH, 30, EFF_NONE, 0),
-    Item("Ring Of Tummy Power (+8)", 20, 1, ITM_RING, 0, EFF_STOMACH, 8, EFF_NONE, 0),
-    Item("Ring Of Life (+4)", 50, 1, ITM_RING, 0, EFF_LIFE, 4, EFF_NONE, 0),
-    Item("Ring Of Wisdom (+10)", 230, 1, ITM_RING, 0, EFF_IQ, 10, EFF_NONE, 0),
+    Item(
+        "Ring Of Speed (+2)",
+        37,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.SPEED,
+        2,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Ring Of Aim (+5)",
+        60,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.ACCURACY,
+        5,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Rainbow Ring Of Joy",
+        850,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.ALL,
+        2,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Ring Of Uppityness",
+        150,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.CARRY,
+        10,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Ring Of Saturn (+4)",
+        326,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.ACCURACY,
+        4,
+        ITEM_EFFECT.SPEED,
+        4,
+    ),
+    Item(
+        "Toilet Bowl Ring (-1)",
+        1,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.ALL,
+        -1,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Ring Around The Collar",
+        110,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.CHARISMA,
+        -2,
+        ITEM_EFFECT.STRENGTH,
+        7,
+    ),
+    Item(
+        "Fruit Loop",
+        200,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.STOMACH,
+        30,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Ring Of Tummy Power (+8)",
+        20,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.STOMACH,
+        8,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Ring Of Life (+4)",
+        50,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.LIFE,
+        4,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Ring Of Wisdom (+10)",
+        230,
+        1,
+        ITEM_TYPE.RING,
+        0,
+        ITEM_EFFECT.IQ,
+        10,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
     # amulet
-    Item("Amulet Of Speed (+10)", 250, 1, ITM_AMULET, 0, EFF_SPEED, 10, EFF_NONE, 0),
     Item(
-        "Amulet Of Strength (+10)", 250, 1, ITM_AMULET, 0, EFF_STRENGTH, 10, EFF_NONE, 0
+        "Amulet Of Speed (+10)",
+        250,
+        1,
+        ITEM_TYPE.AMULET,
+        0,
+        ITEM_EFFECT.SPEED,
+        10,
+        ITEM_EFFECT.NONE,
+        0,
     ),
     Item(
-        "Amulet Of Accuracy (+10)", 250, 1, ITM_AMULET, 0, EFF_ACCURACY, 10, EFF_NONE, 0
+        "Amulet Of Strength (+10)",
+        250,
+        1,
+        ITEM_TYPE.AMULET,
+        0,
+        ITEM_EFFECT.STRENGTH,
+        10,
+        ITEM_EFFECT.NONE,
+        0,
     ),
-    Item("Amulet Of Omelet (+10)", 9000, 1, ITM_AMULET, 0, EFF_ALL, 10, EFF_NONE, 0),
-    Item("Amulet Of Hamlet (+3)", 3000, 1, ITM_AMULET, 0, EFF_ALL, 3, EFF_NONE, 0),
-    Item("Amulet Of Health (+10)", 400, 1, ITM_AMULET, 0, EFF_LIFE, 10, EFF_NONE, 0),
-    Item("Amulet Of Wisdom (+30)", 800, 1, ITM_AMULET, 0, EFF_IQ, 30, EFF_NONE, 0),
+    Item(
+        "Amulet Of Accuracy (+10)",
+        250,
+        1,
+        ITEM_TYPE.AMULET,
+        0,
+        ITEM_EFFECT.ACCURACY,
+        10,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Amulet Of Omelet (+10)",
+        9000,
+        1,
+        ITEM_TYPE.AMULET,
+        0,
+        ITEM_EFFECT.ALL,
+        10,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Amulet Of Hamlet (+3)",
+        3000,
+        1,
+        ITEM_TYPE.AMULET,
+        0,
+        ITEM_EFFECT.ALL,
+        3,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Amulet Of Health (+10)",
+        400,
+        1,
+        ITEM_TYPE.AMULET,
+        0,
+        ITEM_EFFECT.LIFE,
+        10,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Amulet Of Wisdom (+30)",
+        800,
+        1,
+        ITEM_TYPE.AMULET,
+        0,
+        ITEM_EFFECT.IQ,
+        30,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
     # boots
-    Item("Orthopedic Sandals", 2, 1, ITM_BOOTS, 1, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Scruffy Boots", 7, 2, ITM_BOOTS, 2, EFF_NONE, 0, EFF_NONE, 0),
-    Item("Air Lancelots", 75, 3, ITM_BOOTS, 6, EFF_STRENGTH, 2, EFF_NONE, 0),
-    Item("Winged Loafers", 153, 4, ITM_BOOTS, 15, EFF_STOMACH, 10, EFF_NONE, 0),
-    Item("Birkenstockus Maximus", 420, 4, ITM_BOOTS, 20, EFF_CHARISMA, 5, EFF_IQ, 3),
-    Item("Enchanted Mocassins", 1840, 5, ITM_BOOTS, 35, EFF_NONE, 0, EFF_NONE, 0),
+    Item(
+        "Orthopedic Sandals",
+        2,
+        1,
+        ITEM_TYPE.BOOTS,
+        1,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Scruffy Boots",
+        7,
+        2,
+        ITEM_TYPE.BOOTS,
+        2,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Air Lancelots",
+        75,
+        3,
+        ITEM_TYPE.BOOTS,
+        6,
+        ITEM_EFFECT.STRENGTH,
+        2,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Winged Loafers",
+        153,
+        4,
+        ITEM_TYPE.BOOTS,
+        15,
+        ITEM_EFFECT.STOMACH,
+        10,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
+    Item(
+        "Birkenstockus Maximus",
+        420,
+        4,
+        ITEM_TYPE.BOOTS,
+        20,
+        ITEM_EFFECT.CHARISMA,
+        5,
+        ITEM_EFFECT.IQ,
+        3,
+    ),
+    Item(
+        "Enchanted Mocassins",
+        1840,
+        5,
+        ITEM_TYPE.BOOTS,
+        35,
+        ITEM_EFFECT.NONE,
+        0,
+        ITEM_EFFECT.NONE,
+        0,
+    ),
     Item(
         "The Shadow Boots Of Elmo",
         3780,
         7,
-        ITM_BOOTS,
+        ITEM_TYPE.BOOTS,
         40,
-        EFF_ACCURACY,
+        ITEM_EFFECT.ACCURACY,
         3,
-        EFF_LIFE,
+        ITEM_EFFECT.LIFE,
         15,
     ),
-    Item("Bunny Slippers", 9400, 5, ITM_BOOTS, 45, EFF_ALL, 5, EFF_CHARISMA, 50),
+    Item(
+        "Bunny Slippers",
+        9400,
+        5,
+        ITEM_TYPE.BOOTS,
+        45,
+        ITEM_EFFECT.ALL,
+        5,
+        ITEM_EFFECT.CHARISMA,
+        50,
+    ),
 ]
 
 
@@ -202,41 +917,41 @@ def calcSell(player, item: Item) -> int:
 
 
 def specialEffect(player, item: Item, amt: int, mult: str):
-    if item.type == EFF_ALL:
+    if item.type == ITEM_EFFECT.ALL:
         for stat in STAT:
             player.stat[stat] += mult * amt
-    elif item.type == EFF_STRENGTH:
+    elif item.type == ITEM_EFFECT.STRENGTH:
         player.stat[STAT.STR] += mult * amt
-    elif item.type == EFF_DEFENSE:
+    elif item.type == ITEM_EFFECT.DEFENSE:
         player.stat[STAT.DEF] += mult * amt
-    elif item.type == EFF_STOMACH:
+    elif item.type == ITEM_EFFECT.STOMACH:
         player.stat[STAT.STO] += mult * amt
-    elif item.type == EFF_SPEED:
+    elif item.type == ITEM_EFFECT.SPEED:
         player.stat[STAT.SPD] += mult * amt
-    elif item.type == EFF_ACCURACY:
+    elif item.type == ITEM_EFFECT.ACCURACY:
         player.stat[STAT.ACC] += mult * amt
-    elif item.type == EFF_CHARISMA:
+    elif item.type == ITEM_EFFECT.CHARISMA:
         player.stat[STAT.CHA] += mult * amt
-    elif item.type == EFF_LIFE:
+    elif item.type == ITEM_EFFECT.LIFE:
         player.stat[STAT.LIF] += mult * amt
         if player.life > player.stat[STAT.LIF]:
             player.life = player.stat[STAT.LIF]
-    elif item.type == EFF_CARRY:
+    elif item.type == ITEM_EFFECT.CARRY:
         player.stat[STAT.CAR] += mult * amt
-    elif item.type == EFF_IQ:
+    elif item.type == ITEM_EFFECT.IQ:
         player.stat[STAT.INT] += mult * amt
 
 
 def statChangeFromItem(player, item: Item, mult: str):
     player.totalWeight += mult * item.weight
 
-    if item.type in [ITM_ARMOR, ITM_HELMET, ITM_SHIELD]:
+    if item.type in [ITEM_TYPE.ARMOR, ITEM_TYPE.HELMET, ITEM_TYPE.SHIELD]:
         player.stat[STAT.DEF] += mult * item.value
-    elif item.type == ITM_WEAPON:
+    elif item.type == ITEM_TYPE.WEAPON:
         player.stat[STAT.STR] += mult * item.value
-    elif item.type == ITM_GAUNTLET:
+    elif item.type == ITEM_TYPE.GAUNTLET:
         player.stat[STAT.ACC] += mult * item.value
-    elif item.type == ITM_BOOTS:
+    elif item.type == ITEM_TYPE.BOOTS:
         player.stat[STAT.SPD] += mult * item.value
 
     specialEffect(player, item, item.effValue, mult)
@@ -244,7 +959,7 @@ def statChangeFromItem(player, item: Item, mult: str):
 
 
 def equipItem(player, item: Item):
-    if item.type not in [ITM_POTION, ITM_FOOD, ITM_RING]:
+    if item.type not in [ITEM_TYPE.POTION, ITEM_TYPE.FOOD, ITEM_TYPE.RING]:
         # can only have one of each type unless it's a potion, food, or ring
         for i in range(20):
             # if we already have one, sell it and equip the new one
@@ -269,7 +984,7 @@ def equipItem(player, item: Item):
 
 # fake item equip, for effect calculation
 def fakeEquipItem(player, item: Item):
-    if item.type in [ITM_POTION, ITM_FOOD, ITM_RING]:
+    if item.type in [ITEM_TYPE.POTION, ITEM_TYPE.FOOD, ITEM_TYPE.RING]:
         return  # can have multiples
     else:  # can only have one
         for i in range(20):
@@ -290,9 +1005,9 @@ def fakeEquipItem(player, item: Item):
 def netWeightEffect(item: Item) -> int:
     result = item.weight
 
-    if item.effect == EFF_CARRY:
+    if item.effect == ITEM_EFFECT.CARRY:
         result -= item.effValue
-    if item.effects2 == EFF_CARRY:
+    if item.effects2 == ITEM_EFFECT.CARRY:
         result -= item.eff2Value
 
     return result

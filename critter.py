@@ -1,18 +1,27 @@
-from constants import GUYS, PLAN, SFX, TILE_TYPE, STAT, DEATH_CAUSE, EXIT_CODE
+from constants import (
+    GUYS,
+    PLAN,
+    SFX,
+    TILE_TYPE,
+    STAT,
+    DEATH_CAUSE,
+    EXIT_CODE,
+    MAX_GUYS,
+    offX,
+    offY,
+    MAP_WIDTH,
+    MAP_HEIGHT,
+    FIXAMT,
+)
 from character import CLASS, eatFood, foodLeft
 from sound import makeSound
 import random
-from map import MAP_WIDTH, MAP_HEIGHT, offX, offY
-from basics import FIXAMT
 from combat import playerAttack, addNum, monsterAttack
 from critter import gotKilled
 
 
 def initGuys():
     pass
-
-
-MAX_GUYS = 128
 
 
 class Guy:

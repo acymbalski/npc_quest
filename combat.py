@@ -5,8 +5,6 @@ import random
 from critter import getKicked
 from action import gotKilled
 
-MAX_NUMS = 16
-
 
 def playerAttack(game, me, you):
     hitChance = game.player.stat[STAT.ACC] * 20 - you.level * 10
@@ -66,7 +64,7 @@ def badGuyAttack(game, me, you):
             game.player.life -= damage
         else:
             game.player.deathCause = me.type
-            gotKilled(DEATH_CAUSE.MONSTER)
+            gotKilled(game, DEATH_CAUSE.MONSTER)
             makeSound(SFX.PLAYERDIE)
     else:
         makeSound(SFX.WHIFF)
