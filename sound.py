@@ -1,6 +1,7 @@
 import pygame
 from enums import SFX
 import random
+import numpy
 
 SOUNDS = {
     SFX.HUZZAH: "huzzah.wav",
@@ -27,17 +28,34 @@ SOUNDS = {
 }
 
 
+def change_frequency(sound_array, factor):
+    """Adjust the frequency of a sound array."""
+    indices = numpy.round(numpy.arange(0, len(sound_array), factor))
+    indices = indices[indices < len(sound_array)].astype(int)
+    return sound_array[indices]
+
+
 def makeSound(sound: SFX):
     # play sound effect
 
     # get a random number between 0 and 255
     freq_mod = random.randint(0, 255)
-    freq = 1000 - 127 + freq_mod
-    # TODO: Modify sound by frequency modifier
+    freq = (1000 - 127 + freq_mod) / 1000
 
     pygame.mixer.init()
     sound = pygame.mixer.Sound(f"sound/{SOUNDS[sound]}")
-    sound.play()
+
+    # Convert the sound to a NumPy array
+    sound_array = pygame.sndarray.samples(sound)
+
+    # Adjust the frequency
+    adjusted_sound_array = change_frequency(sound_array, freq)
+
+    # Convert the adjusted sound array back to a Pygame sound
+    adjusted_sound = pygame.sndarray.make_sound(adjusted_sound_array)
+
+    # Play the adjusted sound
+    adjusted_sound.play()
 
 
 if __name__ == "__main__":
