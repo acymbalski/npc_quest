@@ -67,6 +67,9 @@ class Guy:
         # hate this
         self.berserkImage = None
 
+    def __str__(self):
+        return f"Guy-> type: {self.type}, x: {self.x}, y: {self.y}, life: {self.life}, reload: {self.reload}, plan: {self.plan}, planTime: {self.planTime}, moves: {self.moves}, foodClock: {self.foodClock}, level: {self.level}"
+
     def load_image(self):
         if self.type == GUYS.PLAYER:
             self.image = pygame.image.load(

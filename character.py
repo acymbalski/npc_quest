@@ -41,11 +41,14 @@ class Character:
         self.shouldExit = 0
         self.name = makeUpName()
         self.deathCause = 0
-        self.deathHow = None
+        self.deathHow = 0
         self.slot = 0
         self.score = 0
 
         self.goneBerserk = False
+
+    def __str__(self):
+        return f"Character-> xp: {self.xp}, level: {self.level}, life: {self.life}, gold: {self.gold}, totalWeight: {self.totalWeight}, itemCount: {self.itemCount}, food: {self.food}, inventory: {self.inventory}, ptSpend: {self.ptSpend}, chrClass: {self.chrClass}, shouldExit: {self.shouldExit}, name: {self.name}, deathCause: {self.deathCause}, deathHow: {self.deathHow}, slot: {self.slot}, score: {self.score}, goneBerserk: {self.goneBerserk}"
 
     def drinkPotion(self):
         # iterate through inventory

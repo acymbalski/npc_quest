@@ -38,6 +38,7 @@ def change_frequency(sound_array, factor):
 
 def makeSound(sound: SFX):
     # play sound effect
+    print(f"Playing {sound}")
 
     # get a random number between 0 and 255
     freq_mod = random.randint(0, 255)

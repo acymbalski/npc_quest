@@ -43,12 +43,16 @@ def getKicked(game, me, kicker):
 
 
 def playerAttack(game, me, you):
+
     hitChance = game.player.stat[STAT.ACC] * 20 - you.level * 10
     if hitChance < 5:
         hitChance = 5
 
     if random.randint(1, 100) <= hitChance:
         makeSound(SFX.HITBADGUY)
+        print("Player attacks")
+        print(me)
+        print(you)
         damage = (
             game.player.stat[STAT.STR]
             - game.monster[you.type.value].defense
