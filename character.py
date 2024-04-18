@@ -56,7 +56,7 @@ class Character:
             # if item is not None
             if item:
                 # if item is a potion
-                if item.type == ITM_POTION:
+                if item.type == ITEM_TYPE.POTION:
                     if self.life < self.stat[STAT.LIF] - item.value or self.life < (
                         self.stat[STAT.LIF] / 3
                     ):
