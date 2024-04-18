@@ -172,7 +172,6 @@ class Shop:
                 if button.command.__class__.__name__ == "Item":
                     item = button.command
                     # calculate stat changes
-                    # TODO: if this item is already equipped, don't render the comparison
                     stat_changes = self.game.player.getStatChanges(item)
                     for i in range(len(stat_changes.keys())):
                         stat = list(stat_changes.keys())[i]
@@ -180,11 +179,15 @@ class Shop:
                             continue
                         # render text
                         prefix = "+" if stat_changes[stat] > 0 else ""
-                        color = (
-                            pygame.Color("GREEN")
-                            if stat_changes[stat] > 0
-                            else pygame.Color("RED")
-                        )
+
+                        color = pygame.Color("GREEN")
+                        # if item is already equipped, display it in yellow
+                        if item in self.game.player.inventory:
+                            color = pygame.Color("YELLOW")
+                            stat_changes[stat] = 0
+                        elif stat_changes[stat] < 0:
+                            color = pygame.Color("RED")
+
                         printMe(
                             self.game,
                             f"{prefix}{stat_changes[stat]}",
