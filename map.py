@@ -20,6 +20,7 @@ from constants import (
     XRES,
     YRES,
 )
+from utilities import savegame
 
 
 def getTileImage(tile):
@@ -328,6 +329,8 @@ class Map:
 
         # if player died or exited the map, go back to shop
         if self.game.exitCode == EXIT_CODE.ESCAPED:
+            # we made it out, save game
+            savegame(self.game.player)
             self.game.game_state = GameState.SHOP
             self.game.map = None
         elif self.game.exitCode == EXIT_CODE.DIED:
