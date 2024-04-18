@@ -179,7 +179,11 @@ def roomToEquip(weight: int, type: Item) -> bool:
     return True
 
 
-def renderCharacterData(game):
+def renderCharacterData(game, shop=False):
+    """
+    Render character data - stats, name, inventory, etc - to the screen.
+    if shop is True, don't render the inventory
+    """
     character = game.player
     printMe(game, character.name, 8, 8)
     printMe(game, f"Level: {character.level}", 8, 18)
@@ -198,12 +202,13 @@ def renderCharacterData(game):
     printMe(game, f"Gold: {character.gold}", 8, 138)
 
     printMe(game, "Inventory", 8, 158)
-    for i in range(20):
-        if character.inventory[i]:
-            game.screen.blit(getIcon(character.inventory[i]), (8, 178 + i * 10))
-            printMe(game, character.inventory[i].name, 19, 178 + i * 10)
-        else:
-            printMe(game, "......", 19, 178 + i * 10)
+    if not shop:
+        for i in range(20):
+            if character.inventory[i]:
+                game.screen.blit(getIcon(character.inventory[i]), (8, 178 + i * 10))
+                printMe(game, character.inventory[i].name, 19, 178 + i * 10)
+            else:
+                printMe(game, "......", 19, 178 + i * 10)
 
     if character.chrClass != CLASS.PEASANT:
         printMe(game, "Special Ability:", 8, 400)

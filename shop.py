@@ -104,6 +104,57 @@ class Shop:
 
         self.available_items = sortItems(self.available_items)
 
+    def setUpInventory(self):
+        # remove old inventory buttons
+        self.buttons = [
+            button
+            for button in self.buttons
+            if button.command.__class__.__name__ != "int"
+        ]
+
+        # add buttons for inventory items (to sell)
+        for i in range(20):
+            item = self.game.player.inventory[i]
+            if item:
+                item_button = TextButton(
+                    self.game,
+                    i,  # command
+                    19,
+                    178 + i * 10,
+                    item.name,
+                    icon=getIcon(item),
+                )
+                print(
+                    f"Adding button for inventory item {item.name} at 19, {178 + i * 10}"
+                )
+                self.buttons.append(item_button)
+
+    def sellItem(self, item_index):
+        # get item from player inventory
+        item = self.game.player.inventory[item_index]
+        # add gold to player
+        self.game.player.gold += item.cost
+        # remove item from player inventory
+        self.game.player.inventory[item_index] = None
+
+        # gold changed; update button backgrounds and positions
+        for button in self.buttons:
+            # if button.command is an item...
+            if button.command.__class__.__name__ == "Item":
+                button.bounding_rect_bg_color = self.getItemHighlightColor(
+                    button.command
+                )
+                button.y = 20 + 10 * self.buttons.index(button)
+                button.rect.topleft = (button.x, button.y)
+                button.bounding_rect.topleft = (button.x, button.y)
+
+        # sort player inventory
+        self.game.player.inventory = sortItems(self.game.player.inventory)
+
+        self.setUpInventory()
+        # play sound effect
+        makeSound(SFX.CHACHING)
+
     def buyItem(self, button):
 
         # get item from button
@@ -131,6 +182,9 @@ class Shop:
 
             # play sound effect
             makeSound(SFX.CHACHING)
+            # sort player inventory
+            self.game.player.inventory = sortItems(self.game.player.inventory)
+            self.setUpInventory()
 
     def update(self):
 
@@ -140,7 +194,12 @@ class Shop:
         screen.blit(background_image, (0, 0))
 
         # Draw player info
-        renderCharacterData(self.game)
+        renderCharacterData(self.game, shop=True)
+        # get non-None items from player inventory
+        inventory_items = len([item for item in self.game.player.inventory if item])
+        # draw None inventory items
+        for i in range(20 - inventory_items):
+            printMe(self.game, "......", 19, 178 + (inventory_items + i) * 10)
 
         for button in self.buttons:
             button.draw()
@@ -159,6 +218,9 @@ class Shop:
                         # if button.command is an "Item" type, buy it
                         if button.command.__class__.__name__ == "Item":
                             self.buyItem(button)
+                        elif button.command.__class__.__name__ == "int":
+                            # sell item
+                            self.sellItem(button.command)
                         else:
                             # otherwise, load level
                             self.game.game_state = GameState.GAME
@@ -199,7 +261,40 @@ class Shop:
                     printMe(
                         self.game, f"-${item.cost}", 150, 138, color=pygame.Color("RED")
                     )
-        # TODO: hover-over inventory items to preview selling them; sell them
+                elif button.command.__class__.__name__ == "int":
+                    # render stat change from selling item
+
+                    stat_changes = self.game.player.getStatChanges(item, False)
+                    for i in range(len(stat_changes.keys())):
+                        stat = list(stat_changes.keys())[i]
+                        if stat_changes[stat] == 0:
+                            continue
+                        # render text
+                        prefix = "+" if stat_changes[stat] > 0 else ""
+
+                        color = pygame.Color("GREEN")
+                        # if item is already equipped, display it in yellow
+                        if item in self.game.player.inventory:
+                            color = pygame.Color("YELLOW")
+                            stat_changes[stat] = 0
+                        elif stat_changes[stat] < 0:
+                            color = pygame.Color("RED")
+
+                        printMe(
+                            self.game,
+                            f"{prefix}{stat_changes[stat]}",
+                            150,
+                            28 + i * 10,
+                            color=color,
+                        )
+                    # render gold value of item to sell
+                    printMe(
+                        self.game,
+                        f"+${item.cost}",
+                        150,
+                        138,
+                        color=pygame.Color("GREEN"),
+                    )
 
 
 if __name__ == "__main__":
