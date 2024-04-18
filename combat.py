@@ -23,10 +23,15 @@ from utilities import delGame
 
 
 def gotKilled(game, how):
+    print(f"Player died via {how}")
     game.player.life = 0
     game.player.deathHow = how.value
+    game.player.deathCause = how
     game.exitCode = EXIT_CODE.DIED
-    game.noticeType = NOTICE.STARVED
+    if how == DEATH_CAUSE.HUNGER:
+        game.noticeType = NOTICE.STARVED
+    else:
+        game.noticeType = NOTICE.MURDERED
     game.game_state = GameState.NOTICE
     game.map = None
     delGame(game.player.slot)
@@ -118,7 +123,7 @@ def monsterAttack(game, me, you):
             game.player.life -= damage
         else:
             game.player.deathCause = me.type
-            gotKilled(game, DEATH_CAUSE.MONSTER)
+            gotKilled(game, me.type)
             makeSound(SFX.PLAYERDIE)
     else:
         makeSound(SFX.WHIFF)

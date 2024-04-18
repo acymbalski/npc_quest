@@ -243,8 +243,9 @@ class PLAN(Enum):
 
 
 class DEATH_CAUSE(Enum):
-    HUNGER = 0
-    MONSTER = 1
+    NONE = 0
+    HUNGER = 1
+    MONSTER = 2
 
 
 class NOTICE(Enum):
@@ -282,7 +283,8 @@ def className(i: int) -> str:
 
 DEATH_NAMES = {
     DEATH_CAUSE.HUNGER: "STARVATION",
-    GUYS.NONE: "",
+    DEATH_CAUSE.NONE: "DC_NONE",
+    GUYS.NONE: "G_NONE",
     GUYS.GNOME: "a Gnome",
     GUYS.FATBIRD: "a Fatbird",
     GUYS.DOLPHIN: "a Dolphin",

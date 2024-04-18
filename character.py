@@ -5,7 +5,7 @@ from enum import Enum
 
 from combat import chickenOut, zapBadGuys
 
-from constants import CLASS, classBonus, NUM_STATS, SFX, STAT
+from constants import CLASS, classBonus, DEATH_CAUSE, NUM_STATS, SFX, STAT
 from display import printMe
 from item import getIcon, Item, ITEM_TYPE, sortItems, statChangeFromItem
 from sound import makeSound
@@ -42,7 +42,7 @@ class Character:
         self.chrClass = CLASS.PEASANT
         self.shouldExit = 0
         self.name = makeUpName()
-        self.deathCause = 0
+        self.deathCause = DEATH_CAUSE.NONE
         self.deathHow = 0
         self.slot = 0
         self.score = 0
