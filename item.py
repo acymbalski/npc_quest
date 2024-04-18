@@ -1007,7 +1007,7 @@ def netWeightEffect(item: Item) -> int:
 
     if item.effect == ITEM_EFFECT.CARRY:
         result -= item.effValue
-    if item.effects2 == ITEM_EFFECT.CARRY:
+    if item.effect2 == ITEM_EFFECT.CARRY:
         result -= item.eff2Value
 
     return result

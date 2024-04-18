@@ -2,7 +2,7 @@ import random
 
 import pygame
 
-from character import CLASS, eatFood, foodLeft
+from character import CLASS, eatFood
 from combat import gotKilled, monsterAttack, moveMe, playerAttack
 from constants import (
     berserkerGfx,
@@ -336,10 +336,10 @@ def updatePlayer(game):
         player_guy.planTime -= 1
         if player_guy.planTime == 0:
             player_guy.planTime = 3
-            if foodLeft() and not game.map.levelEmpty and not player.shouldExit:
+            if player.foodLeft() and not game.map.levelEmpty and not player.shouldExit:
                 player_guy.plan = PLAN.HUNT
             else:
-                if not foodLeft() and not player.haveSaidFood:
+                if not player.foodLeft() and not player.haveSaidFood:
                     player.haveSaidFood = True
                     makeSound(SFX.NEEDFOOD)
                 player_guy.plan = PLAN.EXIT

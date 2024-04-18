@@ -8,6 +8,7 @@ from combat import chickenOut, zapBadGuys
 from constants import (
     CLASS,
     classBonus,
+    className,
     DEATH_CAUSE,
     ITEM_EFFECT,
     ITEM_TYPE,
@@ -187,7 +188,7 @@ def renderCharacterData(game, shop=False):
     """
     character = game.player
     printMe(game, character.name, 8, 8)
-    printMe(game, f"Level: {character.level}", 8, 18)
+    printMe(game, f"Level: {character.level} {className(game.player.chrClass)}", 8, 18)
     printMe(game, f"Strength: {character.stat[STAT.STR]}", 8, 28)
     printMe(game, f"Speed: {character.stat[STAT.SPD]}", 8, 38)
     printMe(game, f"Accuracy: {character.stat[STAT.ACC]}", 8, 48)
@@ -286,10 +287,6 @@ def eatFood(game):
                 makeSound(SFX.EAT)
                 player.inventory = sortItems(player.inventory)
                 return
-
-
-def foodLeft():
-    pass
 
 
 MAX_NAMETYPES = 10
