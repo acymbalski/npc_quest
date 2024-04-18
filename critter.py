@@ -12,6 +12,7 @@ from constants import (
     GUYS,
     MAP_HEIGHT,
     MAP_WIDTH,
+    MAP_X,
     MAX_GUYS,
     MONSTER_GFX,
     offX,
@@ -20,7 +21,9 @@ from constants import (
     PLAYER_GFX,
     SFX,
     STAT,
+    TILE_HEIGHT,
     TILE_TYPE,
+    TILE_WIDTH,
 )
 from display import printMe
 from sound import makeSound
@@ -58,6 +61,9 @@ class Guy:
         self.level = level
         self.image = None
 
+        self.sprite_offset_x = 0
+        self.sprite_offset_y = 0
+
         # hate this
         self.berserkImage = None
 
@@ -66,13 +72,23 @@ class Guy:
             self.image = pygame.image.load(
                 PLAYER_GFX[self.game.player.chrClass]
             ).convert_alpha()
+            self.sprite_offset_x = -9
+            self.sprite_offset_y = -22
+            self.berserkImage = pygame.image.load(berserkerGfx).convert_alpha()
+            self.berserkImage.set_colorkey((255, 0, 255))
         else:
             self.image = pygame.image.load(MONSTER_GFX[self.type]).convert_alpha()
 
-        self.berserkImage = pygame.image.load(berserkerGfx).convert_alpha()
+            # aaaaahhhhh!
+            if self.type in [GUYS.GNOME, GUYS.FATBIRD, GUYS.REINDEER, GUYS.BLUEY]:
+                self.sprite_offset_x = -9
+                self.sprite_offset_y = -22
+            elif self.type in [GUYS.DOLPHIN, GUYS.HOTDOG]:
+                self.sprite_offset_x = -10
+                self.sprite_offset_y = -28
+
         # handle pink transparancy
         self.image.set_colorkey((255, 0, 255))
-        self.berserkImage.set_colorkey((255, 0, 255))
 
     def draw(self):
         if not self.image:
@@ -84,9 +100,35 @@ class Guy:
             ):
                 # AddToDispList(playerGfx[player.chrClass],MAP_X+me->x*TILE_WIDTH+TILE_WIDTH/2,me->y*TILE_HEIGHT+TILE_HEIGHT*3/4,-9,-22);
 
-                self.game.screen.blit(self.image, (self.x, self.y))
+                # draw the sprite at the x/y tile in the map, adjusted for the
+                # sprite size to the tile, plus the map offset, plus
+                # (or minus, really) some completely arbitrary offset from the
+                # original code
+                self.game.screen.blit(
+                    self.image,
+                    (
+                        self.x * TILE_WIDTH
+                        + TILE_WIDTH / 2
+                        + MAP_X
+                        + self.sprite_offset_x,
+                        self.y * TILE_HEIGHT
+                        + TILE_HEIGHT * 3 / 4
+                        + self.sprite_offset_y,
+                    ),
+                )
             else:
-                self.game.screen.blit(self.berserkImage, (self.x, self.y))
+                self.game.screen.blit(
+                    self.berserkImage,
+                    (
+                        self.x * TILE_WIDTH
+                        + TILE_WIDTH / 2
+                        + MAP_X
+                        + self.sprite_offset_x,
+                        self.y * TILE_HEIGHT
+                        + TILE_HEIGHT * 3 / 4
+                        + self.sprite_offset_y,
+                    ),
+                )
 
             if self.plan == PLAN.HUNT:
                 printMe(self.game, "Hunting...", 8, 570)
@@ -94,6 +136,14 @@ class Guy:
                 printMe(self.game, "Wandering...", 8, 570)
             elif self.plan == PLAN.EXIT:
                 printMe(self.game, "Finding a way out!", 8, 570)
+        else:
+            self.game.screen.blit(
+                self.image,
+                (
+                    self.x * TILE_WIDTH + TILE_WIDTH / 2 + MAP_X + self.sprite_offset_x,
+                    self.y * TILE_HEIGHT + TILE_HEIGHT * 3 / 4 + self.sprite_offset_y,
+                ),
+            )
 
 
 def addGuy(game, guy_type, level):
