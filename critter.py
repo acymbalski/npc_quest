@@ -196,7 +196,7 @@ def getNeighbors(game, x, y):
                     neighbors.append(game.map.guys[i])
 
     # sort neighbors by life. Lowest first
-    neighbors.sort(key=lambda z: game.map.guys[z].life)
+    neighbors.sort(key=lambda z: z.life)
 
     return neighbors
 
@@ -344,7 +344,7 @@ def updateGuy(game, guy):
     if len(neighbors) > 0:
         a = neighbors[0]
     if a:
-        monsterAttack(game, guy)
+        monsterAttack(game, guy, a)
     else:
         guy.planTime -= 1
         if guy.planTime == 0:
