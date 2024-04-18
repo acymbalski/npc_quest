@@ -4,6 +4,7 @@ import random
 from enum import Enum
 
 from constants import CLASS, classBonus, NUM_STATS, SFX, STAT
+from critter import chickenOut, zapBadGuys
 from display import printMe
 from item import getIcon, Item, ITEM_TYPE, sortItems, statChangeFromItem
 from sound import makeSound
@@ -185,8 +186,44 @@ def calcSellEffects(itm: int):
     pass
 
 
-def eatFood():
-    pass
+def eatFood(game):
+    player = game.player
+
+    if player.chrClass == CLASS.WIZARD:
+        if random.randint(1, 100) < player.level:
+            zapBadGuys(game)
+    if player.chrClass == CLASS.SALESMAN:
+        if random.randint(1, 100) < player.level:
+            chickenOut(game)
+
+    amount = 0
+
+    for i in range(7):
+        amount += player.stat[i]
+
+    amount = (amount - player.stat[STAT.STO]) / 8 - player.stat[STAT.STO]
+
+    if amount < 1:
+        amount = 1
+
+    if player.food > amount:
+        player.food -= amount
+        if player.food > 0:
+            return  # don't need any!
+    else:
+        player.food = 0
+
+    for i in range(20):
+        if player.inventory[i]:
+            item = player.inventory[i]
+            # eat!
+            if item.type == ITEM_TYPE.FOOD:
+                statChangeFromItem(player, item, -1)
+                player.food += item.value * 100
+                player.inventory[i] = None
+                makeSound(SFX.EAT)
+                player.inventory = sortItems(player.inventory)
+                return
 
 
 def foodLeft():

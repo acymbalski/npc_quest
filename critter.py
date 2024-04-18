@@ -3,7 +3,7 @@ import random
 import pygame
 
 from character import CLASS, eatFood, foodLeft
-from combat import gotKilled, monsterAttack, moveMe, playerAttack
+from combat import badGuyDie, gotKilled, monsterAttack, moveMe, playerAttack
 from constants import (
     berserkerGfx,
     DEATH_CAUSE,
@@ -449,3 +449,25 @@ def followNose2(game, guy):
         ):
             best = a
     return moveMe(game, guy, offX[best], offY[best])
+
+
+def zapBadGuys(game):
+    makeSound(SFX.ZAP)
+    for i in range(MAX_GUYS):
+        guy = game.map.guys[i]
+        if guy and guy.type != GUYS.PLAYER and guy.type != GUYS.NONE and guy.life > 0:
+            guy.life -= 1
+            if guy.life == 0:
+                badGuyDie(game, guy)
+
+            # addNum
+
+
+def chickenOut(game):
+    for i in range(MAX_GUYS):
+        guy = game.map.guys[i]
+        if guy and guy.type == GUYS.PLAYER:
+            if guy.plan == PLAN.EXIT:
+                makeSound(SFX.CHICKEN)
+                game.exitCode = EXIT_CODE.ESCAPED
+                return
