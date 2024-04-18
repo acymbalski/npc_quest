@@ -3,6 +3,7 @@ import title
 from constants import EXIT_CODE, GameState, SFX, STAT, XRES, YRES
 from map import Map
 from monster import monsters
+from notice import Notice
 from shop import Shop
 from sound import makeSound
 
@@ -29,6 +30,7 @@ class Game:
         self.shop = None
         self.level = None
         self.map = None
+        self.notice = None
 
         self.monster = monsters
 
@@ -88,7 +90,9 @@ class Game:
 
             elif self.game_state == GameState.GAME_OVER:
                 # TODO: Display game over screen
-                pass
+                if not self.notice:
+                    self.notice = Notice(self)
+                self.notice.update()
 
             # Event handling
             for event in pygame.event.get():
