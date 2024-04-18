@@ -82,6 +82,17 @@ class Shop:
         return valid_items
 
     def populateItems(self):
+        # shop at level 1 always includes these
+        if self.game.player.level == 1:
+            self.available_items.append(get_item("Polka-Dot Garden Gloves"))
+            self.available_items.append(get_item("Pointy Stick"))
+            self.available_items.append(get_item("Orthopedic Sandals"))
+
+        # and we always have these
+        self.available_items.append(get_item("Potion Of Health"))
+        self.available_items.append(get_item("Ramen Noodles"))
+
+        # populate rest of shop
         for _ in range(SHOP_AMT - 5):
             # select random valid item
             valid_item = random.choice(self.getValidItems())
@@ -89,14 +100,6 @@ class Shop:
                 self.available_items.append(valid_item)
             else:
                 break
-
-        if self.game.player.level == 1:
-            self.available_items.append(get_item("Polka-Dot Garden Gloves"))
-            self.available_items.append(get_item("Pointy Stick"))
-            self.available_items.append(get_item("Orthopedic Sandals"))
-
-        self.available_items.append(get_item("Potion Of Health"))
-        self.available_items.append(get_item("Ramen Noodles"))
 
         self.available_items = sortItems(self.available_items)
 
