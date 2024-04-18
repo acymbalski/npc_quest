@@ -1,8 +1,10 @@
 import pygame
 from basics import TextButton
-from character import Character, loadGame, savegame
+from character import Character
 from constants import GameState
 from display import printMe
+from hiscore import drawHiScores
+from utilities import loadGame, savegame
 
 NUM_SAVES = 10
 
@@ -58,6 +60,8 @@ class Title:
             background_image, (10, 40)
         )  # currently matching the original game's offset
 
+        # draw high scores
+        drawHiScores(self.game)
         # draw welcome text
         printMe(self.game, "Select a game slot to play from!", 40, 160)
         printMe(self.game, "(Right-click a slot to erase it)", 40, 170)
@@ -95,6 +99,7 @@ class Title:
                             active_character.slot = i
                             savegame(active_character)
                         self.game.game_state = GameState.SHOP
+                        self.game.title = None
                         self.game.player = active_character
 
 

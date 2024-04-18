@@ -15,7 +15,11 @@ from constants import (
     STAT,
     TILE_TYPE,
 )
+from hiscore import addHiScore
+
 from sound import makeSound
+
+from utilities import delGame
 
 
 def gotKilled(game, how):
@@ -25,7 +29,8 @@ def gotKilled(game, how):
     game.noticeType = NOTICE.STARVED
     game.game_state = GameState.NOTICE
     game.map = None
-    # TODO: rankEarned = AddHiScore()
+    delGame(game.player.slot)
+    addHiScore(game)
 
 
 def getKicked(game, me, kicker):

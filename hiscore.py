@@ -1,8 +1,8 @@
-from character import className
-from constants import LEVELS, MAX_SCORES
-from display import printMe
+import os
+import pickle
 
-# TODO: make sure we save this to hiscore.dat somewhere
+from constants import className, DEATH_NAMES, LEVELS, MAX_SCORES
+from display import printMe
 
 
 class Score:
@@ -15,22 +15,61 @@ class Score:
         self.score = score
 
     def __str__(self):
-        # TODO: Note this doesn't include the prefix of the actual number of the rank, include that elsewhere
         return f"{self.name}, a Level {self.maxLevel} {className(self.chrClass)}. Score: {self.score}"
 
 
 def rankEarned(game):
-    # TODO: add hiscore list to game, sort it here by score, return rank
-    rank = 0
-    for i in range(MAX_SCORES):
-        if game.player.xp > game.hiscore[i].score:
-            pass
-    return rank
+    # hate this whole thing
+    # get current rank in hiscore list
+    score = Score(
+        game.player.name,
+        game.player.chrClass,
+        game.player.deathCause,
+        game.level,
+        game.player.level,
+        game.player.xp,
+    )
+    for i in range(len(game.hiscores)):
+        this_score = game.hiscores[i]
+        if score.score == this_score.score and score.name == this_score.name:
+            return i
+    return -1
+
+
+def addHiScore(game):
+    game.hiscores.append(
+        Score(
+            game.player.name,
+            game.player.chrClass,
+            game.player.deathCause,
+            game.level,
+            game.player.level,
+            game.player.xp,
+        )
+    )
+    # sort the hiscores by score
+    game.hiscores = sorted(game.hiscores, key=lambda x: x.score, reverse=True)
+    # remove anything after 10
+    game.hiscores = game.hiscores[:MAX_SCORES]
+    # save scores to file
+    save_scores(game)
 
 
 def drawHiScores(game):
+    if len(game.hiscores) == 0:
+        return
+
     printMe(game, "Greatest NPCs In History", 360, 5)
-    # TODO: the rest
+
+    for i in range(len(game.hiscores)):
+        score = game.hiscores[i]
+        printMe(game, f"{i}. {str(score)}", 360, i * 30 + 30)
+        death_text = f"Defeated by {DEATH_NAMES[score.deathCause]} in {LEVELS[score.deathLevel]}."
+        if score.deathLevel.value > 9:
+            death_text = (
+                f"Defeated by {DEATH_NAMES[score.deathCause]} in A Very Bad Place."
+            )
+        printMe(game, death_text, 380, i * 30 + 40)
 
 
 def drawDeathScore(game):
@@ -40,17 +79,36 @@ def drawDeathScore(game):
         200,
         400,
     )
-    if game.level > 9:
+    if game.level.value > 9:
         printMe(
             game,
-            f"Defeated by {game.monster[game.level].name} in A Very Bad Place.",
+            f"Defeated by {DEATH_NAMES[game.player.deathCause]} in A Very Bad Place.",
             220,
             410,
         )
     else:
         printMe(
             game,
-            f"Defeated by {game.monster[game.level].name} in {LEVELS[game.level]}.",
+            f"Defeated by {DEATH_NAMES[game.player.deathCause]} in {LEVELS[game.level]}.",
             220,
             410,
         )
+
+
+def save_scores(game):
+    print("Saving hiscores")
+    with open("hiscores.dat", "wb") as f:
+        pickle.dump(game.hiscores, f)
+
+
+def load_scores(game):
+    # if file exists, load it
+    if os.path.exists("hiscores.dat"):
+        with open("hiscores.dat", "rb") as f:
+            game.hiscores = pickle.load(f)
+
+
+if __name__ == "__main__":
+    import main
+
+    main.main()

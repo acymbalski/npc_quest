@@ -1,6 +1,7 @@
 import pygame
 import title
 from constants import EXIT_CODE, GameState, NOTICE, SFX, STAT, XRES, YRES
+from hiscore import load_scores
 from map import Map
 from monster import monsters
 from notice import Notice
@@ -46,7 +47,11 @@ class Game:
         self.exitCode = EXIT_CODE.NONE
         self.noticeType = NOTICE.NONE
 
+        self.hiscores = []
         self.player = None
+
+        # load high scores
+        load_scores(self)
 
     def set_custom_cursor(self, cursor_surface, hotspot_x, hotspot_y):
         """Set a custom cursor"""
@@ -76,6 +81,8 @@ class Game:
                 running = False
 
             if self.game_state == GameState.TITLE:
+                if not self.title:
+                    self.title = title.Title(self)
                 self.title.update()
 
             elif self.game_state == GameState.SHOP:

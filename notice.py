@@ -68,6 +68,8 @@ class Notice:
 
             # check for left mouse click
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if self.game.noticeType in [NOTICE.STARVED, NOTICE.MURDERED]:
+                    self.game.game_state = GameState.TITLE
                 cursor_pos = pygame.mouse.get_pos()
                 for _, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):

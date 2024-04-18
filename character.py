@@ -137,31 +137,6 @@ def renderLevelUpLine(c: int, name: str, stat: int):
     pass
 
 
-def className(i: int) -> str:
-
-    if i == CLASS.PEASANT:
-        return "Peasant"
-    if i == CLASS.WARRIOR:
-        return "Warrior"
-    if i == CLASS.THIEF:
-        return "Thief"
-    if i == CLASS.RANGER:
-        return "Ranger"
-    if i == CLASS.WIZARD:
-        return "Wizard"
-    if i == CLASS.GUARD:
-        return "Guard"
-    if i == CLASS.CHEF:
-        return "Chef"
-    if i == CLASS.SALESMAN:
-        return "Used Car Salesman"
-    if i == CLASS.DOCTOR:
-        return "Doctor"
-    if i == CLASS.MULE:
-        return "Pack Mule"
-    return "Unknown"
-
-
 def renderLevelUpData(c: int):
     pass
 
@@ -268,39 +243,3 @@ def makeUpName() -> str:
             name = name.replace("'", "'", 1)
 
     return name
-
-
-def loadGame(w: int) -> Character:
-    # load game from save/save00X.sav
-    filename = f"save/save00{w}.sav"
-    try:
-        with open(filename, "rb") as file:
-            character = pickle.load(file)
-        return character
-    except Exception:
-        return None
-
-
-def delGame(w: int) -> bool:
-    # delete game from save/save00X.sav
-    filename = f"save/save00{w}.sav"
-    try:
-        os.remove(filename)
-        return True
-    except Exception:
-        return False
-
-
-def savegame(character: Character) -> bool:
-    # save game to save/save00X.sav
-    saveDir = "save"
-    if not os.path.exists(saveDir):
-        os.makedirs(saveDir)
-    filename = f"{saveDir}/save00{character.slot}.sav"
-    try:
-        with open(filename, "wb") as file:
-            pickle.dump(character, file)
-        return True
-    except Exception as e:
-        print(f"Error saving game: {e}")
-        return False

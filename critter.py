@@ -196,7 +196,6 @@ def updateGuys(game, timePassed, food):
                     amount = 1
                 guy.moves += amount * timePassed
             else:
-                print(guy)
                 guy.moves += game.monster[guy.type.value].speed * guy.level * timePassed
 
             if (

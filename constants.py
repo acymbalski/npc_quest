@@ -252,3 +252,41 @@ class NOTICE(Enum):
     STARVED = 1
     MURDERED = 2
     LEVELUP = 3
+
+
+# TODO: redo this
+def className(i: int) -> str:
+
+    if i == CLASS.PEASANT:
+        return "Peasant"
+    if i == CLASS.WARRIOR:
+        return "Warrior"
+    if i == CLASS.THIEF:
+        return "Thief"
+    if i == CLASS.RANGER:
+        return "Ranger"
+    if i == CLASS.WIZARD:
+        return "Wizard"
+    if i == CLASS.GUARD:
+        return "Guard"
+    if i == CLASS.CHEF:
+        return "Chef"
+    if i == CLASS.SALESMAN:
+        return "Used Car Salesman"
+    if i == CLASS.DOCTOR:
+        return "Doctor"
+    if i == CLASS.MULE:
+        return "Pack Mule"
+    return "Unknown"
+
+
+DEATH_NAMES = {
+    DEATH_CAUSE.HUNGER: "STARVATION",
+    GUYS.NONE: "",
+    GUYS.GNOME: "a Gnome",
+    GUYS.FATBIRD: "a Fatbird",
+    GUYS.DOLPHIN: "a Dolphin",
+    GUYS.HOTDOG: "a Hotdog",
+    GUYS.REINDEER: "a Reindeer",
+    GUYS.BLUEY: "a Bluey",
+}
