@@ -84,6 +84,7 @@ class Map:
         self.game.player.goneBerserk = False
         # yikes
         self.game.player.haveSaidFood = False
+        self.game.exitCode = EXIT_CODE.NONE
 
         self.action = Action(self.game)
 

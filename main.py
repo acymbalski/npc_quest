@@ -97,7 +97,6 @@ class Game:
                 self.map.update()
 
             elif self.game_state == GameState.NOTICE:
-                # TODO: Display game over screen
                 if not self.notice:
                     self.notice = Notice(self)
                 self.notice.update()
