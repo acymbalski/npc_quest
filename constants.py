@@ -154,6 +154,7 @@ class GameState(Enum):
     TITLE = 0
     SHOP = 1
     GAME = 2
+    GAME_OVER = 3
 
 
 class STAT(Enum):

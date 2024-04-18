@@ -3,6 +3,7 @@ import random
 import pygame
 from action import Action
 from constants import (
+    EXIT_CODE,
     GameState,
     GUYS,
     LEVEL,
@@ -322,6 +323,14 @@ class Map:
                 for _, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):
                         pass
+
+        # if player died or exited the map, go back to shop
+        if self.game.exitCode == EXIT_CODE.ESCAPED:
+            self.game.game_state = GameState.SHOP
+            self.game.map = None
+        elif self.game.exitCode == EXIT_CODE.DIED:
+            self.game.game_state = GameState.GAME_OVER
+            self.game.map = None
 
     def drawGuys(self):
         for i in range(MAX_GUYS):

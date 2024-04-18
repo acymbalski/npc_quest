@@ -86,6 +86,10 @@ class Game:
                     self.map = Map(self)
                 self.map.update()
 
+            elif self.game_state == GameState.GAME_OVER:
+                # TODO: Display game over screen
+                pass
+
             # Event handling
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
