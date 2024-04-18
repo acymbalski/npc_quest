@@ -55,7 +55,8 @@ class Character:
 
     def drinkPotion(self):
         # iterate through inventory
-        for item in self.inventory:
+        for i in range(len(self.inventory)):
+            item = self.inventory[i]
             # if item is not None
             if item:
                 # if item is a potion
@@ -67,7 +68,7 @@ class Character:
                         # TODO: healPlayerNum(amount)
                         self.life += amount
                         statChangeFromItem(self, item, -1)
-                        self.inventory[item] = None
+                        self.inventory[i] = None
                         makeSound(SFX.DRINK)
                         # sort inventory
                         self.inventory = sortItems(self.inventory)
