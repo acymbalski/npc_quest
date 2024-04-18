@@ -50,6 +50,17 @@ class MONSTER(Enum):
     BLUEY = 7
 
 
+class GUYS(Enum):
+    NONE = 0
+    PLAYER = 1
+    GNOME = 2
+    FATBIRD = 3
+    DOLPHIN = 4
+    HOTDOG = 5
+    REINDEER = 6
+    BLUEY = 7
+
+
 PLAYER_GFX = {
     CLASS.PEASANT: "graphics/peasant.tga",
     CLASS.WARRIOR: "graphics/knight.tga",
@@ -64,12 +75,12 @@ PLAYER_GFX = {
 }
 berserkerGfx = "graphics/knight2.tga"
 MONSTER_GFX = {
-    MONSTER.GNOME: "graphics/gnome.tga",
-    MONSTER.DOLPHIN: "graphics/dolphin.tga",
-    MONSTER.REINDEER: "graphics/reindeer.tga",
-    MONSTER.FATBIRD: "graphics/fatbird.tga",
-    MONSTER.HOTDOG: "graphics/hotdog.tga",
-    MONSTER.BLUEY: "graphics/bluey.tga",
+    GUYS.GNOME: "graphics/gnome.tga",
+    GUYS.DOLPHIN: "graphics/dolphin.tga",
+    GUYS.REINDEER: "graphics/reindeer.tga",
+    GUYS.FATBIRD: "graphics/fatbird.tga",
+    GUYS.HOTDOG: "graphics/hotdog.tga",
+    GUYS.BLUEY: "graphics/bluey.tga",
 }
 
 
@@ -220,17 +231,6 @@ class EXIT_CODE(Enum):
     NONE = 0
     ESCAPED = 2
     DIED = 3
-
-
-class GUYS(Enum):
-    NONE = 0
-    PLAYER = 1
-    GNOME = 2
-    FATBIRD = 3
-    DOLPHIN = 4
-    HOTDOG = 5
-    REINDEER = 6
-    BLUEY = 7
 
 
 class PLAN(Enum):

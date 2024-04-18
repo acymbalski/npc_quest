@@ -56,25 +56,44 @@ class Guy:
         self.moves = moves
         self.foodClock = foodClock
         self.level = level
+        self.image = None
+
+        # hate this
+        self.berserkImage = None
+
+    def load_image(self):
+        if self.type == GUYS.PLAYER:
+            self.image = pygame.image.load(
+                PLAYER_GFX[self.game.player.chrClass]
+            ).convert_alpha()
+        else:
+            self.image = pygame.image.load(MONSTER_GFX[self.type]).convert_alpha()
+
+        self.berserkImage = pygame.image.load(berserkerGfx).convert_alpha()
+        # handle pink transparancy
+        self.image.set_colorkey((255, 0, 255))
+        self.berserkImage.set_colorkey((255, 0, 255))
 
     def draw(self):
+        if not self.image:
+            self.load_image()
         if self.type == GUYS.PLAYER:
             player = self.game.player
             if player.chrClass != CLASS.WARRIOR or player.life > (
                 player.stat[STAT.LIF] / 4
             ):
                 # AddToDispList(playerGfx[player.chrClass],MAP_X+me->x*TILE_WIDTH+TILE_WIDTH/2,me->y*TILE_HEIGHT+TILE_HEIGHT*3/4,-9,-22);
-                image = pygame.image.load(PLAYER_GFX[player.chrClass]).convert_alpha()
-                self.game.screen.blit(image, (self.x, self.y))
+
+                self.game.screen.blit(self.image, (self.x, self.y))
             else:
-                self.game.screen.blit(berserkerGfx, (self.x, self.y))
+                self.game.screen.blit(self.berserkImage, (self.x, self.y))
 
             if self.plan == PLAN.HUNT:
-                printMe(self.game, 8, 570, "Hunting...")
+                printMe(self.game, "Hunting...", 8, 570)
             elif self.plan == PLAN.WANDER:
-                printMe(self.game, 8, 570, "Wandering...")
+                printMe(self.game, "Wandering...", 8, 570)
             elif self.plan == PLAN.EXIT:
-                printMe(self.game, 8, 570, "Finding a way out!")
+                printMe(self.game, "Finding a way out!", 8, 570)
 
 
 def addGuy(game, guy_type, level):
