@@ -111,7 +111,8 @@ class Shop:
             # self.game.player.inventory.append(item)
             equipItem(self.game.player, item)
             # remove item from shop
-            self.available_items.remove(item)
+            if item in self.available_items:
+                self.available_items.remove(item)
 
             # gold changed; update button backgrounds and positions
             for button in self.buttons:
