@@ -448,3 +448,9 @@ def followNose2(game, guy):
         ):
             best = a
     return moveMe(game, guy, offX[best], offY[best])
+
+
+if __name__ == "__main__":
+    import main
+
+    main.main()
