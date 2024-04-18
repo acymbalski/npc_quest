@@ -3,7 +3,7 @@ import random
 import pygame
 from basics import TextButton
 from character import renderCharacterData
-from constants import GameState, LEVEL, LEVELS, SFX, SHOP_AMT
+from constants import GameState, ITEM_TYPE, LEVEL, LEVELS, SFX, SHOP_AMT
 from item import all_items, equipItem, get_item, getIcon, sortItems
 from sound import makeSound
 
@@ -71,9 +71,9 @@ class Shop:
         valid_items = all_items.copy()
         for item in self.game.player.inventory:
             if item in valid_items and item.type not in [
-                item.ITEM_TYPE_POTION,
-                item.ITEM_TYPE_FOOD,
-                item.ITEM_TYPE_RING,
+                ITEM_TYPE.POTION,
+                ITEM_TYPE.FOOD,
+                ITEM_TYPE.RING,
             ]:
                 valid_items.remove(item)
         for item in self.available_items:
