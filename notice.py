@@ -1,6 +1,7 @@
 import pygame
 from constants import GameState, NOTICE
 from display import printMe
+from hiscore import drawDeathScore
 
 
 class Notice:
@@ -36,6 +37,7 @@ class Notice:
             )
             printMe(self.game, "and it was probably quite frustrating!", 180, 260)
             # renderDeathScore
+            drawDeathScore(self.game)
         elif self.game.noticeType == NOTICE.MURDERED:
             # blit(title,screen2,0,0,400-107,30,214,196);
             screen.blit(self.grave_image, (400 - 107, 30))
@@ -43,6 +45,7 @@ class Notice:
             printMe(self.game, "Next time, avoid getting hit by the enemies!", 200, 240)
             printMe(self.game, "That should help a lot!", 240, 260)
             # RenderDeathScore();
+            drawDeathScore(self.game)
         elif self.game.noticeType == NOTICE.LEVELUP:
             # blit(title,screen2,0,0,0,0,224,600);
             screen.blit(self.charsheet_image, (0, 0))
