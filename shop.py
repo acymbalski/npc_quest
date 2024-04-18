@@ -58,6 +58,7 @@ class Shop:
             level_button.bounding_rect_bg_color = pygame.Color("GREEN")
             level_button.bounding_rect_color = None
             self.buttons.append(level_button)
+        self.setUpInventory()
 
     def getItemHighlightColor(self, item):
         # if player can afford item, it is highlighted green on mouseover
@@ -124,8 +125,8 @@ class Shop:
                     item.name,
                     icon=getIcon(item),
                 )
-                print(
-                    f"Adding button for inventory item {item.name} at 19, {178 + i * 10}"
+                item_button.bounding_rect = pygame.Rect(
+                    item_button.x, item_button.y, 210, 10
                 )
                 self.buttons.append(item_button)
 
@@ -217,7 +218,9 @@ class Shop:
                     if button.bounding_rect.collidepoint(cursor_pos):
                         # if button.command is an "Item" type, buy it
                         if button.command.__class__.__name__ == "Item":
-                            self.buyItem(button)
+                            # if we can carry it!
+                            if self.game.player.roomToEquip(button.command):
+                                self.buyItem(button)
                         elif button.command.__class__.__name__ == "int":
                             # sell item
                             self.sellItem(button.command)
@@ -263,7 +266,7 @@ class Shop:
                     )
                 elif button.command.__class__.__name__ == "int":
                     # render stat change from selling item
-
+                    item = self.game.player.inventory[button.command]
                     stat_changes = self.game.player.getStatChanges(item, False)
                     for i in range(len(stat_changes.keys())):
                         stat = list(stat_changes.keys())[i]
@@ -273,11 +276,7 @@ class Shop:
                         prefix = "+" if stat_changes[stat] > 0 else ""
 
                         color = pygame.Color("GREEN")
-                        # if item is already equipped, display it in yellow
-                        if item in self.game.player.inventory:
-                            color = pygame.Color("YELLOW")
-                            stat_changes[stat] = 0
-                        elif stat_changes[stat] < 0:
+                        if stat_changes[stat] < 0:
                             color = pygame.Color("RED")
 
                         printMe(

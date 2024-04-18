@@ -16,7 +16,7 @@ from constants import (
     STAT,
 )
 from display import printMe
-from item import getIcon, Item, ITEM_TYPE, sortItems, statChangeFromItem
+from item import getIcon, Item, netWeightEffect, sortItems, statChangeFromItem
 from sound import makeSound
 
 
@@ -159,24 +159,25 @@ class Character:
             STAT.CAR: weight,
         }
 
+    def roomToEquip(self, item: Item) -> bool:
+        # return True or False if the player has room to equip an item
+        weight = item.weight
+        if item.type not in [ITEM_TYPE.POTION, ITEM_TYPE.RING, ITEM_TYPE.FOOD]:
+            # iterate over inventory. If we are buying this item by now, it's replacing something we already have
+            # so don't double-count the weights
+            for held_item in self.inventory:
+                if held_item:
+                    if held_item.type == item.type:
+                        weight -= netWeightEffect(held_item)
 
-def roomToEquip(weight: int, type: Item) -> bool:
-    # return True or False if the player has room to equip an item
-    # TODO: think about this one
-    if type.type not in [ITEM_TYPE.POTION, ITEM_TYPE.RING, ITEM_TYPE.FOOD]:
-        # iterate over inventory, calculate net weights?
-        for item in player.inventory:
-            if item:
-                if item.type == type.type:
-                    weight -= netWeightEffect(item)
-
-    if weight + player.totalWeight > player.stat[STAT.CAR]:
-        # TODO: MakeSound(SND_HEAVY)
-        return False
-    if player.itemCount == 20:
-        # TODO: MakeSound(SND_HEAVY)
-        return False
-    return True
+        if weight + self.totalWeight > self.stat[STAT.CAR]:
+            makeSound(SFX.HEAVY)
+            return False
+        # if we have a full 20 items...
+        if len([item for item in self.inventory if item]) == 20:
+            makeSound(SFX.HEAVY)
+            return False
+        return True
 
 
 def renderCharacterData(game, shop=False):
