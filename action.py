@@ -1,7 +1,7 @@
 import random
 
 import pygame
-from constants import EXIT_CODE, FIXAMT, GameState, GUYS, STAT
+from constants import EXIT_CODE, FIXAMT, GameState, GUYS, MAX_GUYS, STAT
 from critter import addGuy, updateGuys
 
 
@@ -73,6 +73,15 @@ class Action:
         amount /= 30
         if amount < 1:
             amount = 1
+
+        # remove dead guys
+        for i in range(MAX_GUYS):
+            guy = self.game.map.guys[i]
+            if guy:
+                if guy.type == GUYS.NONE:
+                    self.game.map.guys[i] = None
+            else:
+                break
 
         # while (
         #     ticksLeft()

@@ -132,7 +132,7 @@ def findReallyEmptySpot(game):
 def updateGuys(game, timePassed, food):
     for i in range(MAX_GUYS):
         guy = game.map.guys[i]
-        if guy:
+        if guy and guy.type != GUYS.NONE:
             if guy.type == GUYS.PLAYER:
                 guy.foodClock += food
                 if guy.foodClock > 120:
@@ -143,6 +143,7 @@ def updateGuys(game, timePassed, food):
                     amount = 1
                 guy.moves += amount * timePassed
             else:
+                print(guy)
                 guy.moves += game.monster[guy.type.value].speed * guy.level * timePassed
 
             if (
@@ -253,7 +254,7 @@ def updatePlayer(game):
     if len(neighbors) > 0:
         a = neighbors[0]
     # attack nearby monster
-    if a is not None:
+    if a is not None and a.type != GUYS.NONE:
         playerAttack(game, player, a)
         if player.chrClass == CLASS.THIEF:  # pickpocket
             gotIt = False
@@ -272,8 +273,9 @@ def updatePlayer(game):
             player.stat[STAT.ACC] /= 2  # dumb
             hit_second_enemy = False
             for neighbor in neighbors:
-                playerAttack(game, player, neighbor)
-                hit_second_enemy = True
+                if neighbor.type != GUYS.NONE:
+                    playerAttack(game, player, neighbor)
+                    hit_second_enemy = True
             if hit_second_enemy:
                 makeSound(SFX.CIRCLE)
             player.stat[STAT.STR] = strength
