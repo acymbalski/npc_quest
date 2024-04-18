@@ -4,6 +4,7 @@ import pygame
 from basics import TextButton
 from character import renderCharacterData
 from constants import GameState, ITEM_TYPE, LEVEL, LEVELS, SFX, SHOP_AMT
+from display import printMe
 from item import all_items, equipItem, get_item, getIcon, sortItems
 from sound import makeSound
 
@@ -164,6 +165,38 @@ class Shop:
                             self.game.level = button.command
                             # destroy Shop
                             self.game.shop = None
+
+        # check for hover-over-item to display stat changes
+        for _, button in enumerate(self.buttons):
+            if button.bounding_rect.collidepoint(pygame.mouse.get_pos()):
+                if button.command.__class__.__name__ == "Item":
+                    item = button.command
+                    # calculate stat changes
+                    # TODO: if this item is already equipped, don't render the comparison
+                    stat_changes = self.game.player.getStatChanges(item)
+                    for i in range(len(stat_changes.keys())):
+                        stat = list(stat_changes.keys())[i]
+                        if stat_changes[stat] == 0:
+                            continue
+                        # render text
+                        prefix = "+" if stat_changes[stat] > 0 else ""
+                        color = (
+                            pygame.Color("GREEN")
+                            if stat_changes[stat] > 0
+                            else pygame.Color("RED")
+                        )
+                        printMe(
+                            self.game,
+                            f"{prefix}{stat_changes[stat]}",
+                            150,
+                            28 + i * 10,
+                            color=color,
+                        )
+                    # render gold cost
+                    printMe(
+                        self.game, f"-${item.cost}", 150, 138, color=pygame.Color("RED")
+                    )
+        # TODO: hover-over inventory items to preview selling them; sell them
 
 
 if __name__ == "__main__":

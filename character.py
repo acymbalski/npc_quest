@@ -5,7 +5,16 @@ from enum import Enum
 
 from combat import chickenOut, zapBadGuys
 
-from constants import CLASS, classBonus, DEATH_CAUSE, NUM_STATS, SFX, STAT
+from constants import (
+    CLASS,
+    classBonus,
+    DEATH_CAUSE,
+    ITEM_EFFECT,
+    ITEM_TYPE,
+    NUM_STATS,
+    SFX,
+    STAT,
+)
 from display import printMe
 from item import getIcon, Item, ITEM_TYPE, sortItems, statChangeFromItem
 from sound import makeSound
@@ -80,6 +89,75 @@ class Character:
                 if item.type == ITEM_TYPE.FOOD:
                     return True
         return False
+
+    def getStatChanges(self, item, to_equip=True):
+        strength = 0
+        speed = 0
+        accuracy = 0
+        intellect = 0
+        defense = 0
+        stomach = 0
+        charisma = 0
+        life = 0
+        weight = 0
+
+        mult = 1
+        if not to_equip:
+            mult = -1
+
+        if item.type in [ITEM_TYPE.ARMOR, ITEM_TYPE.HELMET, ITEM_TYPE.SHIELD]:
+            defense += mult * item.value
+        elif item.type == ITEM_TYPE.WEAPON:
+            strength += mult * item.value
+        elif item.type == ITEM_TYPE.GAUNTLET:
+            accuracy += mult * item.value
+        elif item.type == ITEM_TYPE.BOOTS:
+            speed += mult * item.value
+
+        for eff, val in [
+            (item.effect, item.effValue),
+            (item.effect2, item.eff2Value),
+        ]:
+            if eff == ITEM_EFFECT.ALL:
+                strength += mult * val
+                speed += mult * val
+                accuracy += mult * val
+                intellect += mult * val
+                defense += mult * val
+                stomach += mult * val
+                charisma += mult * val
+                life += mult * val
+                weight += mult * val
+            elif eff == ITEM_EFFECT.STRENGTH:
+                strength += mult * val
+            elif eff == ITEM_EFFECT.DEFENSE:
+                defense += mult * val
+            elif eff == ITEM_EFFECT.STOMACH:
+                stomach += mult * val
+            elif eff == ITEM_EFFECT.SPEED:
+                speed += mult * val
+            elif eff == ITEM_EFFECT.ACCURACY:
+                accuracy += mult * val
+            elif eff == ITEM_EFFECT.CHARISMA:
+                charisma += mult * val
+            elif eff == ITEM_EFFECT.LIFE:
+                life += mult * val
+            elif eff == ITEM_EFFECT.CARRY:
+                weight += mult * val
+            elif eff == ITEM_EFFECT.IQ:
+                intellect += mult * val
+
+        return {
+            STAT.STR: strength,
+            STAT.SPD: speed,
+            STAT.ACC: accuracy,
+            STAT.INT: intellect,
+            STAT.DEF: defense,
+            STAT.STO: stomach,
+            STAT.CHA: charisma,
+            STAT.LIF: life,
+            STAT.CAR: weight,
+        }
 
 
 def roomToEquip(weight: int, type: Item) -> bool:
