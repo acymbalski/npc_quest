@@ -154,7 +154,7 @@ class GameState(Enum):
     TITLE = 0
     SHOP = 1
     GAME = 2
-    GAME_OVER = 3
+    NOTICE = 3
 
 
 class STAT(Enum):
@@ -232,6 +232,7 @@ class EXIT_CODE(Enum):
     NONE = 0
     ESCAPED = 2
     DIED = 3
+    STARVED = 4
 
 
 class PLAN(Enum):
@@ -243,3 +244,10 @@ class PLAN(Enum):
 class DEATH_CAUSE(Enum):
     HUNGER = 0
     MONSTER = 1
+
+
+class NOTICE(Enum):
+    NONE = 0
+    STARVED = 1
+    MURDERED = 2
+    LEVELUP = 3

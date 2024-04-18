@@ -1,6 +1,6 @@
 import pygame
 import title
-from constants import EXIT_CODE, GameState, SFX, STAT, XRES, YRES
+from constants import EXIT_CODE, GameState, NOTICE, SFX, STAT, XRES, YRES
 from map import Map
 from monster import monsters
 from notice import Notice
@@ -44,6 +44,7 @@ class Game:
         self.game_state = GameState.TITLE
 
         self.exitCode = EXIT_CODE.NONE
+        self.noticeType = NOTICE.NONE
 
         self.player = None
 
@@ -88,7 +89,7 @@ class Game:
                     self.map = Map(self)
                 self.map.update()
 
-            elif self.game_state == GameState.GAME_OVER:
+            elif self.game_state == GameState.NOTICE:
                 # TODO: Display game over screen
                 if not self.notice:
                     self.notice = Notice(self)
@@ -114,7 +115,8 @@ class Game:
             makeSound(SFX.LEVELUP)
             self.player.needXP += self.player.needXP
             self.player.level += 1
-            # notice(2)
+            self.noticeType = NOTICE.LEVELUP
+            self.game_state = GameState.NOTICE
             topStat = 0
             topSpend = self.player.ptSpend[0]
 

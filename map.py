@@ -11,6 +11,7 @@ from constants import (
     MAP_WIDTH,
     MAP_X,
     MAX_GUYS,
+    NOTICE,
     offX,
     offY,
     TILE_HEIGHT,
@@ -329,7 +330,12 @@ class Map:
             self.game.game_state = GameState.SHOP
             self.game.map = None
         elif self.game.exitCode == EXIT_CODE.DIED:
-            self.game.game_state = GameState.GAME_OVER
+            self.game.noticeType = NOTICE.MURDERED
+            self.game.game_state = GameState.NOTICE
+            self.game.map = None
+        elif self.game.exitCode == EXIT_CODE.STARVED:
+            self.game.noticeType = NOTICE.STARVED
+            self.game.game_state = GameState.NOTICE
             self.game.map = None
 
     def drawGuys(self):

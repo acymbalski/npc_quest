@@ -4,10 +4,12 @@ from constants import (
     CLASS,
     DEATH_CAUSE,
     EXIT_CODE,
+    GameState,
     GUYS,
     MAP_HEIGHT,
     MAP_WIDTH,
     MAX_GUYS,
+    NOTICE,
     PLAN,
     SFX,
     STAT,
@@ -20,6 +22,9 @@ def gotKilled(game, how):
     game.player.life = 0
     game.player.deathHow = how.value
     game.exitCode = EXIT_CODE.DIED
+    game.noticeType = NOTICE.STARVED
+    game.game_state = GameState.NOTICE
+    game.map = None
     # TODO: rankEarned = AddHiScore()
 
 
