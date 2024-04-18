@@ -1,9 +1,10 @@
 import pygame
 import title
-from constants import EXIT_CODE, GameState, XRES, YRES
+from constants import EXIT_CODE, GameState, SFX, STAT, XRES, YRES
 from map import Map
 from monster import monsters
 from shop import Shop
+from sound import makeSound
 
 
 class Game:
@@ -99,6 +100,21 @@ class Game:
 
         # Quit Pygame
         pygame.quit()
+
+    def levelUp(self):
+        while self.player.xp >= self.player.needXP:
+            makeSound(SFX.LEVELUP)
+            self.player.needXP += self.player.needXP
+            self.player.level += 1
+            # notice(2)
+            topStat = 0
+            topSpend = self.player.ptSpend[0]
+
+            for i in range(len(STAT)):
+                if self.player.ptSpend[i] > topSpend:
+                    topStat = i
+                    topSpend = self.player.ptSpend[i]
+            self.player.chrClass = topStat + 1
 
 
 def main():
