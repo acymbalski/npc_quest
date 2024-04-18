@@ -143,9 +143,7 @@ def updateGuys(game, timePassed, food):
                     amount = 1
                 guy.moves += amount * timePassed
             else:
-                guy.moves += (
-                    game.monsters[guy.type.value].speed * guy.level * timePassed
-                )
+                guy.moves += game.monster[guy.type.value].speed * guy.level * timePassed
 
             if (
                 guy.type == GUYS.PLAYER
@@ -176,10 +174,16 @@ def isEnemy(me, you):
 
 def getNeighbors(game, x, y):
     neighbors = []
-    player = game.player
+    # get guy at x, y
+    guy = None
+    for i in range(MAX_GUYS):
+        if game.map.guys[i] is not None:
+            if game.map.guys[i].x == x and game.map.guys[i].y == y:
+                guy = game.map.guys[i]
+                break
     for a in range(3):
-        x = player.x + offX[a]
-        y = player.y + offY[a]
+        x = guy.x + offX[a]
+        y = guy.y + offY[a]
         if x < 0 or x >= MAP_WIDTH or y < 0 or y >= MAP_HEIGHT:
             continue
         for i in range(MAX_GUYS):
@@ -187,12 +191,12 @@ def getNeighbors(game, x, y):
                 if (
                     game.map.guys[i].x == x
                     and game.map.guys[i].y == y
-                    and isEnemy(player, game.map.guys[i])
+                    and isEnemy(guy, game.map.guys[i])
                 ):
-                    neighbors.append(i)
+                    neighbors.append(game.map.guys[i])
 
     # sort neighbors by life. Lowest first
-    neighbors.sort(key=lambda x: game.map.guys[x].life)
+    neighbors.sort(key=lambda z: game.map.guys[z].life)
 
     return neighbors
 
@@ -218,6 +222,13 @@ def moreBadGuysLive(game):
 
 def updatePlayer(game):
     player = game.player
+    # get player's Guy
+    player_guy = None
+    for i in range(MAX_GUYS):
+        if game.map.guys[i] is not None:
+            if game.map.guys[i].type == GUYS.PLAYER:
+                player_guy = game.map.guys[i]
+                break
     haveSaidFood = False
 
     if (
@@ -237,7 +248,7 @@ def updatePlayer(game):
         gotKilled(game, player.deathCause)
 
     # get adjacent monsters
-    neighbors = getNeighbors(game, player.x, player.y)
+    neighbors = getNeighbors(game, player_guy.x, player_guy.y)
     a = None
     if len(neighbors) > 0:
         a = neighbors[0]
@@ -269,26 +280,29 @@ def updatePlayer(game):
             player.stat[STAT.ACC] = acc
     else:
         # no foe
-        player.planTime -= 1
-        if player.planTime == 0:
-            player.planTime = 3
+        player_guy.planTime -= 1
+        if player_guy.planTime == 0:
+            player_guy.planTime = 3
             if foodLeft() and not game.map.levelEmpty and not player.shouldExit:
-                player.plan = PLAN.HUNT
+                player_guy.plan = PLAN.HUNT
             else:
                 if not foodLeft() and not haveSaidFood:
                     haveSaidFood = True
                     makeSound(SFX.NEEDFOOD)
-                player.plan = PLAN.EXIT
-        if player.plan == PLAN.WANDER:
+                player_guy.plan = PLAN.EXIT
+        if player_guy.plan == PLAN.WANDER:
             a = random.randint(0, 3)
-            moveMe(game, player, offX[a], offY[a])
-        elif player.plan == PLAN.HUNT:
-            if not followNose2(game, player):
-                player.plan = PLAN.WANDER
-                player.planTime = 3
-        elif player.plan == PLAN.EXIT:
-            followNose(game, player)
-            if game.map.map[player.x + player.y * MAP_WIDTH].type == TILE_TYPE.DOOR:
+            moveMe(game, player_guy, offX[a], offY[a])
+        elif player_guy.plan == PLAN.HUNT:
+            if not followNose2(game, player_guy):
+                player_guy.plan = PLAN.WANDER
+                player_guy.planTime = 3
+        elif player_guy.plan == PLAN.EXIT:
+            followNose(game, player_guy)
+            if (
+                game.map.map[player_guy.x + player_guy.y * MAP_WIDTH].type
+                == TILE_TYPE.DOOR
+            ):
                 game.exitCode = EXIT_CODE.ESCAPED
 
 

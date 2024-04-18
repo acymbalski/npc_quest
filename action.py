@@ -2,7 +2,7 @@ import random
 
 import pygame
 from constants import EXIT_CODE, FIXAMT, GameState, GUYS, STAT
-from critter import addGuy
+from critter import addGuy, updateGuys
 
 
 class Action:
@@ -79,11 +79,14 @@ class Action:
         # ):  # we can probably ignore this, it is trying to just do a game loop at 60fps
         # self.game.map.updateMap()
         # if lmb is held...
-        # updateCombatNums()
-        # updateGuys(amount * 8, 8)
+        mouse_buttons = pygame.mouse.get_pressed()
+        if mouse_buttons[0]:
+            # updateCombatNums()
+            updateGuys(self.game, amount * 8, 8)
         # else:
-        # updateCombatNums()
-        # updateGuys(amount, 1)
+        else:
+            # updateCombatNums()
+            updateGuys(self.game, amount, 1)
         # if rmb is held...
         # self.game.player.shouldExit = True
 
@@ -100,11 +103,14 @@ class Action:
                     self.game.game_state = GameState.QUIT
 
             # check for left mouse click
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                cursor_pos = pygame.mouse.get_pos()
-                for _, button in enumerate(self.buttons):
-                    if button.bounding_rect.collidepoint(cursor_pos):
-                        pass
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    cursor_pos = pygame.mouse.get_pos()
+                    for _, button in enumerate(self.buttons):
+                        if button.bounding_rect.collidepoint(cursor_pos):
+                            pass
+                if event.button == 3:
+                    self.game.player.shouldExit = True
 
 
 if __name__ == "__main__":
