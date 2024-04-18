@@ -232,10 +232,6 @@ def foodLeft():
     pass
 
 
-def levelUp():
-    pass
-
-
 MAX_NAMETYPES = 10
 
 
