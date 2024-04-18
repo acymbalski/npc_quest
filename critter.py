@@ -3,7 +3,7 @@ import random
 import pygame
 
 from character import CLASS, eatFood, foodLeft
-from combat import badGuyDie, gotKilled, monsterAttack, moveMe, playerAttack
+from combat import gotKilled, monsterAttack, moveMe, playerAttack
 from constants import (
     berserkerGfx,
     DEATH_CAUSE,
@@ -190,7 +190,7 @@ def updateGuys(game, timePassed, food):
                 guy.foodClock += food
                 if guy.foodClock > 120:
                     guy.foodClock -= 120
-                    eatFood()
+                    eatFood(game)
                 amount = game.player.stat[STAT.SPD]
                 if amount < 1:
                     amount = 1
@@ -283,7 +283,6 @@ def updatePlayer(game):
             if game.map.guys[i].type == GUYS.PLAYER:
                 player_guy = game.map.guys[i]
                 break
-    haveSaidFood = False
 
     if (
         player.chrClass == CLASS.WARRIOR
@@ -341,8 +340,8 @@ def updatePlayer(game):
             if foodLeft() and not game.map.levelEmpty and not player.shouldExit:
                 player_guy.plan = PLAN.HUNT
             else:
-                if not foodLeft() and not haveSaidFood:
-                    haveSaidFood = True
+                if not foodLeft() and not player.haveSaidFood:
+                    player.haveSaidFood = True
                     makeSound(SFX.NEEDFOOD)
                 player_guy.plan = PLAN.EXIT
         if player_guy.plan == PLAN.WANDER:
@@ -449,25 +448,3 @@ def followNose2(game, guy):
         ):
             best = a
     return moveMe(game, guy, offX[best], offY[best])
-
-
-def zapBadGuys(game):
-    makeSound(SFX.ZAP)
-    for i in range(MAX_GUYS):
-        guy = game.map.guys[i]
-        if guy and guy.type != GUYS.PLAYER and guy.type != GUYS.NONE and guy.life > 0:
-            guy.life -= 1
-            if guy.life == 0:
-                badGuyDie(game, guy)
-
-            # addNum
-
-
-def chickenOut(game):
-    for i in range(MAX_GUYS):
-        guy = game.map.guys[i]
-        if guy and guy.type == GUYS.PLAYER:
-            if guy.plan == PLAN.EXIT:
-                makeSound(SFX.CHICKEN)
-                game.exitCode = EXIT_CODE.ESCAPED
-                return

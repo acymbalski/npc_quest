@@ -80,6 +80,8 @@ class Map:
 
         # reset player's berserk status
         self.game.player.goneBerserk = False
+        # yikes
+        self.game.player.haveSaidFood = False
 
         self.action = Action(self.game)
 

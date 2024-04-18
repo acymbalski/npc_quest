@@ -3,8 +3,9 @@ import pickle
 import random
 from enum import Enum
 
+from combat import chickenOut, zapBadGuys
+
 from constants import CLASS, classBonus, NUM_STATS, SFX, STAT
-from critter import chickenOut, zapBadGuys
 from display import printMe
 from item import getIcon, Item, ITEM_TYPE, sortItems, statChangeFromItem
 from sound import makeSound
@@ -47,9 +48,10 @@ class Character:
         self.score = 0
 
         self.goneBerserk = False
+        self.haveSaidFood = False
 
     def __str__(self):
-        return f"Character-> xp: {self.xp}, level: {self.level}, life: {self.life}, gold: {self.gold}, totalWeight: {self.totalWeight}, itemCount: {self.itemCount}, food: {self.food}, inventory: {self.inventory}, ptSpend: {self.ptSpend}, chrClass: {self.chrClass}, shouldExit: {self.shouldExit}, name: {self.name}, deathCause: {self.deathCause}, deathHow: {self.deathHow}, slot: {self.slot}, score: {self.score}, goneBerserk: {self.goneBerserk}"
+        return f"Character-> xp: {self.xp}, level: {self.level}, life: {self.life}, gold: {self.gold}, totalWeight: {self.totalWeight}, itemCount: {self.itemCount}, food: {self.food}, inventory: {self.inventory}, ptSpend: {self.ptSpend}, chrClass: {self.chrClass}, shouldExit: {self.shouldExit}, name: {self.name}, deathCause: {self.deathCause}, slot: {self.slot}, score: {self.score}, goneBerserk: {self.goneBerserk}"
 
     def drinkPotion(self):
         # iterate through inventory
@@ -199,7 +201,7 @@ def eatFood(game):
     amount = 0
 
     for i in range(7):
-        amount += player.stat[i]
+        amount += player.stat[STAT(i)]
 
     amount = (amount - player.stat[STAT.STO]) / 8 - player.stat[STAT.STO]
 
