@@ -17,7 +17,8 @@ from sound import makeSound
 
 def gotKilled(game, how):
     game.player.life = 0
-    game.exitCode = EXIT_CODE.DIED + how.value  # TODO: cause of death needs rework
+    game.player.deathHow = how.value
+    game.exitCode = EXIT_CODE.DIED
     # TODO: rankEarned = AddHiScore()
 
 

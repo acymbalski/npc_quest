@@ -41,6 +41,7 @@ class Character:
         self.shouldExit = 0
         self.name = makeUpName()
         self.deathCause = 0
+        self.deathHow = None
         self.slot = 0
         self.score = 0
 
