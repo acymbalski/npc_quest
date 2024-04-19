@@ -12,10 +12,10 @@ class Score:
         self.deathCause = deathCause
         self.deathLevel = deathLevel
         self.maxLevel = maxLevel
-        self.score = score
+        self.score = int(score)
 
     def __str__(self):
-        return f"{self.name}, a Level {self.maxLevel} {CLASS_NAME[self.chrClass]}. Score: {self.score}"
+        return f"{self.name}, a Level {self.maxLevel} {CLASS_NAME[self.chrClass]}. Score: {int(self.score)}"
 
 
 def rankEarned(game):
