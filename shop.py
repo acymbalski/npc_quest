@@ -246,11 +246,8 @@ class Shop:
                         prefix = "+" if stat_changes[stat] > 0 else ""
 
                         color = pygame.Color("GREEN")
-                        # if item is already equipped, display it in yellow
-                        if item in self.game.player.inventory:
-                            color = pygame.Color("YELLOW")
-                            stat_changes[stat] = 0
-                        elif stat_changes[stat] < 0:
+
+                        if stat_changes[stat] < 0:
                             color = pygame.Color("RED")
 
                         printMe(

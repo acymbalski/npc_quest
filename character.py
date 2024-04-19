@@ -106,6 +106,35 @@ class Character:
         if not to_equip:
             mult = -1
 
+        # if this item is replacing single-carry items,
+        # get the stat changes from un-equiping that item and then apply the new changes
+        unequip_stat_changes = {
+            STAT.STR: 0,
+            STAT.SPD: 0,
+            STAT.ACC: 0,
+            STAT.INT: 0,
+            STAT.DEF: 0,
+            STAT.STO: 0,
+            STAT.CHA: 0,
+            STAT.LIF: 0,
+            STAT.CAR: 0,
+        }
+        if (
+            item.type
+            not in [
+                ITEM_TYPE.POTION,
+                ITEM_TYPE.RING,
+                ITEM_TYPE.FOOD,
+            ]
+            and to_equip
+        ):  # multi-carry items
+            for held_item in self.inventory:
+                if held_item:
+                    if held_item.type == item.type:
+                        unequip_stat_changes = self.getStatChanges(
+                            held_item, to_equip=False
+                        )
+
         if item.type in [ITEM_TYPE.ARMOR, ITEM_TYPE.HELMET, ITEM_TYPE.SHIELD]:
             defense += mult * item.value
         elif item.type == ITEM_TYPE.WEAPON:
@@ -149,15 +178,15 @@ class Character:
                 intellect += mult * val
 
         return {
-            STAT.STR: strength,
-            STAT.SPD: speed,
-            STAT.ACC: accuracy,
-            STAT.INT: intellect,
-            STAT.DEF: defense,
-            STAT.STO: stomach,
-            STAT.CHA: charisma,
-            STAT.LIF: life,
-            STAT.CAR: weight,
+            STAT.STR: strength + unequip_stat_changes[STAT.STR],
+            STAT.SPD: speed + unequip_stat_changes[STAT.SPD],
+            STAT.ACC: accuracy + unequip_stat_changes[STAT.ACC],
+            STAT.INT: intellect + unequip_stat_changes[STAT.INT],
+            STAT.DEF: defense + unequip_stat_changes[STAT.DEF],
+            STAT.STO: stomach + unequip_stat_changes[STAT.STO],
+            STAT.CHA: charisma + unequip_stat_changes[STAT.CHA],
+            STAT.LIF: life + unequip_stat_changes[STAT.LIF],
+            STAT.CAR: weight + unequip_stat_changes[STAT.CAR],
         }
 
     def roomToEquip(self, item: Item) -> bool:
