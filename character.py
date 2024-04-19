@@ -252,7 +252,7 @@ def renderCharacterData(game, shop=False):
         printMe(game, "Special Ability:", 8, 400)
         printMe(game, classBonus[character.chrClass], 20, 410)
 
-    printMe(game, f"Food In Tummy: {character.food}", 8, 580)
+    printMe(game, f"Food In Tummy: {int(character.food)}", 8, 580)
 
 
 def renderLevelUpLine(c: int, name: str, stat: int):
