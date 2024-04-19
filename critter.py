@@ -349,7 +349,7 @@ def updatePlayer(game):
             player.stat[STAT.STR] = strength
             player.stat[STAT.ACC] = acc
     else:
-        # no foe
+        # no foe adjacent
         player_guy.planTime -= 1
         if player_guy.planTime == 0:
             player_guy.planTime = 3

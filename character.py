@@ -52,7 +52,7 @@ class Character:
         self.ptSpend = [0] * NUM_STATS
         self.ptsLeft = 0
         self.chrClass = CLASS.PEASANT
-        self.shouldExit = 0
+        self.shouldExit = False
         self.name = makeUpName()
         self.deathCause = DEATH_CAUSE.NONE
         self.deathHow = 0

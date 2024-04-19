@@ -10,11 +10,12 @@ class Action:
     def __init__(self, game):
         self.game = game
         self.buttons = []
-        self.shouldExit = False
         self.level = self.game.level
 
         # have to init late due to a wacko circular reference I think
         self.is_initialized = False
+
+        self.game.player.shouldExit = False
 
     def finishInit(self):
         self.is_initialized = True
@@ -114,6 +115,7 @@ class Action:
                         if button.bounding_rect.collidepoint(cursor_pos):
                             pass
                 if event.button == 3:
+                    print("RMB clicked, exiting...")
                     self.game.player.shouldExit = True
 
 
