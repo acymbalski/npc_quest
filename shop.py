@@ -219,7 +219,15 @@ class Shop:
                 self.game.player.gold += 1
                 # should we really be updating all the buttons every single time? I dunno
                 self.updateItemHighlights()
-                print("Giving player 1 gold!")
+            if keys[pygame.K_d]:
+                # shift-D - major debug mode
+                self.game.player.inventory[0] = get_item("Potion Of Health")
+                self.game.player.inventory[1] = get_item("Potion Of Health")
+                self.game.player.inventory[2] = get_item("Ramen Noodles")
+                self.game.player.inventory[3] = get_item("Ramen Noodles")
+                self.game.player.inventory[4] = get_item("Ramen Noodles")
+                for stat in self.game.player.stat.keys():
+                    self.game.player.stat[stat] = 100
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
