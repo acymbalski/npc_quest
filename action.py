@@ -82,7 +82,7 @@ class Action:
                 if guy.type == GUYS.NONE:
                     self.game.map.guys[i] = None
             else:
-                break
+                continue
 
         # while (
         #     ticksLeft()
