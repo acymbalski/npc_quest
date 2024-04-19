@@ -120,7 +120,7 @@ class Shop:
                 item_button = TextButton(
                     self.game,
                     i,  # command
-                    19,
+                    8,
                     178 + i * 10,
                     item.name,
                     icon=getIcon(item),
@@ -200,7 +200,7 @@ class Shop:
         inventory_items = len([item for item in self.game.player.inventory if item])
         # draw None inventory items
         for i in range(20 - inventory_items):
-            printMe(self.game, "......", 19, 178 + (inventory_items + i) * 10)
+            printMe(self.game, "......", 8, 178 + (inventory_items + i) * 10)
 
         for button in self.buttons:
             button.draw()

@@ -188,20 +188,27 @@ def renderCharacterData(game, shop=False):
     """
     character = game.player
     printMe(game, character.name, 8, 8)
-    printMe(game, f"Level: {character.level} {className(game.player.chrClass)}", 8, 18)
-    printMe(game, f"Strength: {character.stat[STAT.STR]}", 8, 28)
-    printMe(game, f"Speed: {character.stat[STAT.SPD]}", 8, 38)
-    printMe(game, f"Accuracy: {character.stat[STAT.ACC]}", 8, 48)
-    printMe(game, f"Intellect: {character.stat[STAT.INT]}", 8, 58)
-    printMe(game, f"Defense: {character.stat[STAT.DEF]}", 8, 68)
-    printMe(game, f"Stomach: {character.stat[STAT.STO]}", 8, 78)
-    printMe(game, f"Charisma: {character.stat[STAT.CHA]}", 8, 88)
+    printMe(
+        game,
+        f"Level {character.level} {className(game.player.chrClass)}",
+        8,
+        18,
+    )
+    printMe(game, "{:<10} {}".format("Strength:", character.stat[STAT.STR]), 8, 28)
+    printMe(game, "{:<10} {}".format("Speed:", character.stat[STAT.SPD]), 8, 38)
+    printMe(game, "{:<10} {}".format("Accuracy:", character.stat[STAT.ACC]), 8, 48)
+    printMe(game, "{:<10} {}".format("Intellect:", character.stat[STAT.INT]), 8, 58)
+    printMe(game, "{:<10} {}".format("Defense:", character.stat[STAT.DEF]), 8, 68)
+    printMe(game, "{:<10} {}".format("Stomach:", character.stat[STAT.STO]), 8, 78)
+    printMe(game, "{:<10} {}".format("Charisma:", character.stat[STAT.CHA]), 8, 88)
 
-    printMe(game, f"XP needed: {character.needXP-character.xp}", 8, 108)
-    printMe(game, f"Life: {character.stat[STAT.LIF]}", 8, 118)
+    printMe(
+        game, "{:<10} {}".format("XP needed:", character.needXP - character.xp), 8, 108
+    )
+    printMe(game, "{:<10} {}".format("Life:", character.stat[STAT.LIF]), 8, 118)
 
-    printMe(game, f"Weight: {character.stat[STAT.CAR]}", 8, 128)
-    printMe(game, f"Gold: {character.gold}", 8, 138)
+    printMe(game, "{:<10} {}".format("Weight:", character.stat[STAT.CAR]), 8, 128)
+    printMe(game, "{:<10} ${}".format("Gold:", character.gold), 8, 138)
 
     printMe(game, "Inventory", 8, 158)
     if not shop:
