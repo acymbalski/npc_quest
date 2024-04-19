@@ -323,8 +323,13 @@ def updatePlayer(game):
                     player.gold += game.level.value + 1
                     x, y = get_map_xy(guy.x, guy.y)
                     game.toasts.append(
-                        Toast(game, str(game.level.value + 1), x, y),
-                        color=pygame.Color(255, 255, 0),
+                        Toast(
+                            game,
+                            str(game.level.value + 1),
+                            x,
+                            y,
+                            color=pygame.Color(255, 255, 0),
+                        )
                     )
 
             if gotIt:
