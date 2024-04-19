@@ -939,29 +939,29 @@ def calcSwapCost(player, item):
     return cost_of_new_item - cost_of_old_item
 
 
-def specialEffect(player, item: Item, amt: int, mult: str):
-    if item.type == ITEM_EFFECT.ALL:
+def specialEffect(player, effect, amt: int, mult: str):
+    if effect == ITEM_EFFECT.ALL:
         for stat in STAT:
             player.stat[stat] += mult * amt
-    elif item.type == ITEM_EFFECT.STRENGTH:
+    elif effect == ITEM_EFFECT.STRENGTH:
         player.stat[STAT.STR] += mult * amt
-    elif item.type == ITEM_EFFECT.DEFENSE:
+    elif effect == ITEM_EFFECT.DEFENSE:
         player.stat[STAT.DEF] += mult * amt
-    elif item.type == ITEM_EFFECT.STOMACH:
+    elif effect == ITEM_EFFECT.STOMACH:
         player.stat[STAT.STO] += mult * amt
-    elif item.type == ITEM_EFFECT.SPEED:
+    elif effect == ITEM_EFFECT.SPEED:
         player.stat[STAT.SPD] += mult * amt
-    elif item.type == ITEM_EFFECT.ACCURACY:
+    elif effect == ITEM_EFFECT.ACCURACY:
         player.stat[STAT.ACC] += mult * amt
-    elif item.type == ITEM_EFFECT.CHARISMA:
+    elif effect == ITEM_EFFECT.CHARISMA:
         player.stat[STAT.CHA] += mult * amt
-    elif item.type == ITEM_EFFECT.LIFE:
+    elif effect == ITEM_EFFECT.LIFE:
         player.stat[STAT.LIF] += mult * amt
         if player.life > player.stat[STAT.LIF]:
             player.life = player.stat[STAT.LIF]
-    elif item.type == ITEM_EFFECT.CARRY:
+    elif effect == ITEM_EFFECT.CARRY:
         player.stat[STAT.CAR] += mult * amt
-    elif item.type == ITEM_EFFECT.IQ:
+    elif effect == ITEM_EFFECT.IQ:
         player.stat[STAT.INT] += mult * amt
 
 
@@ -977,8 +977,8 @@ def statChangeFromItem(player, item: Item, mult: str):
     elif item.type == ITEM_TYPE.BOOTS:
         player.stat[STAT.SPD] += mult * item.value
 
-    specialEffect(player, item, item.effValue, mult)
-    specialEffect(player, item, item.eff2Value, mult)
+    specialEffect(player, item.effect, item.effValue, mult)
+    specialEffect(player, item.effect2, item.eff2Value, mult)
 
 
 def equipItem(player, item: Item):
@@ -991,13 +991,13 @@ def equipItem(player, item: Item):
                 and item is not None
                 and player.inventory[i].type == item.type
             ):
-                # TODO: implement calcSell
                 player.gold += calcSell(player, player.inventory[i])
                 statChangeFromItem(player, player.inventory[i], -1)  # unequip item
                 player.inventory[i] = item
                 statChangeFromItem(player, item, 1)  # equip the new one, and done!
                 return
 
+    # otherwise equip it in the first empty slot
     for i in range(20):
         if player.inventory[i] is None:
             statChangeFromItem(player, item, 1)
