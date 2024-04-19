@@ -63,7 +63,7 @@ def drawHiScores(game):
 
     for i in range(len(game.hiscores)):
         score = game.hiscores[i]
-        printMe(game, f"{i}. {str(score)}", 360, i * 30 + 30)
+        printMe(game, f"{i + 1}. {str(score)}", 360, i * 30 + 30)
         death_text = f"Defeated by {DEATH_NAMES[score.deathCause]} in {LEVELS[score.deathLevel]}."
         if score.deathLevel.value > 9:
             death_text = (
