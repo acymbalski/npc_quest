@@ -230,6 +230,8 @@ def getNeighbors(game, x, y):
     # get guy at x, y
     guy = None
     for i in range(MAX_GUYS):
+        # TODO: Something is up with guys dying and possibly not being removed correctly
+        # got a None on the map here. So the map was removed but we are still fighting?
         if game.map.guys[i] is not None:
             if game.map.guys[i].x == x and game.map.guys[i].y == y:
                 guy = game.map.guys[i]

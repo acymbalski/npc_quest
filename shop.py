@@ -1,4 +1,5 @@
 import random
+import time
 
 import pygame
 from basics import TextButton
@@ -139,6 +140,16 @@ class Shop:
         self.game.player.inventory[item_index] = None
 
         # gold changed; update button backgrounds and positions
+        self.updateItemHighlights()
+
+        # sort player inventory
+        self.game.player.inventory = sortItems(self.game.player.inventory)
+
+        self.setUpInventory()
+        # play sound effect
+        makeSound(SFX.CHACHING)
+
+    def updateItemHighlights(self):
         for button in self.buttons:
             # if button.command is an item...
             if button.command.__class__.__name__ == "Item":
@@ -148,13 +159,6 @@ class Shop:
                 button.y = 20 + 10 * self.buttons.index(button)
                 button.rect.topleft = (button.x, button.y)
                 button.bounding_rect.topleft = (button.x, button.y)
-
-        # sort player inventory
-        self.game.player.inventory = sortItems(self.game.player.inventory)
-
-        self.setUpInventory()
-        # play sound effect
-        makeSound(SFX.CHACHING)
 
     def buyItem(self, button):
 
@@ -171,15 +175,7 @@ class Shop:
                 self.available_items.remove(item)
 
             # gold changed; update button backgrounds and positions
-            for button in self.buttons:
-                # if button.command is an item...
-                if button.command.__class__.__name__ == "Item":
-                    button.bounding_rect_bg_color = self.getItemHighlightColor(
-                        button.command
-                    )
-                    button.y = 20 + 10 * self.buttons.index(button)
-                    button.rect.topleft = (button.x, button.y)
-                    button.bounding_rect.topleft = (button.x, button.y)
+            self.updateItemHighlights()
 
             # play sound effect
             makeSound(SFX.CHACHING)
@@ -204,10 +200,30 @@ class Shop:
 
         for button in self.buttons:
             button.draw()
+        # if SHIFT is held...
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
+            # and if Q is pressed...
+            if keys[pygame.K_q]:
+                # load level Shift Q
+                self.game.game_state = GameState.GAME
+                self.game.level = LEVEL.SHIFT_Q
+                self.game.shop = None
+                print("Loading Shift Q...")
+            # and if A is pressed...
+            if keys[pygame.K_a]:
+                # give player 10 gold! What the heck!
+                # note: because we are looping so much faster than the original game,
+                # this is dropped from 100 to 1. We probably still give
+                # more cash per second
+                self.game.player.gold += 1
+                # should we really be updating all the buttons every single time? I dunno
+                self.updateItemHighlights()
+                print("Giving player 1 gold!")
 
         for event in pygame.event.get():
-            # check for escape key
             if event.type == pygame.KEYDOWN:
+                # check for escape key
                 if event.key == pygame.K_ESCAPE:
                     self.game.game_state = GameState.TITLE
                     self.game.shop = None
