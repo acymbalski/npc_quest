@@ -113,7 +113,8 @@ def playerAttack(game, me, you):
                 makeSound(SFX.CHOMP)
                 if game.player.life < game.player.stat[STAT.LIF]:
                     game.player.life += 1
-                    x, y = get_map_xy(me.x, me.y)
+                    player_guy = game.map.get_player_guy()
+                    x, y = get_map_xy(player_guy.x, player_guy.y)
                     game.toasts.append(
                         Toast(
                             game,
