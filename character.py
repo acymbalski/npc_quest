@@ -234,7 +234,7 @@ class Character:
         return True
 
 
-def renderCharacterData(game, shop=False):
+def renderCharacterData(game, shop=False, levelUp=False):
     """
     Render character data - stats, name, inventory, etc - to the screen.
     if shop is True, don't render the inventory
@@ -247,20 +247,34 @@ def renderCharacterData(game, shop=False):
         8,
         18,
     )
-    printMe(game, "{:<10} {}".format("Strength:", character.stat[STAT.STR]), 8, 28)
-    printMe(game, "{:<10} {}".format("Speed:", character.stat[STAT.SPD]), 8, 38)
-    printMe(game, "{:<10} {}".format("Accuracy:", character.stat[STAT.ACC]), 8, 48)
-    printMe(game, "{:<10} {}".format("Intellect:", character.stat[STAT.INT]), 8, 58)
-    printMe(game, "{:<10} {}".format("Defense:", character.stat[STAT.DEF]), 8, 68)
-    printMe(game, "{:<10} {}".format("Stomach:", character.stat[STAT.STO]), 8, 78)
-    printMe(game, "{:<10} {}".format("Charisma:", character.stat[STAT.CHA]), 8, 88)
+    if not levelUp:  # levelling up renders these as buttons
+        printMe(game, "{:<10} {}".format("Strength:", character.stat[STAT.STR]), 8, 28)
+        printMe(game, "{:<10} {}".format("Speed:", character.stat[STAT.SPD]), 8, 38)
+        printMe(game, "{:<10} {}".format("Accuracy:", character.stat[STAT.ACC]), 8, 48)
+        printMe(game, "{:<10} {}".format("Intellect:", character.stat[STAT.INT]), 8, 58)
+        printMe(game, "{:<10} {}".format("Defense:", character.stat[STAT.DEF]), 8, 68)
+        printMe(game, "{:<10} {}".format("Stomach:", character.stat[STAT.STO]), 8, 78)
+        printMe(game, "{:<10} {}".format("Charisma:", character.stat[STAT.CHA]), 8, 88)
 
     printMe(
         game, "{:<10} {}".format("XP needed:", character.needXP - character.xp), 8, 108
     )
-    printMe(game, "{:<10} {}".format("Life:", character.stat[STAT.LIF]), 8, 118)
+    if not levelUp:
+        printMe(
+            game,
+            "{:<10} {}/{}".format("Life:", character.life, character.stat[STAT.LIF]),
+            8,
+            118,
+        )
 
-    printMe(game, "{:<10} {}".format("Weight:", character.stat[STAT.CAR]), 8, 128)
+        printMe(
+            game,
+            "{:<10} {}/{}".format(
+                "Weight:", character.totalWeight, character.stat[STAT.CAR]
+            ),
+            8,
+            128,
+        )
     printMe(game, "{:<10} ${}".format("Gold:", character.gold), 8, 138)
 
     printMe(game, "Inventory", 8, 158)

@@ -1,7 +1,9 @@
 import pygame
-from constants import GameState, NOTICE
+from basics import TextButton
+from constants import GameState, NOTICE, SFX, STAT
 from display import printMe
 from hiscore import drawDeathScore
+from sound import makeSound
 
 
 class Notice:
@@ -14,6 +16,41 @@ class Notice:
         self.grave_image = pygame.image.load("graphics/grave.tga")
         self.charsheet_image.set_colorkey((255, 0, 255))
         self.grave_image.set_colorkey((255, 0, 255))
+
+        self.level_up_buttons_initialized = False
+
+    def init_level_up_buttons(self):
+        self.level_up_buttons_initialized = True
+
+        self.buttons = []
+
+        # Add buttons for each stat
+        # LIF and CAR are drawn a little lower
+        for stat in STAT:
+            y_pos = (28 + stat.value * 10 - 2,)
+            if stat not in [
+                STAT.STR,
+                STAT.SPD,
+                STAT.ACC,
+                STAT.INT,
+                STAT.DEF,
+                STAT.STO,
+                STAT.CHA,
+            ]:
+                y_pos = (58 + stat.value * 10 - 2,)
+            self.buttons.append(
+                TextButton(
+                    self.game,
+                    stat,
+                    6,
+                    y_pos,
+                    f"{self.game.player.statNames[stat]}: ({self.game.player.ptSpend[stat]}) {self.game.player.stats[stat]}",
+                )
+            )
+
+        # Inflate button bounding rects to full width
+        for button in self.buttons:
+            button.setBoundingRectSize(width=268)
 
     def update(self):
 
@@ -73,7 +110,26 @@ class Notice:
                 cursor_pos = pygame.mouse.get_pos()
                 for _, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):
-                        pass
+                        # if button clicked was a stat...
+                        print(f"Button clicked: {button.command.__class__}")
+                        if button.command.__class__ == STAT:
+                            stat = button.command
+                            # if there are points left to spend, spend one
+                            if self.game.player.ptsLeft > 0:
+                                self.game.player.ptSpend[stat] += 1
+                                self.game.player.ptsLeft -= 1
+                                self.game.player.stats[button.command] += 1
+                                makeSound(SFX.CHACHING)
+                                self.init_level_up_buttons()
+
+                            # if there are no points left to spend, remove buttons and return to Shop
+                            if self.game.player.ptsLeft == 0:
+                                self.buttons = []
+                                self.level_up_buttons_initialized = False
+                                self.game.game_state = GameState.SHOP
+                                self.game.notice = None
+                                self.game.player.needXP = self.game.player.needXP * 2
+                                break
 
 
 if __name__ == "__main__":
