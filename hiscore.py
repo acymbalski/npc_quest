@@ -1,7 +1,7 @@
 import os
 import pickle
 
-from constants import className, DEATH_NAMES, LEVELS, MAX_SCORES
+from constants import CLASS, CLASS_NAME, DEATH_NAMES, LEVELS, MAX_SCORES
 from display import printMe
 
 
@@ -15,7 +15,7 @@ class Score:
         self.score = score
 
     def __str__(self):
-        return f"{self.name}, a Level {self.maxLevel} {className(self.chrClass)}. Score: {self.score}"
+        return f"{self.name}, a Level {self.maxLevel} {CLASS_NAME[self.chrClass]}. Score: {self.score}"
 
 
 def rankEarned(game):
@@ -75,7 +75,7 @@ def drawHiScores(game):
 def drawDeathScore(game):
     printMe(
         game,
-        f"{rankEarned(game) + 1}. {game.player.name}, a Level {game.player.level} {className(game.player.chrClass)}. Score {game.player.xp}",
+        f"{rankEarned(game) + 1}. {game.player.name}, a Level {game.player.level} {CLASS_NAME[game.player.chrClass]}. Score {game.player.xp}",
         200,
         400,
     )

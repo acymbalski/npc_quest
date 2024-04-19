@@ -255,31 +255,18 @@ class NOTICE(Enum):
     LEVELUP = 3
 
 
-# TODO: redo this
-def className(i: int) -> str:
-
-    if i == CLASS.PEASANT:
-        return "Peasant"
-    if i == CLASS.WARRIOR:
-        return "Warrior"
-    if i == CLASS.THIEF:
-        return "Thief"
-    if i == CLASS.RANGER:
-        return "Ranger"
-    if i == CLASS.WIZARD:
-        return "Wizard"
-    if i == CLASS.GUARD:
-        return "Guard"
-    if i == CLASS.CHEF:
-        return "Chef"
-    if i == CLASS.SALESMAN:
-        return "Used Car Salesman"
-    if i == CLASS.DOCTOR:
-        return "Doctor"
-    if i == CLASS.MULE:
-        return "Pack Mule"
-    return "Unknown"
-
+CLASS_NAME = {
+    CLASS.PEASANT: "Peasant",
+    CLASS.WARRIOR: "Warrior",
+    CLASS.THIEF: "Thief",
+    CLASS.RANGER: "Ranger",
+    CLASS.WIZARD: "Wizard",
+    CLASS.GUARD: "Guard",
+    CLASS.CHEF: "Chef",
+    CLASS.SALESMAN: "Used Car Salesman",
+    CLASS.DOCTOR: "Doctor",
+    CLASS.MULE: "Pack Mule",
+}
 
 DEATH_NAMES = {
     DEATH_CAUSE.HUNGER: "STARVATION",

@@ -7,8 +7,8 @@ from combat import chickenOut, zapBadGuys
 
 from constants import (
     CLASS,
+    CLASS_NAME,
     classBonus,
-    className,
     DEATH_CAUSE,
     ITEM_EFFECT,
     ITEM_TYPE,
@@ -219,7 +219,7 @@ def renderCharacterData(game, shop=False):
     printMe(game, character.name, 8, 8)
     printMe(
         game,
-        f"Level {character.level} {className(game.player.chrClass)}",
+        f"Level {character.level} {CLASS_NAME[game.player.chrClass]}",
         8,
         18,
     )
