@@ -228,6 +228,11 @@ class Shop:
                 self.game.player.inventory[4] = get_item("Ramen Noodles")
                 for stat in self.game.player.stat.keys():
                     self.game.player.stat[stat] = 100
+                # redraw inventory
+                # sort player inventory
+                self.game.player.inventory = sortItems(self.game.player.inventory)
+                self.setUpInventory()
+                makeSound(SFX.HUZZAH)
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
