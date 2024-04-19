@@ -22,7 +22,7 @@ class Game:
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption("NPC Quest R")
         # Set the window icon
-        icon_image = pygame.image.load("graphics/fatbird.tga")
+        icon_image = pygame.image.load("graphics/fatbird.png")
         pygame.display.set_icon(icon_image)
 
         self.font_8 = pygame.font.Font("font/prstartk.ttf", 8)
