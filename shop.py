@@ -5,7 +5,7 @@ from basics import TextButton
 from character import renderCharacterData
 from constants import GameState, ITEM_TYPE, LEVEL, LEVELS, SFX, SHOP_AMT
 from display import printMe
-from item import all_items, equipItem, get_item, getIcon, sortItems
+from item import all_items, calcSwapCost, equipItem, get_item, getIcon, sortItems
 from sound import makeSound
 
 background_image = pygame.image.load("graphics/shop.tga")
@@ -259,9 +259,12 @@ class Shop:
                             color=color,
                         )
                     # render gold cost minus sell price of item, if applicable
-                    # TODO
                     printMe(
-                        self.game, f"-${item.cost}", 150, 138, color=pygame.Color("RED")
+                        self.game,
+                        f"-${calcSwapCost(self.game.player, item)}",
+                        150,
+                        138,
+                        color=pygame.Color("RED"),
                     )
                 elif button.command.__class__.__name__ == "int":
                     # render stat change from selling item

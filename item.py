@@ -900,7 +900,7 @@ def calcCost(player, item: Item) -> int:
     if cost < 1:
         cost = 1
 
-    return cost
+    return round(cost)
 
 
 def calcSell(player, item: Item) -> int:
@@ -913,7 +913,30 @@ def calcSell(player, item: Item) -> int:
     if cost < 1:
         cost = 1
 
-    return cost
+    return round(cost)
+
+
+def calcSwapCost(player, item):
+    """
+    Calculate the cost of this item... minus any gold to be earned by
+    equipping it, depending on the type
+    """
+    cost_of_new_item = calcCost(player, item)
+    cost_of_old_item = 0
+
+    if item.type not in [ITEM_TYPE.POTION, ITEM_TYPE.FOOD, ITEM_TYPE.RING]:
+        # can only have one of each type unless it's a potion, food, or ring
+        for i in range(20):
+            # if we already have one, sell it and equip the new one
+            if (
+                player.inventory[i] is not None
+                and item is not None
+                and player.inventory[i].type == item.type
+            ):
+                cost_of_old_item = calcSell(player, player.inventory[i])
+                break
+
+    return cost_of_new_item - cost_of_old_item
 
 
 def specialEffect(player, item: Item, amt: int, mult: str):
