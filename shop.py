@@ -209,7 +209,8 @@ class Shop:
             # check for escape key
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.game.game_state = GameState.QUIT
+                    self.game.game_state = GameState.TITLE
+                    self.game.shop = None
 
             # check for left mouse click
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
