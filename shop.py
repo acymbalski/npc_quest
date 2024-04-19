@@ -85,8 +85,14 @@ class Shop:
         return valid_items
 
     def populateItems(self):
+        # don't like this
+        # if we are level 1, we have three pre-populated items
+        # this offset lets us fill the shop with the max number of items
+        # I can already think of a thousand better ways to do this but I'm tired
+        item_count_offset = 2
         # shop at level 1 always includes these
         if self.game.player.level == 1:
+            item_count_offset = 5
             self.available_items.append(get_item("Polka-Dot Garden Gloves"))
             self.available_items.append(get_item("Pointy Stick"))
             self.available_items.append(get_item("Orthopedic Sandals"))
@@ -96,7 +102,7 @@ class Shop:
         self.available_items.append(get_item("Ramen Noodles"))
 
         # populate rest of shop
-        for _ in range(SHOP_AMT - 5):
+        for _ in range(SHOP_AMT - item_count_offset):
             # select random valid item
             valid_item = random.choice(self.getValidItems())
             if valid_item:
