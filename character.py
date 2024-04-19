@@ -50,6 +50,7 @@ class Character:
             None,
         ] * 20  # player has 20 inventory slots; value '255' means empty. We have replaced it with None
         self.ptSpend = [0] * NUM_STATS
+        self.ptsLeft = 0
         self.chrClass = CLASS.PEASANT
         self.shouldExit = 0
         self.name = makeUpName()

@@ -129,15 +129,8 @@ class Game:
             self.player.needXP += self.player.needXP
             self.player.level += 1
             self.noticeType = NOTICE.LEVELUP
+            self.player.ptsLeft = 8
             self.game_state = GameState.NOTICE
-            topStat = 0
-            topSpend = self.player.ptSpend[0]
-
-            for i in range(len(STAT)):
-                if self.player.ptSpend[i] > topSpend:
-                    topStat = i
-                    topSpend = self.player.ptSpend[i]
-            self.player.chrClass = topStat + 1
 
 
 def main():

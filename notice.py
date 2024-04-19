@@ -1,6 +1,6 @@
 import pygame
 from basics import TextButton
-from constants import GameState, NOTICE, SFX, STAT
+from constants import CLASS, GameState, NOTICE, SFX, STAT, STAT_NAMES
 from display import printMe
 from hiscore import drawDeathScore
 from sound import makeSound
@@ -84,6 +84,8 @@ class Notice:
             # RenderDeathScore();
             drawDeathScore(self.game)
         elif self.game.noticeType == NOTICE.LEVELUP:
+            if not self.level_up_buttons_initialized:
+                self.init_level_up_buttons()
             # blit(title,screen2,0,0,0,0,224,600);
             screen.blit(self.charsheet_image, (0, 0))
             # c = (mouse_y - 28) / 10
@@ -111,24 +113,36 @@ class Notice:
                 for _, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):
                         # if button clicked was a stat...
-                        print(f"Button clicked: {button.command.__class__}")
                         if button.command.__class__ == STAT:
                             stat = button.command
                             # if there are points left to spend, spend one
                             if self.game.player.ptsLeft > 0:
-                                self.game.player.ptSpend[stat] += 1
+                                self.game.player.ptSpend[stat.value] += 1
                                 self.game.player.ptsLeft -= 1
-                                self.game.player.stats[button.command] += 1
+                                self.game.player.stat[button.command] += 1
                                 makeSound(SFX.CHACHING)
                                 self.init_level_up_buttons()
+
+                                # re-class player
+                                top_stat = 0
+                                top_spend = self.game.player.ptSpend[0]
+
+                                for i in range(len(STAT)):
+                                    if self.game.player.ptSpend[i] > top_spend:
+                                        top_stat = i
+                                        top_spend = self.game.player.ptSpend[i]
+                                self.game.player.chrClass = CLASS(top_stat + 1)
 
                             # if there are no points left to spend, remove buttons and return to Shop
                             if self.game.player.ptsLeft == 0:
                                 self.buttons = []
                                 self.level_up_buttons_initialized = False
-                                self.game.game_state = GameState.SHOP
+                                # level-ups happen in-game, so we don't return to shop
+                                self.game.game_state = GameState.GAME
                                 self.game.notice = None
-                                self.game.player.needXP = self.game.player.needXP * 2
+                                self.game.player.needXP = int(
+                                    self.game.player.needXP * 2
+                                )
                                 break
 
 

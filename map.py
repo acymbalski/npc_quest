@@ -288,6 +288,9 @@ class Map:
 
     def update(self):
 
+        # don't draw if we're in a level-up screen
+        if self.game.game_state == GameState.NOTICE:
+            return
         screen = self.game.screen
 
         # Draw the background image

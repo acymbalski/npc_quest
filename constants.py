@@ -286,3 +286,16 @@ def get_map_xy(x, y):
         x * TILE_WIDTH + MAP_X + TILE_WIDTH / 2,
         y * TILE_HEIGHT + TILE_HEIGHT / 2,
     )
+
+
+STAT_NAMES = {
+    STAT.STR: "Strength",
+    STAT.SPD: "Speed",
+    STAT.ACC: "Accuracy",
+    STAT.INT: "Intellect",
+    STAT.DEF: "Defense",
+    STAT.STO: "Stomach",
+    STAT.CHA: "Charisma",
+    STAT.LIF: "Life",
+    STAT.CAR: "Weight",
+}
