@@ -65,9 +65,6 @@ class Notice:
 
         screen = self.game.screen
 
-        # Draw the background image
-        screen.blit(background_image, (0, 0))
-
         if self.game.noticeType == NOTICE.STARVED:
             # blit(title,screen2,0,0,400-107,30,214,196);
             screen.blit(self.grave_image, (400 - 107, 30))
@@ -90,6 +87,10 @@ class Notice:
             # RenderDeathScore();
             drawDeathScore(self.game)
         elif self.game.noticeType == NOTICE.LEVELUP:
+
+            # Draw the background image
+            screen.blit(background_image, (0, 0))
+
             if not self.level_up_buttons_initialized:
                 self.init_level_up_buttons()
             # blit(title,screen2,0,0,0,0,224,600);

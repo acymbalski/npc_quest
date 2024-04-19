@@ -1,7 +1,7 @@
 import random
 
 import pygame
-from constants import EXIT_CODE, FIXAMT, GameState, GUYS, MAX_GUYS, STAT
+from constants import FIXAMT, GameState, GUYS, MAX_GUYS, STAT
 from critter import addGuy, updateGuys
 
 
