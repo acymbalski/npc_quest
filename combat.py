@@ -66,9 +66,6 @@ def playerAttack(game, me, you):
 
     if random.randint(1, 100) <= hitChance:
         makeSound(SFX.HITBADGUY)
-        print("Player attacks")
-        print(me)
-        print(you)
         damage = (
             game.player.stat[STAT.STR]
             - game.monster[you.type.value].defense

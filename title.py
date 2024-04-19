@@ -73,7 +73,7 @@ class Title:
             290,
             draw_bounding_box=True,
             bounding_box_width=268,
-        )
+        )  # TODO: Click this to quit
         printMe(self.game, "Credits: Everything by Mike Hommel", 20, 460)
         printMe(self.game, "Copyright 2003, by Hamumu Software", 20, 500)
 

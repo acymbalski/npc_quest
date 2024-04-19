@@ -258,7 +258,8 @@ class Shop:
                             28 + i * 10,
                             color=color,
                         )
-                    # render gold cost
+                    # render gold cost minus sell price of item, if applicable
+                    # TODO
                     printMe(
                         self.game, f"-${item.cost}", 150, 138, color=pygame.Color("RED")
                     )
