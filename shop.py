@@ -4,7 +4,7 @@ import time
 import pygame
 from basics import TextButton
 from character import renderCharacterData
-from constants import GameState, ITEM_TYPE, LEVEL, LEVELS, SFX, SHOP_AMT
+from constants import GameState, ITEM_TYPE, LEVEL, LEVELS, SFX, SHOP_AMT, STAT
 from display import printMe
 from item import all_items, calcSwapCost, equipItem, get_item, getIcon, sortItems
 from sound import makeSound
@@ -275,11 +275,15 @@ class Shop:
                         if stat_changes[stat] < 0:
                             color = pygame.Color("RED")
 
+                        # life and carry capacity are rendered at a different y offset
+                        y_offset = 0
+                        if stat in [STAT.LIF, STAT.CAR]:
+                            y_offset = 20
                         printMe(
                             self.game,
                             f"{prefix}{stat_changes[stat]}",
                             150,
-                            28 + i * 10,
+                            28 + i * 10 + y_offset,
                             color=color,
                         )
                     # render gold cost minus sell price of item, if applicable
