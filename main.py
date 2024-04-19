@@ -125,6 +125,7 @@ class Game:
 
     def levelUp(self):
         while self.player.xp >= self.player.needXP:
+            self.map.get_player_guy().image = None  # trigger image reload
             makeSound(SFX.LEVELUP)
             self.player.needXP += int(self.player.needXP)
             self.player.level += 1
