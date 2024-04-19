@@ -46,6 +46,16 @@ class Title:
                     s,
                 )
             )
+        # add Exit to Windows button
+        self.buttons.append(
+            TextButton(
+                self.game,
+                "Quit",
+                40,
+                290,
+                "Exit To Windows!",
+            )
+        )
         # inflate button bounding rects to full width
         for button in self.buttons:
             button.setBoundingRectSize(width=268)
@@ -66,14 +76,7 @@ class Title:
         printMe(self.game, "Select a game slot to play from!", 40, 160)
         printMe(self.game, "(Right-click a slot to erase it)", 40, 170)
         printMe(self.game, "Press ESC to stop being entertained", 40, 320)
-        printMe(
-            self.game,
-            "Exit To Windows!",
-            40,
-            290,
-            draw_bounding_box=True,
-            bounding_box_width=268,
-        )  # TODO: Click this to quit
+
         printMe(self.game, "Credits: Everything by Mike Hommel", 20, 460)
         printMe(self.game, "Copyright 2003, by Hamumu Software", 20, 500)
 
@@ -91,16 +94,19 @@ class Title:
                 cursor_pos = pygame.mouse.get_pos()
                 for i, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):
-                        character = findSaveGames(self.game)[i]
-                        if character:
-                            active_character = character
+                        if button.command == "Quit":
+                            self.game.game_state = GameState.QUIT
                         else:
-                            active_character = Character(self.game)
-                            active_character.slot = i
-                            savegame(active_character)
-                        self.game.game_state = GameState.SHOP
-                        self.game.title = None
-                        self.game.player = active_character
+                            character = findSaveGames(self.game)[i]
+                            if character:
+                                active_character = character
+                            else:
+                                active_character = Character(self.game)
+                                active_character.slot = i
+                                savegame(active_character)
+                            self.game.game_state = GameState.SHOP
+                            self.game.title = None
+                            self.game.player = active_character
 
 
 if __name__ == "__main__":
