@@ -64,6 +64,18 @@ class Character:
     def __str__(self):
         return f"Character-> xp: {self.xp}, level: {self.level}, life: {self.life}, gold: {self.gold}, totalWeight: {self.totalWeight}, itemCount: {self.itemCount}, food: {self.food}, inventory: {self.inventory}, ptSpend: {self.ptSpend}, chrClass: {self.chrClass}, shouldExit: {self.shouldExit}, name: {self.name}, deathCause: {self.deathCause}, slot: {self.slot}, score: {self.score}, goneBerserk: {self.goneBerserk}"
 
+    # used to exclude some fields from pickling
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        # Don't pickle baz
+        del state["game"]
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.game = None
+        # ensure that these fields get re-added upon load!
+
     def drinkPotion(self):
         # iterate through inventory
         for i in range(len(self.inventory)):

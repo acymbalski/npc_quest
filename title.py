@@ -9,11 +9,11 @@ from utilities import loadGame, savegame
 NUM_SAVES = 10
 
 
-def findSaveGames():
+def findSaveGames(game):
     characters = []
 
     for i in range(NUM_SAVES):
-        characters.append(loadGame(i))
+        characters.append(loadGame(i, game))
 
     return characters
 
@@ -28,7 +28,7 @@ class Title:
         self.game = game
         self.buttons = []
 
-        characters = findSaveGames()
+        characters = findSaveGames(self.game)
         # active_character = None
         for i in range(NUM_SAVES):
             character = characters[i]
@@ -91,7 +91,7 @@ class Title:
                 cursor_pos = pygame.mouse.get_pos()
                 for i, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):
-                        character = findSaveGames()[i]
+                        character = findSaveGames(self.game)[i]
                         if character:
                             active_character = character
                         else:

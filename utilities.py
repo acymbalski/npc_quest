@@ -2,12 +2,13 @@ import os
 import pickle
 
 
-def loadGame(w: int):
+def loadGame(w: int, game):
     # load game from save/save00X.sav
     filename = f"save/save00{w}.sav"
     try:
         with open(filename, "rb") as file:
             character = pickle.load(file)
+            character.game = game
         return character
     except Exception:
         return None
