@@ -95,12 +95,7 @@ class Action:
         # else:
         else:
             # updateCombatNums()
-            updateGuys(self.game, amount, 1)
-        # if rmb is held...
-        # self.game.player.shouldExit = True
-
-        # Draw the background image
-        # screen.blit(background_image, (0, 0))
+            updateGuys(self.game, amount / 4, 1)
 
         for button in self.buttons:
             button.draw()
