@@ -114,7 +114,11 @@ class Notice:
             # check for escape key
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.game.game_state = GameState.QUIT
+                    if self.game.noticeType in [NOTICE.STARVED, NOTICE.MURDERED]:
+                        self.game.game_state = GameState.TITLE
+                    else:
+                        # let the player return to the game without spending all their points, why not?
+                        self.returnToGame()
 
             # check for left mouse click
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -146,15 +150,16 @@ class Notice:
 
                             # if there are no points left to spend, remove buttons and return to Shop
                             if self.game.player.ptsLeft == 0:
-                                self.buttons = []
-                                self.level_up_buttons_initialized = False
-                                # level-ups happen in-game, so we don't return to shop
-                                self.game.game_state = GameState.GAME
-                                self.game.notice = None
-                                self.game.player.needXP = int(
-                                    self.game.player.needXP * 2
-                                )
+                                self.returnToGame()
                                 break
+
+    def returnToGame(self):
+        self.buttons = []
+        self.level_up_buttons_initialized = False
+        # level-ups happen in-game, so we don't return to shop
+        self.game.game_state = GameState.GAME
+        self.game.notice = None
+        self.game.player.needXP = int(self.game.player.needXP * 2)
 
 
 if __name__ == "__main__":
