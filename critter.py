@@ -336,7 +336,11 @@ def updatePlayer(game):
         player_guy.planTime -= 1
         if player_guy.planTime == 0:
             player_guy.planTime = 3
-            if player.foodLeft() and not game.map.levelEmpty and not player.shouldExit:
+            if (
+                player.foodLeft()
+                and not game.map.levelEmpty()
+                and not player.shouldExit
+            ):
                 player_guy.plan = PLAN.HUNT
             else:
                 if not player.foodLeft() and not player.haveSaidFood:
