@@ -40,6 +40,7 @@ def gotKilled(game, how):
     else:
         game.noticeType = NOTICE.MURDERED
     game.game_state = GameState.NOTICE
+    print("MAP = NONE")
     game.map = None
     delGame(game.player.slot)
     addHiScore(game)
@@ -165,7 +166,7 @@ def badGuyDie(game, me):
     if amount < 1:
         amount = 1
 
-    game.player.xp += amount
+    game.player.xp += int(amount)
     game.player.gold += game.monster[me.type.value].gold + me.level
     me.type = GUYS.NONE
     makeSound(SFX.DEADGUY)

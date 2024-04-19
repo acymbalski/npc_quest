@@ -2,6 +2,7 @@ import random
 
 import pygame
 from action import Action
+from character import renderCharacterData
 from constants import (
     EXIT_CODE,
     GameState,
@@ -66,6 +67,9 @@ class Tile:
             self.image = getTileImage(self)
         else:
             raise ValueError("Invalid tile type")
+
+
+background_image = pygame.image.load("graphics/charsheet.tga")
 
 
 class Map:
@@ -294,7 +298,8 @@ class Map:
         screen = self.game.screen
 
         # Draw the background image
-        # screen.blit(background_image, (0, 0))
+        screen.blit(background_image, (0, 0))
+        renderCharacterData(self.game)
         self.updateMap()
 
         self.action.update()
@@ -335,14 +340,17 @@ class Map:
             # we made it out, save game
             savegame(self.game.player)
             self.game.game_state = GameState.SHOP
+            print("MAP = NONE")
             self.game.map = None
         elif self.game.exitCode == EXIT_CODE.DIED:
             self.game.noticeType = NOTICE.MURDERED
             self.game.game_state = GameState.NOTICE
+            print("MAP = NONE")
             self.game.map = None
         elif self.game.exitCode == EXIT_CODE.STARVED:
             self.game.noticeType = NOTICE.STARVED
             self.game.game_state = GameState.NOTICE
+            print("MAP = NONE")
             self.game.map = None
 
     def drawGuys(self):

@@ -1,9 +1,13 @@
 import pygame
 from basics import TextButton
+from character import renderCharacterData
 from constants import CLASS, GameState, NOTICE, SFX, STAT, STAT_NAMES
 from display import printMe
 from hiscore import drawDeathScore
 from sound import makeSound
+
+
+background_image = pygame.image.load("graphics/charsheet.tga")
 
 
 class Notice:
@@ -27,7 +31,7 @@ class Notice:
         # Add buttons for each stat
         # LIF and CAR are drawn a little lower
         for stat in STAT:
-            y_pos = (28 + stat.value * 10 - 2,)
+            y_pos = 28 + stat.value * 10
             if stat not in [
                 STAT.STR,
                 STAT.SPD,
@@ -37,30 +41,32 @@ class Notice:
                 STAT.STO,
                 STAT.CHA,
             ]:
-                y_pos = (58 + stat.value * 10 - 2,)
+                y_pos = 48 + stat.value * 10
+            text = "{:<10} ({}) {}".format(
+                f"{STAT_NAMES[stat]}:",
+                self.game.player.ptSpend[stat.value],
+                self.game.player.stat[STAT.STR],
+            )
             self.buttons.append(
                 TextButton(
                     self.game,
                     stat,
-                    6,
+                    8,
                     y_pos,
-                    f"{self.game.player.statNames[stat]}: ({self.game.player.ptSpend[stat]}) {self.game.player.stats[stat]}",
+                    text,
                 )
             )
 
         # Inflate button bounding rects to full width
         for button in self.buttons:
-            button.setBoundingRectSize(width=268)
+            button.setBoundingRectSize(width=210)
 
     def update(self):
 
         screen = self.game.screen
 
         # Draw the background image
-        # screen.blit(background_image, (0, 0))
-
-        for button in self.buttons:
-            button.draw()
+        screen.blit(background_image, (0, 0))
 
         if self.game.noticeType == NOTICE.STARVED:
             # blit(title,screen2,0,0,400-107,30,214,196);
@@ -98,6 +104,10 @@ class Notice:
                 240,
             )
             printMe(self.game, "Click on a stat to raise it.", 350, 280)
+            renderCharacterData(self.game, levelUp=True)
+
+        for button in self.buttons:
+            button.draw()
 
         for event in pygame.event.get():
             # check for escape key

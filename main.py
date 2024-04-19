@@ -126,7 +126,7 @@ class Game:
     def levelUp(self):
         while self.player.xp >= self.player.needXP:
             makeSound(SFX.LEVELUP)
-            self.player.needXP += self.player.needXP
+            self.player.needXP += int(self.player.needXP)
             self.player.level += 1
             self.noticeType = NOTICE.LEVELUP
             self.player.ptsLeft = 8

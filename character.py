@@ -258,7 +258,10 @@ def renderCharacterData(game, shop=False, levelUp=False):
         printMe(game, "{:<10} {}".format("Charisma:", character.stat[STAT.CHA]), 8, 88)
 
     printMe(
-        game, "{:<10} {}".format("XP needed:", character.needXP - character.xp), 8, 108
+        game,
+        "{:<10} {}".format("XP needed:", int(character.needXP - character.xp)),
+        8,
+        108,
     )
     if not levelUp:
         printMe(
@@ -289,7 +292,7 @@ def renderCharacterData(game, shop=False, levelUp=False):
 
     if character.chrClass != CLASS.PEASANT:
         printMe(game, "Special Ability:", 8, 400)
-        printMe(game, classBonus[character.chrClass], 20, 410)
+        printMe(game, classBonus[character.chrClass.value], 20, 410)
 
     printMe(game, f"Food In Tummy: {int(character.food)}", 8, 580)
 
