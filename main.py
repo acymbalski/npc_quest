@@ -50,6 +50,9 @@ class Game:
         self.hiscores = []
         self.player = None
 
+        # initialize floating text messages
+        self.toasts = []
+
         # load high scores
         load_scores(self)
 
@@ -109,6 +112,10 @@ class Game:
             # Draw the cursor
             mouse_x, mouse_y = pygame.mouse.get_pos()
             self.screen.blit(self.cursor_image, (mouse_x, mouse_y))
+
+            # draw any floating text messages
+            for toast in self.toasts:
+                toast.update()
 
             # Update the display
             pygame.display.flip()

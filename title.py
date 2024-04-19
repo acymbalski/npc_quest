@@ -95,7 +95,7 @@ class Title:
                         if character:
                             active_character = character
                         else:
-                            active_character = Character()
+                            active_character = Character(self.game)
                             active_character.slot = i
                             savegame(active_character)
                         self.game.game_state = GameState.SHOP

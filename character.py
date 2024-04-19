@@ -1,8 +1,6 @@
-import os
-import pickle
 import random
-from enum import Enum
 
+import pygame
 from combat import chickenOut, zapBadGuys
 
 from constants import (
@@ -10,6 +8,7 @@ from constants import (
     CLASS_NAME,
     classBonus,
     DEATH_CAUSE,
+    get_map_xy,
     ITEM_EFFECT,
     ITEM_TYPE,
     NUM_STATS,
@@ -19,11 +18,12 @@ from constants import (
 from display import printMe
 from item import getIcon, Item, netWeightEffect, sortItems, statChangeFromItem
 from sound import makeSound
+from toast import Toast
 
 
 class Character:
 
-    def __init__(self):
+    def __init__(self, game):
         self.stat = {
             STAT.STR: 1,
             STAT.SPD: 1,
@@ -35,6 +35,7 @@ class Character:
             STAT.LIF: 10,
             STAT.CAR: 20,
         }
+        self.game = game
 
         self.xp = 0
         self.needXP = 10
@@ -75,7 +76,18 @@ class Character:
                         self.stat[STAT.LIF] / 3
                     ):
                         amount = self.stat[STAT.LIF] - self.life
-                        # TODO: healPlayerNum(amount)
+                        # get player x, y
+                        player_guy = self.game.map.get_player_guy()
+                        x, y = get_map_xy(player_guy.x, player_guy.y)
+                        self.game.toasts.append(
+                            Toast(
+                                self.game,
+                                str(amount),
+                                x,
+                                y,
+                                color=pygame.Color(0, 255, 0),
+                            )
+                        )
                         self.life += amount
                         statChangeFromItem(self, item, -1)
                         self.inventory[i] = None

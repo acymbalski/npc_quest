@@ -1,23 +1,30 @@
 import random
 
+import pygame
+
 from constants import (
     CLASS,
     DEATH_CAUSE,
     EXIT_CODE,
     GameState,
+    get_map_xy,
     GUYS,
     MAP_HEIGHT,
     MAP_WIDTH,
+    MAP_X,
     MAX_GUYS,
     NOTICE,
     PLAN,
     SFX,
     STAT,
+    TILE_HEIGHT,
     TILE_TYPE,
+    TILE_WIDTH,
 )
 from hiscore import addHiScore
 
 from sound import makeSound
+from toast import Toast
 
 from utilities import delGame
 
@@ -81,7 +88,16 @@ def playerAttack(game, me, you):
             makeSound(SFX.CRITICAL)
             if damage < 9999:
                 damage = 9999
-        # TODO: AddNum
+        x, y = get_map_xy(you.x, you.y)
+        game.toasts.append(
+            Toast(
+                game,
+                str(-damage),
+                x,
+                y,
+                color=pygame.Color(255, 0, 0),
+            )
+        )
         if you.life > damage:
             you.life -= damage
             if game.player.chrClass == CLASS.MULE:
@@ -96,7 +112,16 @@ def playerAttack(game, me, you):
                 makeSound(SFX.CHOMP)
                 if game.player.life < game.player.stat[STAT.LIF]:
                     game.player.life += 1
-                    # TODO: healPlayerNum
+                    x, y = get_map_xy(me.x, me.y)
+                    game.toasts.append(
+                        Toast(
+                            game,
+                            "1",
+                            x,
+                            y,
+                            color=pygame.Color(0, 255, 0),
+                        )
+                    )
     else:
         makeSound(SFX.WHIFF)
 
@@ -115,7 +140,16 @@ def monsterAttack(game, me, you):
         )
         if damage < 1:
             damage = 1
-            # TODO: AddNum
+        x, y = get_map_xy(you.x, you.y)
+        game.toasts.append(
+            Toast(
+                game,
+                str(-damage),
+                x,
+                y,
+                color=pygame.Color(255, 0, 0),
+            )
+        )
         if game.player.life > damage:
             game.player.life -= damage
         else:
@@ -167,6 +201,16 @@ def zapBadGuys(game):
                 badGuyDie(game, guy)
 
             # addNum
+            x, y = get_map_xy(guy.x, guy.y)
+            game.toasts.append(
+                Toast(
+                    game,
+                    "-1",
+                    x,
+                    y,
+                    color=pygame.Color(255, 0, 0),
+                )
+            )
 
 
 def chickenOut(game):

@@ -9,6 +9,7 @@ from constants import (
     DEATH_CAUSE,
     EXIT_CODE,
     FIXAMT,
+    get_map_xy,
     GUYS,
     MAP_HEIGHT,
     MAP_WIDTH,
@@ -27,6 +28,7 @@ from constants import (
 )
 from display import printMe
 from sound import makeSound
+from toast import Toast
 
 
 def initGuys():
@@ -271,19 +273,23 @@ def moreBadGuysLive(game):
                 y = game.map.guys[i].y
 
     makeSound(SFX.VICTORY)
-    game.player.gold += (game.level.value + 1) * 10
-    # TODO: addNum
+    gold_earned = (game.level.value + 1) * 10
+    game.player.gold += gold_earned
+    game.toasts.append(
+        Toast(
+            game,
+            str(gold_earned),
+            x * TILE_WIDTH + MAP_X + TILE_WIDTH / 2,
+            y * TILE_HEIGHT + TILE_HEIGHT / 2,
+            color=pygame.Color(255, 255, 0),
+        )
+    )
 
 
 def updatePlayer(game):
     player = game.player
     # get player's Guy
-    player_guy = None
-    for i in range(MAX_GUYS):
-        if game.map.guys[i] is not None:
-            if game.map.guys[i].type == GUYS.PLAYER:
-                player_guy = game.map.guys[i]
-                break
+    player_guy = game.map.get_player_guy()
 
     if (
         player.chrClass == CLASS.WARRIOR
@@ -311,11 +317,15 @@ def updatePlayer(game):
         playerAttack(game, player, a)
         if player.chrClass == CLASS.THIEF:  # pickpocket
             gotIt = False
-            for _ in neighbors:
+            for guy in neighbors:
                 if random.randint(0, 10) == 0:
                     gotIt = True
                     player.gold += game.level.value + 1
-                    # TODO: draw value on screen
+                    x, y = get_map_xy(guy.x, guy.y)
+                    game.toasts.append(
+                        Toast(game, str(game.level.value + 1), x, y),
+                        color=pygame.Color(255, 255, 0),
+                    )
 
             if gotIt:
                 makeSound(SFX.CHACHING)

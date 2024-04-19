@@ -279,3 +279,10 @@ DEATH_NAMES = {
     GUYS.REINDEER: "a Reindeer",
     GUYS.BLUEY: "a Bluey",
 }
+
+
+def get_map_xy(x, y):
+    return (
+        x * TILE_WIDTH + MAP_X + TILE_WIDTH / 2,
+        y * TILE_HEIGHT + TILE_HEIGHT / 2,
+    )

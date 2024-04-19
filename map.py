@@ -348,6 +348,13 @@ class Map:
                 # draw guy
                 self.guys[i].draw()
 
+    def get_player_guy(self):
+        for i in range(MAX_GUYS):
+            if self.guys[i] is not None:
+                if self.guys[i].type == GUYS.PLAYER:
+                    return self.guys[i]
+        return None
+
 
 if __name__ == "__main__":
     import main
