@@ -4,7 +4,7 @@ from character import Character
 from constants import GameState
 from display import printMe
 from hiscore import drawHiScores
-from utilities import loadGame, savegame
+from utilities import loadGame, resource_path, savegame
 
 NUM_SAVES = 10
 
@@ -19,7 +19,7 @@ def findSaveGames(game):
 
 
 # Load the background image
-background_image = pygame.image.load("graphics/title.tga")
+background_image = pygame.image.load(resource_path("graphics/title.tga"))
 
 
 class Title:

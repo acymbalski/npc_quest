@@ -1,12 +1,21 @@
+import os
+import sys
+import time
+
 import pygame
-import title
-from constants import EXIT_CODE, GameState, NOTICE, SFX, STAT, XRES, YRES
+from constants import EXIT_CODE, GameState, NOTICE, SFX, XRES, YRES
 from hiscore import load_scores
 from map import Map
 from monster import monsters
 from notice import Notice
 from shop import Shop
 from sound import makeSound
+
+from title import Title
+from utilities import resource_path
+
+if getattr(sys, "frozen", False):
+    os.chdir(sys._MEIPASS)
 
 
 class Game:
@@ -22,12 +31,12 @@ class Game:
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption("NPC Quest R")
         # Set the window icon
-        icon_image = pygame.image.load("graphics/fatbird.png")
+        icon_image = pygame.image.load(resource_path("graphics/fatbird.png"))
         pygame.display.set_icon(icon_image)
 
-        self.font_8 = pygame.font.Font("font/prstartk.ttf", 8)
+        self.font_8 = pygame.font.Font(resource_path("font/prstartk.ttf"), 8)
 
-        self.title = title.Title(self)
+        self.title = Title(self)
         self.shop = None
         self.level = None
         self.map = None
@@ -37,7 +46,7 @@ class Game:
 
         # Set the user's mouse cursor
         self.cursor_image = pygame.image.load(
-            "graphics/cursor.tga"
+            resource_path("graphics/cursor.tga")
         ).convert_alpha()  # Convert the cursor image to a surface
 
         self.set_custom_cursor(self.cursor_image, hotspot_x=0, hotspot_y=0)
@@ -85,7 +94,7 @@ class Game:
 
             if self.game_state == GameState.TITLE:
                 if not self.title:
-                    self.title = title.Title(self)
+                    self.title = Title(self)
                 self.title.update()
 
             elif self.game_state == GameState.SHOP:
@@ -141,4 +150,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception:
+        pass
+    finally:
+        time.sleep(3)

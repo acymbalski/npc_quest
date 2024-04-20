@@ -1,5 +1,6 @@
 import os
 import pickle
+import sys
 
 
 def loadGame(w: int, game):
@@ -37,3 +38,13 @@ def savegame(character) -> bool:
     except Exception as e:
         print(f"Error saving game: {e}")
         return False
+
+
+def resource_path(relative_path):
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)

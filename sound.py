@@ -3,6 +3,7 @@ import random
 import numpy
 import pygame
 from constants import SFX
+from utilities import resource_path
 
 SOUNDS = {
     SFX.HUZZAH: "huzzah.wav",
@@ -43,7 +44,7 @@ def makeSound(sound: SFX):
     freq = (1000 - 127 + freq_mod) / 1000
 
     pygame.mixer.init()
-    sound = pygame.mixer.Sound(f"sound/{SOUNDS[sound]}")
+    sound = pygame.mixer.Sound(resource_path(f"sound/{SOUNDS[sound]}"))
 
     # Convert the sound to a NumPy array
     sound_array = pygame.sndarray.samples(sound)

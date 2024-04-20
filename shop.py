@@ -1,5 +1,4 @@
 import random
-import time
 
 import pygame
 from basics import TextButton
@@ -8,8 +7,9 @@ from constants import GameState, ITEM_TYPE, LEVEL, LEVELS, SFX, SHOP_AMT, STAT
 from display import printMe
 from item import all_items, calcSwapCost, equipItem, get_item, getIcon, sortItems
 from sound import makeSound
+from utilities import resource_path
 
-background_image = pygame.image.load("graphics/shop.tga")
+background_image = pygame.image.load(resource_path("graphics/shop.tga"))
 
 
 class Shop:

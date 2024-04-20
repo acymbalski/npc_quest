@@ -6,6 +6,7 @@ __pycache__/
 
 # Ignore virtual environment directories
 venv/
+venv*/
 env/
 
 # Ignore IDE specific files and directories
@@ -17,3 +18,10 @@ hiscores.dat
 
 # Ignore hidden files
 .*
+
+# Compilation junk
+dist/*
+build/*
+package/*
+# we'll probably keep the spec files once we know what we're doing
+*.spec

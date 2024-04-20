@@ -29,6 +29,7 @@ from constants import (
 from display import printMe
 from sound import makeSound
 from toast import Toast
+from utilities import resource_path
 
 
 def initGuys():
@@ -75,14 +76,18 @@ class Guy:
     def load_image(self):
         if self.type == GUYS.PLAYER:
             self.image = pygame.image.load(
-                PLAYER_GFX[self.game.player.chrClass]
+                resource_path(PLAYER_GFX[self.game.player.chrClass])
             ).convert_alpha()
             self.sprite_offset_x = -9
             self.sprite_offset_y = -22
-            self.berserkImage = pygame.image.load(berserkerGfx).convert_alpha()
+            self.berserkImage = pygame.image.load(
+                resource_path(berserkerGfx)
+            ).convert_alpha()
             self.berserkImage.set_colorkey((255, 0, 255))
         else:
-            self.image = pygame.image.load(MONSTER_GFX[self.type]).convert_alpha()
+            self.image = pygame.image.load(
+                resource_path(MONSTER_GFX[self.type])
+            ).convert_alpha()
 
             # aaaaahhhhh!
             if self.type in [GUYS.GNOME, GUYS.FATBIRD, GUYS.REINDEER, GUYS.BLUEY]:

@@ -21,11 +21,11 @@ from constants import (
     XRES,
     YRES,
 )
-from utilities import savegame
+from utilities import resource_path, savegame
 
 
 def getTileImage(tile):
-    tiles = pygame.image.load("graphics/tiles.tga")
+    tiles = pygame.image.load(resource_path("graphics/tiles.tga"))
 
     l = tile.level.value
     if l > 9:
@@ -69,7 +69,7 @@ class Tile:
             raise ValueError("Invalid tile type")
 
 
-background_image = pygame.image.load("graphics/charsheet.tga")
+background_image = pygame.image.load(resource_path("graphics/charsheet.tga"))
 
 
 class Map:

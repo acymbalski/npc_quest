@@ -5,9 +5,9 @@ from constants import CLASS, GameState, NOTICE, SFX, STAT, STAT_NAMES
 from display import printMe
 from hiscore import drawDeathScore
 from sound import makeSound
+from utilities import resource_path
 
-
-background_image = pygame.image.load("graphics/charsheet.tga")
+background_image = pygame.image.load(resource_path("graphics/charsheet.tga"))
 
 
 class Notice:
@@ -16,8 +16,10 @@ class Notice:
         self.game = game
         self.buttons = []
 
-        self.charsheet_image = pygame.image.load("graphics/charsheet.tga")
-        self.grave_image = pygame.image.load("graphics/grave.tga")
+        self.charsheet_image = pygame.image.load(
+            resource_path("graphics/charsheet.tga")
+        )
+        self.grave_image = pygame.image.load(resource_path("graphics/grave.tga"))
         self.charsheet_image.set_colorkey((255, 0, 255))
         self.grave_image.set_colorkey((255, 0, 255))
 

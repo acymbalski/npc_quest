@@ -1,5 +1,6 @@
 import pygame
 from constants import ITEM_EFFECT, ITEM_TYPE, STAT
+from utilities import resource_path
 
 
 class Item:
@@ -1064,7 +1065,7 @@ def sortItems(items: list) -> list:
 
 def getIcon(item):
     # masked_blit(icons,screen2,(item[itm].type-1)*10,0,x,y,10,10);
-    icons = pygame.image.load("graphics/icons.tga")
+    icons = pygame.image.load(resource_path("graphics/icons.tga"))
 
     icon_rect = pygame.Rect((item.type.value - 1) * 10, 0, 10, 10)
     icon_surface = pygame.Surface((10, 10))
