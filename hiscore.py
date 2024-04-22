@@ -105,7 +105,9 @@ def drawHiScores(game):
         if i < len(game.hiscores):
             score = game.hiscores[i]
             printMe(game, f"{i + 1}. {str(score)}", 360, i * 30 + 30)
-            death_text = f"Defeated by {score.deathCause} in {score.deathLevel}."
+            death_text = (
+                f"Defeated by {score.deathCause} in {LEVELS[score.deathLevel]}."
+            )
             printMe(game, death_text, 380, i * 30 + 40)
 
     # get networked scores

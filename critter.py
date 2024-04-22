@@ -266,8 +266,12 @@ def getNeighbors(game, x, y):
 
 
 def moreBadGuysLive(game):
-    if game.map.levelEmpty():
+    if not game.map.levelEmpty():
         return
+    if game.map.victory:
+        return
+    game.map.victory = True
+
     x = 0
     y = 0
 
@@ -308,6 +312,7 @@ def updatePlayer(game):
 
     # updateMap()
     moreBadGuysLive(game)
+
     player.drinkPotion()
 
     if player.food == 0:

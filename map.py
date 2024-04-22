@@ -89,7 +89,8 @@ class Map:
         # yikes
         self.game.player.haveSaidFood = False
         self.game.exitCode = EXIT_CODE.NONE
-
+        
+        self.victory = False
         self.action = Action(self.game)
         self.genMap()
 

@@ -47,7 +47,7 @@ class Notice:
             text = "{:<10} ({}) {}".format(
                 f"{STAT_NAMES[stat]}:",
                 self.game.player.ptSpend[stat.value],
-                self.game.player.stat[STAT.STR],
+                self.game.player.stat[stat],
             )
             self.buttons.append(
                 TextButton(
