@@ -50,7 +50,7 @@ class Game:
             )
         else:
             self.config["Game"] = {
-                "SCORE_URL": "npcquest.hamburger.house",
+                "SCORE_URL": "http://npcquest.hamburger.house:8077",
                 "PLAYER_NAME": self.player_name,
                 "UPLOAD_SCORES": "True",
                 "RETRIEVE_SCORES": "True",
