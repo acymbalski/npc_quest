@@ -188,6 +188,8 @@ class Shop:
             # sort player inventory
             self.game.player.inventory = sortItems(self.game.player.inventory)
             self.setUpInventory()
+        else:
+            makeSound(SFX.PRICEY)
 
     def update(self):
 
