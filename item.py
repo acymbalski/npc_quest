@@ -32,21 +32,23 @@ class Item:
 
 # armor
 # {"Origami Gi",1,1,ITEM_TYPE.ARMOR,1,ITEM_EFFECT.NONE,0,ITEM_EFFECT.NONE,0},
+
+
 all_items = [
     # armor
     Item(
         "Origami Gi", 1, 1, ITEM_TYPE.ARMOR, 1, ITEM_EFFECT.NONE, 0, ITEM_EFFECT.NONE, 0
     ),
     Item(
-        "Santa Claus Costume",
-        4,
-        3,
-        ITEM_TYPE.ARMOR,
-        2,
-        ITEM_EFFECT.NONE,
-        0,
-        ITEM_EFFECT.NONE,
-        0,
+        "Santa Claus Costume",  # name
+        4,  # cost
+        3,  # weight
+        ITEM_TYPE.ARMOR,  # type
+        2,  # value
+        ITEM_EFFECT.NONE,  # effect
+        0,  # effValue
+        ITEM_EFFECT.NONE,  # effect2
+        0,  # eff2Value
     ),
     Item(
         "Leatherwear",
@@ -900,7 +902,6 @@ def calcCost(player, item: Item) -> int:
 
     if cost < 1:
         cost = 1
-
     return round(cost)
 
 
@@ -910,10 +911,8 @@ def calcSell(player, item: Item) -> int:
     cost = (item.cost * player.stat[STAT.CHA]) / 100
     if cost > item.cost:
         cost = item.cost
-
     if cost < 1:
         cost = 1
-
     return round(cost)
 
 
@@ -927,8 +926,10 @@ def calcSwapCost(player, item):
 
     if item.type not in [ITEM_TYPE.POTION, ITEM_TYPE.FOOD, ITEM_TYPE.RING]:
         # can only have one of each type unless it's a potion, food, or ring
+
         for i in range(20):
             # if we already have one, sell it and equip the new one
+
             if (
                 player.inventory[i] is not None
                 and item is not None
@@ -936,7 +937,6 @@ def calcSwapCost(player, item):
             ):
                 cost_of_old_item = calcSell(player, player.inventory[i])
                 break
-
     return cost_of_new_item - cost_of_old_item
 
 
@@ -977,7 +977,6 @@ def statChangeFromItem(player, item: Item, mult: str):
         player.stat[STAT.ACC] += mult * item.value
     elif item.type == ITEM_TYPE.BOOTS:
         player.stat[STAT.SPD] += mult * item.value
-
     specialEffect(player, item.effect, item.effValue, mult)
     specialEffect(player, item.effect2, item.eff2Value, mult)
 
@@ -985,8 +984,10 @@ def statChangeFromItem(player, item: Item, mult: str):
 def equipItem(player, item: Item):
     if item.type not in [ITEM_TYPE.POTION, ITEM_TYPE.FOOD, ITEM_TYPE.RING]:
         # can only have one of each type unless it's a potion, food, or ring
+
         for i in range(20):
             # if we already have one, sell it and equip the new one
+
             if (
                 player.inventory[i] is not None
                 and item is not None
@@ -997,8 +998,8 @@ def equipItem(player, item: Item):
                 player.inventory[i] = item
                 statChangeFromItem(player, item, 1)  # equip the new one, and done!
                 return
-
     # otherwise equip it in the first empty slot
+
     for i in range(20):
         if player.inventory[i] is None:
             statChangeFromItem(player, item, 1)
@@ -1007,6 +1008,8 @@ def equipItem(player, item: Item):
 
 
 # fake item equip, for effect calculation
+
+
 def fakeEquipItem(player, item: Item):
     if item.type in [ITEM_TYPE.POTION, ITEM_TYPE.FOOD, ITEM_TYPE.RING]:
         return  # can have multiples
@@ -1020,7 +1023,6 @@ def fakeEquipItem(player, item: Item):
                 statChangeFromItem(player, player.inventory[i], -1)  # unequip item
                 statChangeFromItem(player, item, 1)  # equip the new one, and done!
                 return
-
     for i in range(20):
         if player.inventory[i] == 255:
             statChangeFromItem(player, item, 1)
@@ -1033,7 +1035,6 @@ def netWeightEffect(item: Item) -> int:
         result -= item.effValue
     if item.effect2 == ITEM_EFFECT.CARRY:
         result -= item.eff2Value
-
     return result
 
 
@@ -1055,6 +1056,7 @@ def get_item(name: str) -> Item:
 
 def sortItems(items: list) -> list:
     # sort inventory by item type, then by cost
+
     items.sort(
         key=lambda item: (
             (item.type.value, item.cost) if item else (float("inf"), float("inf"))
@@ -1065,6 +1067,7 @@ def sortItems(items: list) -> list:
 
 def getIcon(item):
     # masked_blit(icons,screen2,(item[itm].type-1)*10,0,x,y,10,10);
+
     icons = pygame.image.load(resource_path("graphics/icons.tga"))
 
     icon_rect = pygame.Rect((item.type.value - 1) * 10, 0, 10, 10)

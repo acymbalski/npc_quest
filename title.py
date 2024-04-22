@@ -33,7 +33,7 @@ class Title:
         for i in range(NUM_SAVES):
             character = characters[i]
             if character:
-                s = f"{i+1: >2}. {character.name}, Lvl {character.level}, Score: {int(character.score)}"
+                s = f"{i+1: >2}. {character.name}, Lvl {character.level}, Score: {int(character.xp)}"
             else:
                 s = f"{i+1: >2}. Unused"
 
