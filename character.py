@@ -85,6 +85,13 @@ class Character:
         self.game = None
         # ensure that these fields get re-added upon load!
 
+    def getTotalWeight(self):
+        total = 0
+        for item in self.inventory:
+            if item:
+                total += netWeightEffect(item)
+        return total
+
     def drinkPotion(self):
         # iterate through inventory
 
@@ -236,7 +243,9 @@ class Character:
                 if held_item:
                     if held_item.type == item.type:
                         weight -= netWeightEffect(held_item)
-        if weight + self.totalWeight > self.stat[STAT.CAR]:
+        # get weight of all items on player
+
+        if weight + self.getTotalWeight() > self.stat[STAT.CAR]:
             makeSound(SFX.HEAVY)
             return False
         # if we have a full 20 items...
@@ -285,7 +294,7 @@ def renderCharacterData(game, shop=False, levelUp=False):
         printMe(
             game,
             "{:<10} {}/{}".format(
-                "Weight:", character.totalWeight, character.stat[STAT.CAR]
+                "Weight:", character.getTotalWeight(), character.stat[STAT.CAR]
             ),
             8,
             128,
