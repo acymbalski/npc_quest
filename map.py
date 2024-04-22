@@ -89,7 +89,7 @@ class Map:
         # yikes
         self.game.player.haveSaidFood = False
         self.game.exitCode = EXIT_CODE.NONE
-        
+
         self.victory = False
         self.action = Action(self.game)
         self.genMap()
@@ -205,7 +205,10 @@ class Map:
                 return
         else:
             if self.map[x + y * MAP_WIDTH].code != code:
-                self.floodFillCode(x, y, code)
+                try:
+                    self.floodFillCode(x, y, code)
+                except Exception:  # can fail on some dumb recursion thing
+                    return
                 return
             else:
                 return  # hit your own code, give up
