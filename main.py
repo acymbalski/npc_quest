@@ -29,13 +29,15 @@ class Game:
 
         # Load the configuration file, if it exists. Create it if it doesn't
         self.config = configparser.ConfigParser()
-        self.score_url = None
+        self.score_url = "http://npcquest.hamburger.house:8077"
         self.player_name = makeUpName()
         self.upload_scores = True
         self.retrieve_scores = True
         if os.path.exists("config.ini"):
             self.config.read("config.ini")
-            self.score_url = self.config.get("Game", "SCORE_URL")
+            score_url = self.config.get("Game", "SCORE_URL", fallback=None)
+            if score_url:
+                self.score_url = score_url
             self.player_name = self.config.get("Game", "PLAYER_NAME")
             self.upload_scores = (
                 self.config.get("Game", "UPLOAD_SCORES", fallback="True").lower()
@@ -50,7 +52,6 @@ class Game:
             )
         else:
             self.config["Game"] = {
-                "SCORE_URL": "http://npcquest.hamburger.house:8077",
                 "PLAYER_NAME": self.player_name,
                 "UPLOAD_SCORES": "True",
                 "RETRIEVE_SCORES": "True",
@@ -105,6 +106,7 @@ class Game:
         """Reload the global high scores"""
         retrieved_scores = retrieve_scores(self)
         if retrieved_scores:
+            # got new scores
             self.global_hiscores = retrieved_scores
 
     def set_custom_cursor(self, cursor_surface, hotspot_x, hotspot_y):

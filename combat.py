@@ -46,7 +46,7 @@ def gotKilled(game, how):
     delGame(game.player.slot)
     addHiScore(game)
     # reload global high scores
-    game.hiscores = retrieve_scores(game)
+    game.reload_global_scores()
 
 
 def getKicked(game, me, kicker):
