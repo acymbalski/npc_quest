@@ -7,6 +7,7 @@ from combat import gotKilled, monsterAttack, moveMe, playerAttack
 from constants import (
     berserkerGfx,
     DEATH_CAUSE,
+    DEATH_NAMES,
     EXIT_CODE,
     FIXAMT,
     get_map_xy,
@@ -310,7 +311,7 @@ def updatePlayer(game):
     player.drinkPotion()
 
     if player.food == 0:
-        player.deathCause = DEATH_CAUSE.HUNGER
+        player.deathCause = DEATH_NAMES[DEATH_CAUSE.HUNGER]
         gotKilled(game, player.deathCause)
 
     # get adjacent monsters

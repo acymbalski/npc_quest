@@ -223,6 +223,8 @@ class Shop:
                 # this is dropped from 100 to 1. We probably still give
                 # more cash per second
                 self.game.player.gold += 1
+                # disallow this character from being uploaded to the leaderboards
+                self.game.player.online_eligible = False
                 # should we really be updating all the buttons every single time? I dunno
                 self.updateItemHighlights()
             if keys[pygame.K_d]:
@@ -234,6 +236,9 @@ class Shop:
                 self.game.player.inventory[4] = get_item("Ramen Noodles")
                 for stat in self.game.player.stat.keys():
                     self.game.player.stat[stat] = 100
+
+                # disallow this character from being uploaded to the leaderboards
+                self.game.player.online_eligible = False
                 # redraw inventory
                 # sort player inventory
                 self.game.player.inventory = sortItems(self.game.player.inventory)
@@ -245,6 +250,7 @@ class Shop:
                 # check for escape key
                 if event.key == pygame.K_ESCAPE:
                     self.game.game_state = GameState.TITLE
+                    self.game.reload_global_scores()
                     self.game.shop = None
 
             # check for left mouse click

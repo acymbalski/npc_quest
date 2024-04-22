@@ -5,6 +5,7 @@ import pygame
 from constants import (
     CLASS,
     DEATH_CAUSE,
+    DEATH_NAMES,
     EXIT_CODE,
     GameState,
     get_map_xy,
@@ -21,7 +22,7 @@ from constants import (
     TILE_TYPE,
     TILE_WIDTH,
 )
-from hiscore import addHiScore
+from hiscore import addHiScore, retrieve_scores
 
 from sound import makeSound
 from toast import Toast
@@ -33,7 +34,7 @@ def gotKilled(game, how):
     print(f"Player died via {how}")
     game.player.life = 0
     game.player.deathHow = how.value
-    game.player.deathCause = how
+    game.player.deathCause = DEATH_NAMES[how]
     game.exitCode = EXIT_CODE.DIED
     if how == DEATH_CAUSE.HUNGER:
         game.noticeType = NOTICE.STARVED
@@ -44,6 +45,8 @@ def gotKilled(game, how):
     game.map = None
     delGame(game.player.slot)
     addHiScore(game)
+    # reload global high scores
+    game.hiscores = retrieve_scores(game)
 
 
 def getKicked(game, me, kicker):
@@ -155,7 +158,7 @@ def monsterAttack(game, me, you):
         if game.player.life > damage:
             game.player.life -= damage
         else:
-            game.player.deathCause = me.type
+            game.player.deathCause = DEATH_NAMES[me.type]
             gotKilled(game, me.type)
             makeSound(SFX.PLAYERDIE)
     else:

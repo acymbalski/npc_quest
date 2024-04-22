@@ -1,18 +1,18 @@
+import configparser
 import os
 import sys
 import time
 
 import pygame
 from constants import EXIT_CODE, GameState, NOTICE, SFX, XRES, YRES
-from hiscore import load_scores
+from hiscore import load_scores, retrieve_scores
 from map import Map
 from monster import monsters
 from notice import Notice
 from shop import Shop
 from sound import makeSound
-
 from title import Title
-from utilities import resource_path
+from utilities import makeUpName, resource_path
 
 if getattr(sys, "frozen", False):
     os.chdir(sys._MEIPASS)
@@ -24,6 +24,40 @@ class Game:
     def __init__(self):
         # Initialize Pygame
         pygame.init()
+
+        self.version = "1.0"
+
+        # Load the configuration file, if it exists. Create it if it doesn't
+        self.config = configparser.ConfigParser()
+        self.score_url = None
+        self.player_name = makeUpName()
+        self.upload_scores = True
+        self.retrieve_scores = True
+        if os.path.exists("config.ini"):
+            self.config.read("config.ini")
+            self.score_url = self.config.get("Game", "SCORE_URL")
+            self.player_name = self.config.get("Game", "PLAYER_NAME")
+            self.upload_scores = (
+                self.config.get("Game", "UPLOAD_SCORES", fallback="True").lower()
+                == "true"
+            )
+            self.retrieve_scores = (
+                self.config.get("Game", "RETRIEVE_SCORES", fallback="True").lower()
+                == "true"
+            )
+            print(
+                f"Loaded config.ini: {self.score_url}, {self.player_name}, {self.upload_scores}, {self.retrieve_scores}"
+            )
+        else:
+            self.config["Game"] = {
+                "SCORE_URL": "npcquest.hamburger.house",
+                "PLAYER_NAME": self.player_name,
+                "UPLOAD_SCORES": "True",
+                "RETRIEVE_SCORES": "True",
+            }
+            with open("config.ini", "w") as configfile:
+                self.config.write(configfile)
+            print("Created config.ini")
 
         # Set up the window dimensions
         width = XRES
@@ -57,6 +91,7 @@ class Game:
         self.noticeType = NOTICE.NONE
 
         self.hiscores = []
+        self.global_hiscores = []
         self.player = None
 
         # initialize floating text messages
@@ -64,6 +99,13 @@ class Game:
 
         # load high scores
         load_scores(self)
+        self.reload_global_scores()
+
+    def reload_global_scores(self):
+        """Reload the global high scores"""
+        retrieved_scores = retrieve_scores(self)
+        if retrieved_scores:
+            self.global_hiscores = retrieved_scores
 
     def set_custom_cursor(self, cursor_surface, hotspot_x, hotspot_y):
         """Set a custom cursor"""

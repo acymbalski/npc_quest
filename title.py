@@ -37,6 +37,11 @@ class Title:
             else:
                 s = f"{i+1: >2}. Unused"
 
+            # is character online eligible?
+            color = pygame.Color("WHITE")
+            if character and not character.online_eligible:
+                color = pygame.Color("GRAY")
+
             self.buttons.append(
                 TextButton(
                     self.game,
@@ -44,6 +49,7 @@ class Title:
                     40,
                     190 + i * 10,
                     s,
+                    color=color,
                 )
             )
         # add Exit to Windows button
@@ -79,6 +85,15 @@ class Title:
 
         printMe(self.game, "Credits: Everything by Mike Hommel", 20, 460)
         printMe(self.game, "Copyright 2003, by Hamumu Software", 20, 500)
+
+        if self.game.upload_scores:
+            printMe(
+                self.game,
+                f"Your name is: {self.game.player_name}",
+                20,
+                590,
+                color=pygame.Color("GRAY"),
+            )
 
         for button in self.buttons:
             button.draw()

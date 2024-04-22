@@ -1,5 +1,6 @@
 import os
 import pickle
+import random
 import sys
 
 
@@ -48,3 +49,37 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
+
+
+def makeUpName() -> str:
+    name_format = [
+        "Cvcvvc",
+        "Cvvcv Cvccv",
+        "Cvv C'Cvcc",
+        "Cvcvcv",
+        "Cvvcvv",
+        "Vcvvcv",
+        "Vvcv",
+        "Vccvcvv",
+        "Vcvcvv",
+        "Vccvv Cvcv",
+    ]
+    vowel = "aeiouy"
+    consonant = "bcdfghjklmnpqrstvwxz"
+
+    name = random.choice(name_format)
+
+    for character in name:
+        if character == "C":
+            name = name.replace("C", random.choice(consonant).upper(), 1)
+        elif character == "c":
+            name = name.replace("c", random.choice(consonant), 1)
+        elif character == "V":
+            name = name.replace("V", random.choice(vowel).upper(), 1)
+        elif character == "v":
+            name = name.replace("v", random.choice(vowel), 1)
+        elif character == " ":
+            name = name.replace(" ", " ", 1)
+        elif character == "'":
+            name = name.replace("'", "'", 1)
+    return name

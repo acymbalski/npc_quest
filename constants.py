@@ -219,7 +219,7 @@ LEVELS = {
     LEVEL.DEADLY_DUNGEON: "Deadly Dungeon",
     LEVEL.A_WEIRD_PLACE: "A Weird Place",
     LEVEL.THE_EVILNESS_PIT: "The Evilness Pit",
-    LEVEL.SHIFT_Q: "Shift Q",
+    LEVEL.SHIFT_Q: "A Very Bad Place",
 }
 
 

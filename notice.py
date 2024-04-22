@@ -118,6 +118,7 @@ class Notice:
                 if event.key == pygame.K_ESCAPE:
                     if self.game.noticeType in [NOTICE.STARVED, NOTICE.MURDERED]:
                         self.game.game_state = GameState.TITLE
+                        self.game.reload_global_scores()
                     else:
                         # let the player return to the game without spending all their points, why not?
                         self.returnToGame()
@@ -126,6 +127,7 @@ class Notice:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.game.noticeType in [NOTICE.STARVED, NOTICE.MURDERED]:
                     self.game.game_state = GameState.TITLE
+                    self.game.reload_global_scores()
                 cursor_pos = pygame.mouse.get_pos()
                 for _, button in enumerate(self.buttons):
                     if button.bounding_rect.collidepoint(cursor_pos):

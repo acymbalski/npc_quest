@@ -8,6 +8,7 @@ from constants import (
     CLASS_NAME,
     classBonus,
     DEATH_CAUSE,
+    DEATH_NAMES,
     get_map_xy,
     ITEM_EFFECT,
     ITEM_TYPE,
@@ -19,6 +20,7 @@ from display import printMe
 from item import getIcon, Item, netWeightEffect, sortItems, statChangeFromItem
 from sound import makeSound
 from toast import Toast
+from utilities import makeUpName
 
 
 class Character:
@@ -54,7 +56,7 @@ class Character:
         self.chrClass = CLASS.PEASANT
         self.shouldExit = False
         self.name = makeUpName()
-        self.deathCause = DEATH_CAUSE.NONE
+        self.deathCause = DEATH_NAMES[DEATH_CAUSE.NONE]
         self.deathHow = 0
         self.slot = 0
         self.score = 0
@@ -62,13 +64,19 @@ class Character:
         self.goneBerserk = False
         self.haveSaidFood = False
 
+        # if the player uses debug commands, we can't upload their score!
+
+        self.online_eligible = True
+
     def __str__(self):
         return f"Character-> xp: {self.xp}, level: {self.level}, life: {self.life}, gold: {self.gold}, totalWeight: {self.totalWeight}, itemCount: {self.itemCount}, food: {self.food}, inventory: {self.inventory}, ptSpend: {self.ptSpend}, chrClass: {self.chrClass}, shouldExit: {self.shouldExit}, name: {self.name}, deathCause: {self.deathCause}, slot: {self.slot}, score: {self.score}, goneBerserk: {self.goneBerserk}"
 
     # used to exclude some fields from pickling
+
     def __getstate__(self):
         state = self.__dict__.copy()
-        # Don't pickle baz
+        # Don't pickle game
+
         del state["game"]
         return state
 
@@ -79,17 +87,21 @@ class Character:
 
     def drinkPotion(self):
         # iterate through inventory
+
         for i in range(len(self.inventory)):
             item = self.inventory[i]
             # if item is not None
+
             if item:
                 # if item is a potion
+
                 if item.type == ITEM_TYPE.POTION:
                     if self.life < self.stat[STAT.LIF] - item.value or self.life < (
                         self.stat[STAT.LIF] / 3
                     ):
                         amount = self.stat[STAT.LIF] - self.life
                         # get player x, y
+
                         player_guy = self.game.map.get_player_guy()
                         x, y = get_map_xy(player_guy.x, player_guy.y)
                         self.game.toasts.append(
@@ -106,6 +118,7 @@ class Character:
                         self.inventory[i] = None
                         makeSound(SFX.DRINK)
                         # sort inventory
+
                         self.inventory = sortItems(self.inventory)
                         return
 
@@ -130,9 +143,9 @@ class Character:
         mult = 1
         if not to_equip:
             mult = -1
-
         # if this item is replacing single-carry items,
         # get the stat changes from un-equiping that item and then apply the new changes
+
         unequip_stat_changes = {
             STAT.STR: 0,
             STAT.SPD: 0,
@@ -159,7 +172,6 @@ class Character:
                         unequip_stat_changes = self.getStatChanges(
                             held_item, to_equip=False
                         )
-
         if item.type in [ITEM_TYPE.ARMOR, ITEM_TYPE.HELMET, ITEM_TYPE.SHIELD]:
             defense += mult * item.value
         elif item.type == ITEM_TYPE.WEAPON:
@@ -168,7 +180,6 @@ class Character:
             accuracy += mult * item.value
         elif item.type == ITEM_TYPE.BOOTS:
             speed += mult * item.value
-
         for eff, val in [
             (item.effect, item.effValue),
             (item.effect2, item.eff2Value),
@@ -201,7 +212,6 @@ class Character:
                 weight += mult * val
             elif eff == ITEM_EFFECT.IQ:
                 intellect += mult * val
-
         return {
             STAT.STR: strength + unequip_stat_changes[STAT.STR],
             STAT.SPD: speed + unequip_stat_changes[STAT.SPD],
@@ -216,19 +226,21 @@ class Character:
 
     def roomToEquip(self, item: Item) -> bool:
         # return True or False if the player has room to equip an item
+
         weight = item.weight
         if item.type not in [ITEM_TYPE.POTION, ITEM_TYPE.RING, ITEM_TYPE.FOOD]:
             # iterate over inventory. If we are buying this item by now, it's replacing something we already have
             # so don't double-count the weights
+
             for held_item in self.inventory:
                 if held_item:
                     if held_item.type == item.type:
                         weight -= netWeightEffect(held_item)
-
         if weight + self.totalWeight > self.stat[STAT.CAR]:
             makeSound(SFX.HEAVY)
             return False
         # if we have a full 20 items...
+
         if len([item for item in self.inventory if item]) == 20:
             makeSound(SFX.HEAVY)
             return False
@@ -256,7 +268,6 @@ def renderCharacterData(game, shop=False, levelUp=False):
         printMe(game, "{:<10} {}".format("Defense:", character.stat[STAT.DEF]), 8, 68)
         printMe(game, "{:<10} {}".format("Stomach:", character.stat[STAT.STO]), 8, 78)
         printMe(game, "{:<10} {}".format("Charisma:", character.stat[STAT.CHA]), 8, 88)
-
     printMe(
         game,
         "{:<10} {}".format("XP needed:", int(character.needXP - character.xp)),
@@ -289,11 +300,9 @@ def renderCharacterData(game, shop=False, levelUp=False):
                 printMe(game, character.inventory[i].name, 19, 178 + i * 10)
             else:
                 printMe(game, "......", 19, 178 + i * 10)
-
     if character.chrClass != CLASS.PEASANT:
         printMe(game, "Special Ability:", 8, 400)
         printMe(game, classBonus[character.chrClass.value], 20, 410)
-
     printMe(game, f"Food In Tummy: {int(character.food)}", 8, 580)
 
 
@@ -320,6 +329,7 @@ def renderItemEffects():
 def calcItemEffects(itm: int):
     # calculate the effects of an item without actually equipping it
     # there is a better way to do this once some logic is ironed out
+
     pass
 
 
@@ -336,28 +346,25 @@ def eatFood(game):
     if player.chrClass == CLASS.SALESMAN:
         if random.randint(1, 100) < player.level:
             chickenOut(game)
-
     amount = 0
 
     for i in range(7):
         amount += player.stat[STAT(i)]
-
     amount = (amount - player.stat[STAT.STO]) / 8 - player.stat[STAT.STO]
 
     if amount < 1:
         amount = 1
-
     if player.food > amount:
         player.food -= amount
         if player.food > 0:
             return  # don't need any!
     else:
         player.food = 0
-
     for i in range(20):
         if player.inventory[i]:
             item = player.inventory[i]
             # eat!
+
             if item.type == ITEM_TYPE.FOOD:
                 statChangeFromItem(player, item, -1)
                 player.food += item.value * 100
@@ -368,38 +375,3 @@ def eatFood(game):
 
 
 MAX_NAMETYPES = 10
-
-
-def makeUpName() -> str:
-    name_format = [
-        "Cvcvvc",
-        "Cvvcv Cvccv",
-        "Cvv C'Cvcc",
-        "Cvcvcv",
-        "Cvvcvv",
-        "Vcvvcv",
-        "Vvcv",
-        "Vccvcvv",
-        "Vcvcvv",
-        "Vccvv Cvcv",
-    ]
-    vowel = "aeiouy"
-    consonant = "bcdfghjklmnpqrstvwxz"
-
-    name = random.choice(name_format)
-
-    for character in name:
-        if character == "C":
-            name = name.replace("C", random.choice(consonant).upper(), 1)
-        elif character == "c":
-            name = name.replace("c", random.choice(consonant), 1)
-        elif character == "V":
-            name = name.replace("V", random.choice(vowel).upper(), 1)
-        elif character == "v":
-            name = name.replace("v", random.choice(vowel), 1)
-        elif character == " ":
-            name = name.replace(" ", " ", 1)
-        elif character == "'":
-            name = name.replace("'", "'", 1)
-
-    return name

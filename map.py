@@ -81,7 +81,6 @@ class Map:
         self.map = []  # size MAP_WIDTH * MAP_HEIGHT
         for i in range(int(MAP_WIDTH * MAP_HEIGHT)):
             self.map.append(Tile())
-        self.genMap()
 
         self.guys = [None] * MAX_GUYS  # list 128 long, yikes
 
@@ -92,6 +91,7 @@ class Map:
         self.game.exitCode = EXIT_CODE.NONE
 
         self.action = Action(self.game)
+        self.genMap()
 
     def genMap(self):
 
@@ -102,11 +102,13 @@ class Map:
         j = 2 + random.randint(0, 6)
         for i in range(j):
             # RenderMap(level)
+            self.draw_map()
             # SwapPages()
             self.addRoom()
 
         while not self.mapIsDone():
             # RenderMap(level)
+            self.draw_map()
             # SwapPages()
             self.makeTunnel()
 
@@ -272,9 +274,12 @@ class Map:
 
     def stinkUpTheMap(self):
         for i in range(MAX_GUYS):
-            if self.guys[i] is not None:
-                if self.guys[i].type != GUYS.PLAYER:
-                    self.map[self.guys[i].x + self.guys[i].y * MAP_WIDTH].monsNum = 200
+            if self.guys:
+                if self.guys[i] is not None:
+                    if self.guys[i].type != GUYS.PLAYER:
+                        self.map[
+                            self.guys[i].x + self.guys[i].y * MAP_WIDTH
+                        ].monsNum = 200
 
     def updateMap(self):  # yep this one is different!
         self.stinkUpTheMap()
@@ -290,11 +295,7 @@ class Map:
                     i % MAP_WIDTH, int(i / MAP_WIDTH), self.map[i].monsNum
                 )
 
-    def update(self):
-
-        # don't draw if we're in a level-up screen
-        if self.game.game_state == GameState.NOTICE:
-            return
+    def draw_map(self):
         screen = self.game.screen
 
         # Draw the background image
@@ -302,7 +303,6 @@ class Map:
         renderCharacterData(self.game)
         self.updateMap()
 
-        self.action.update()
         # draw all tiles
         x = MAP_X
         y = 0
@@ -322,6 +322,14 @@ class Map:
         for button in self.buttons:
             button.draw()
 
+    def update(self):
+
+        # don't draw if we're in a level-up screen
+        if self.game.game_state == GameState.NOTICE:
+            return
+        self.action.update()
+        self.draw_map()
+
         for event in pygame.event.get():
             # check for escape key
             if event.type == pygame.KEYDOWN:
@@ -340,17 +348,14 @@ class Map:
             # we made it out, save game
             savegame(self.game.player)
             self.game.game_state = GameState.SHOP
-            print("MAP = NONE")
             self.game.map = None
         elif self.game.exitCode == EXIT_CODE.DIED:
             self.game.noticeType = NOTICE.MURDERED
             self.game.game_state = GameState.NOTICE
-            print("MAP = NONE")
             self.game.map = None
         elif self.game.exitCode == EXIT_CODE.STARVED:
             self.game.noticeType = NOTICE.STARVED
             self.game.game_state = GameState.NOTICE
-            print("MAP = NONE")
             self.game.map = None
 
     def drawGuys(self):
