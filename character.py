@@ -306,9 +306,9 @@ def renderCharacterData(game, shop=False, levelUp=False):
         for i in range(20):
             if character.inventory[i]:
                 game.screen.blit(getIcon(character.inventory[i]), (8, 178 + i * 10))
-                printMe(game, character.inventory[i].name, 19, 178 + i * 10)
+                printMe(game, character.inventory[i].name, 18, 178 + i * 10)
             else:
-                printMe(game, "......", 19, 178 + i * 10)
+                printMe(game, "......", 8, 178 + i * 10)
     if character.chrClass != CLASS.PEASANT:
         printMe(game, "Special Ability:", 8, 400)
         printMe(game, classBonus[character.chrClass.value], 20, 410)
