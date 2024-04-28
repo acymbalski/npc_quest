@@ -9,7 +9,6 @@ class Action:
 
     def __init__(self, game):
         self.game = game
-        self.buttons = []
         self.level = self.game.level
 
         # have to init late due to a wacko circular reference I think
@@ -61,8 +60,6 @@ class Action:
         if not self.is_initialized:
             self.finishInit()
 
-        screen = self.game.screen
-
         speed = self.game.player.stat[STAT.SPD]
         if speed < 1:
             speed = 1
@@ -84,39 +81,15 @@ class Action:
             else:
                 continue
 
-        # while (
-        #     ticksLeft()
-        # ):  # we can probably ignore this, it is trying to just do a game loop at 60fps
-        # self.game.map.updateMap()
         # if lmb is held...
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0]:
-            # updateCombatNums()
+            # run at 8x speed
             updateGuys(self.game, amount * 8, 8)
-        # else:
         else:
-            # updateCombatNums()
+            # otherwise actually run at 1/4x speed because 1x speed is
+            # way too fast in this engine
             updateGuys(self.game, amount / 4, 1)
-
-        for button in self.buttons:
-            button.draw()
-
-        for event in pygame.event.get():
-            # check for escape key
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.game.game_state = GameState.QUIT
-
-            # check for left mouse click
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    cursor_pos = pygame.mouse.get_pos()
-                    for _, button in enumerate(self.buttons):
-                        if button.bounding_rect.collidepoint(cursor_pos):
-                            pass
-                if event.button == 3:
-                    print("RMB clicked, exiting...")
-                    self.game.player.shouldExit = True
 
 
 if __name__ == "__main__":

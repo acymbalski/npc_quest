@@ -341,11 +341,9 @@ class Map:
                     self.game.game_state = GameState.QUIT
 
             # check for left mouse click
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                cursor_pos = pygame.mouse.get_pos()
-                for _, button in enumerate(self.buttons):
-                    if button.bounding_rect.collidepoint(cursor_pos):
-                        pass
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 3:
+                    self.game.player.shouldExit = True
 
         # if player died or exited the map, go back to shop
         if self.game.exitCode == EXIT_CODE.ESCAPED:
