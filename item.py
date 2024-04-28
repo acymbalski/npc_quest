@@ -1008,6 +1008,7 @@ def equipItem(player, item: Item):
 
 
 # fake item equip, for effect calculation
+# I don't actually think we use this anymore
 
 
 def fakeEquipItem(player, item: Item):

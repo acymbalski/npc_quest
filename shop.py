@@ -2,7 +2,7 @@ import random
 
 import pygame
 from basics import TextButton
-from character import renderCharacterData
+from character import renderCharacterData, statChangeFromItem
 from constants import GameState, ITEM_TYPE, LEVEL, LEVELS, SFX, SHOP_AMT, STAT
 from display import printMe
 from item import all_items, calcSwapCost, equipItem, get_item, getIcon, sortItems
@@ -142,6 +142,10 @@ class Shop:
         item = self.game.player.inventory[item_index]
         # add gold to player
         self.game.player.gold += item.cost
+        # unequip item
+        # eqiupping is all done in one function but not unequipping.
+        # should probably be cleaned up (yikes)
+        statChangeFromItem(self.game.player, item, -1)
         # remove item from player inventory
         self.game.player.inventory[item_index] = None
 
