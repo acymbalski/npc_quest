@@ -107,7 +107,9 @@ class Game:
         icon_image = pygame.image.load(resource_path("graphics/fatbird.png"))
         pygame.display.set_icon(icon_image)
 
-        # Load the fonts
+        # Load the font
+        # The original font was built in to the Allegro library, which we
+        # obviously don't have. This one looked pretty close.
         self.font_8 = pygame.font.Font(resource_path("font/prstartk.ttf"), 8)
 
         # These are the game states. Start at the Title

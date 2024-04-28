@@ -4,6 +4,11 @@ from utilities import resource_path
 
 
 class Item:
+    """
+    Item class!
+    Items are straightforward and there's only a few types.
+    """
+
     def __init__(
         self,
         name: str,
@@ -16,24 +21,46 @@ class Item:
         effect2: int,
         eff2Value: int,
     ) -> None:
+        # all items have a name
         self.name = name
+
+        # base cost in gold
+        # remember this is manipulated by charisma, both for buying and selling
         self.cost = cost
+
+        # weight
         self.weight = weight
+
+        # type - food, potion, helmet, etc
         self.type = item_type
+
+        # value - how much does this item effect a stat?
+        # the actual stat manipulated is determined by the item type
+        # typically when items get sorted it's by this value. Higher is better
         self.value = value
+
+        # special effects. Each item can have up to two.
+        # effect and effect2 determine which stat is manipulated
+        # effValue and eff2Value determine how much
         self.effect = effect
         self.effValue = effValue
         self.effect2 = effect2
         self.eff2Value = eff2Value
 
     def __str__(self) -> str:
+        """
+        String representation of the item.
+        """
         return self.name
 
 
-# armor
+# in the original code, items are laid out like this
 # {"Origami Gi",1,1,ITEM_TYPE.ARMOR,1,ITEM_EFFECT.NONE,0,ITEM_EFFECT.NONE,0},
-
-
+# we retain some of that format.
+# a future refactor should probably just make a singular file that contains all
+# of the item definitions. Possibly with a few more words so it's easier to read
+# (this was just auto-converted using a regex or something)
+# might be kind of fun to generate a couple items on the fly?
 all_items = [
     # armor
     Item(
@@ -897,6 +924,14 @@ all_items = [
 
 
 def calcCost(player, item: Item) -> int:
+    """
+    Calculate the cost of buying an item with regards to the character's
+    charisma.
+
+    One of the first functions copied over, I had this "great" idea of strongly
+    typing all of the functions. You can tell that few ended up keeping that
+    idea.
+    """
     cost = item.cost
     cost -= (cost * player.stat[STAT.CHA]) / 500
 
@@ -906,6 +941,10 @@ def calcCost(player, item: Item) -> int:
 
 
 def calcSell(player, item: Item) -> int:
+    """
+    Calculate the sell value of an item with regards to the character's
+    charisma.
+    """
     cost = item.cost / 2
 
     cost = (item.cost * player.stat[STAT.CHA]) / 100
@@ -941,6 +980,11 @@ def calcSwapCost(player, item):
 
 
 def specialEffect(player, effect, amt: int, mult: str):
+    """
+    Calculate the type and magnitude of any special effects for an item.
+    The mult value is typically used in similar functions as either "1" or "-1"
+    depending on whether we are equipping or unequipping the item.
+    """
     if effect == ITEM_EFFECT.ALL:
         for stat in STAT:
             player.stat[stat] += mult * amt
@@ -957,6 +1001,7 @@ def specialEffect(player, effect, amt: int, mult: str):
     elif effect == ITEM_EFFECT.CHARISMA:
         player.stat[STAT.CHA] += mult * amt
     elif effect == ITEM_EFFECT.LIFE:
+        # life is capped at the max life value
         player.stat[STAT.LIF] += mult * amt
         if player.life > player.stat[STAT.LIF]:
             player.life = player.stat[STAT.LIF]
@@ -967,6 +1012,9 @@ def specialEffect(player, effect, amt: int, mult: str):
 
 
 def statChangeFromItem(player, item: Item, mult: str):
+    """
+    Calculate the stat changes from an item when it is equipped or unequipped.
+    """
     player.totalWeight += mult * item.weight
 
     if item.type in [ITEM_TYPE.ARMOR, ITEM_TYPE.HELMET, ITEM_TYPE.SHIELD]:
@@ -977,17 +1025,22 @@ def statChangeFromItem(player, item: Item, mult: str):
         player.stat[STAT.ACC] += mult * item.value
     elif item.type == ITEM_TYPE.BOOTS:
         player.stat[STAT.SPD] += mult * item.value
+
+    # get special effects
     specialEffect(player, item.effect, item.effValue, mult)
     specialEffect(player, item.effect2, item.eff2Value, mult)
 
 
 def equipItem(player, item: Item):
+    """
+    Equip an item to the player's inventory.
+    """
     if item.type not in [ITEM_TYPE.POTION, ITEM_TYPE.FOOD, ITEM_TYPE.RING]:
         # can only have one of each type unless it's a potion, food, or ring
 
         for i in range(20):
-            # if we already have one, sell it and equip the new one
 
+            # if we already have one, sell it and equip the new one
             if (
                 player.inventory[i] is not None
                 and item is not None
@@ -998,8 +1051,8 @@ def equipItem(player, item: Item):
                 player.inventory[i] = item
                 statChangeFromItem(player, item, 1)  # equip the new one, and done!
                 return
-    # otherwise equip it in the first empty slot
 
+    # otherwise equip it in the first empty slot
     for i in range(20):
         if player.inventory[i] is None:
             statChangeFromItem(player, item, 1)
@@ -1007,11 +1060,12 @@ def equipItem(player, item: Item):
             return
 
 
-# fake item equip, for effect calculation
-# I don't actually think we use this anymore
-
-
 def fakeEquipItem(player, item: Item):
+    """
+    fake item equip, for effect calculation
+    I don't actually think we use this anymore
+    This was originally used to calculate stat changes by faking an equip
+    """
     if item.type in [ITEM_TYPE.POTION, ITEM_TYPE.FOOD, ITEM_TYPE.RING]:
         return  # can have multiples
     else:  # can only have one
@@ -1028,8 +1082,14 @@ def fakeEquipItem(player, item: Item):
         if player.inventory[i] == 255:
             statChangeFromItem(player, item, 1)
 
+    # did I even finish this function?
+
 
 def netWeightEffect(item: Item) -> int:
+    """
+    Calculate the net weight effect of an item - it can be manipulated by
+    an item's effect.
+    """
     result = item.weight
 
     if item.effect == ITEM_EFFECT.CARRY:
@@ -1042,22 +1102,21 @@ def netWeightEffect(item: Item) -> int:
 def get_item(name: str) -> Item:
     """
     Get the item with the specified name.
-
-    Args:
-        name: The name of the item.
-
-    Returns:
-        The item with the specified name, or None if not found.
+    A bit dumb. Probably used for a Button somewhere, which it shouldn't be,
+    but buttons are a mess too.
     """
-    for i, item in enumerate(all_items):
+    for _, item in enumerate(all_items):
         if item.name == name:
             return item
     raise Exception(f"Cannot find item '{name}'")
 
 
 def sortItems(items: list) -> list:
-    # sort inventory by item type, then by cost
+    """
+    Sort a list of items by type and cost.
 
+    This was such a huge function in the original. Happy to have it condensed.
+    """
     items.sort(
         key=lambda item: (
             (item.type.value, item.cost) if item else (float("inf"), float("inf"))
@@ -1067,6 +1126,11 @@ def sortItems(items: list) -> list:
 
 
 def getIcon(item):
+    """
+    Get the icon for this item.
+    All items are hardcoded to be 10x10.
+    Resizing the window? Look here.
+    """
     # masked_blit(icons,screen2,(item[itm].type-1)*10,0,x,y,10,10);
 
     icons = pygame.image.load(resource_path("graphics/icons.tga"))

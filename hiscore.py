@@ -5,29 +5,51 @@ import pygame
 
 import requests
 
-from constants import CLASS, CLASS_NAME, DEATH_NAMES, LEVELS, MAX_SCORES
+from constants import CLASS_NAME, LEVELS, MAX_SCORES
 from display import printMe
 
 
 class Score:
+    """
+    A general score object.
+    This is what the high score lists are comprised of. It's not much, can
+    likely be condensed or cleaned up.
+    """
+
     def __init__(
         self, player_name, name, chrClass, deathCause, deathLevel, maxLevel, score
     ):
+        # player name is the name of you, the player at the computer
+        # this is used for the global high score list
         self.player_name = player_name.strip()
+
+        # name of the character
         self.name = name
+
+        # had a real problem with these, should they be enums, ints, strings, what?
+        # I think it's strings at the moment. But I hate it!
         self.chrClass = chrClass
         self.deathCause = deathCause
         self.deathLevel = deathLevel
+
+        # how far did we get?
         self.maxLevel = maxLevel
+
+        # xp earned
         self.score = int(score)
 
     def __str__(self):
+        """
+        String representation of the score object.
+        """
         return f"{self.name}, a Level {self.maxLevel} {self.chrClass}. Score: {int(self.score)}"
 
 
 def rankEarned(game):
+    """
+    Return the rank earned by the player in the local high score list.
+    """
     # hate this whole thing
-    # get current rank in hiscore list
     score = Score(
         game.player_name,
         game.player.name,
@@ -45,10 +67,16 @@ def rankEarned(game):
 
 
 def addHiScore(game):
+    """
+    Player must have died. Add their Score to the local and possibly global
+    high score lists.
+    """
+
+    # Create the Score object
     new_score = Score(
         game.player_name,
         game.player.name,
-        CLASS_NAME[game.player.chrClass],
+        CLASS_NAME[game.player.chrClass],  # oof
         game.player.deathCause,
         game.level,
         game.player.level,
@@ -57,7 +85,7 @@ def addHiScore(game):
     game.hiscores.append(new_score)
     # sort the hiscores by score
     game.hiscores = sorted(game.hiscores, key=lambda x: x.score, reverse=True)
-    # remove anything after 10
+    # remove anything after 10, even if we don't display it
     game.hiscores = game.hiscores[:MAX_SCORES]
     # save scores to file
     save_scores(game)
@@ -67,6 +95,13 @@ def addHiScore(game):
         # if this character is eligible to upload...
         if game.player.online_eligible:
             # send the score to the server
+            # there's unfortunately no way to actually validate that the score
+            # is real. You could send a fake score. It would be nice to fix
+            # that although at the moment I just don't know how. There is
+            # the possibility to validate a little server-side but nothing
+            # ironclad :(
+            # if you are reading this, be cool and don't cheat!
+            # It's just a game!
             url = game.score_url + "/scores"
             score = new_score
             data = {
@@ -74,7 +109,7 @@ def addHiScore(game):
                 "character_name": score.name,
                 "character_class": score.chrClass,
                 "death_cause": score.deathCause,
-                "death_level": LEVELS[score.deathLevel],
+                "death_level": LEVELS[score.deathLevel],  # oof!
                 "level": score.maxLevel,
                 "score": score.score,
                 "version": game.version,
@@ -87,10 +122,17 @@ def addHiScore(game):
             except Exception as e:
                 print(f"Error sending score: {e}")
         else:
+            # player cannot upload score. Must have cheated.
+            # You can cheat! But we just can't muck up the leaderboard with that
             print("Player not eligible to upload score")
 
 
 def drawHiScores(game):
+    """
+    Render the high scores to the screen.
+    Currently just used in the Title screen.
+    """
+    # if we have no scores, don't bother
     if len(game.hiscores) and (game.retrieve_scores and len(game.global_hiscores) == 0):
         return
 
@@ -101,6 +143,7 @@ def drawHiScores(game):
     if game.retrieve_scores:
         show_scores = 5
 
+    # draw local scores
     for i in range(show_scores):
         if i < len(game.hiscores):
             score = game.hiscores[i]
@@ -148,11 +191,15 @@ def drawHiScores(game):
 
 
 def retrieve_scores(game):
+    """
+    Retrieve the global high scores from the server.
+    """
     scores = []
     if game.retrieve_scores and game.score_url:
         url = game.score_url + f"/scores?version={game.version}"
         print(f"Retrieving scores from {url}...")
         try:
+            # timeout of 5 seconds
             response = requests.get(url, timeout=5)
             if response.status_code == 200:
                 scores = response.json()
@@ -181,6 +228,10 @@ def retrieve_scores(game):
 
 
 def drawDeathScore(game):
+    """
+    Draw the player's score to the screen when they die.
+    Used by Notice
+    """
     printMe(
         game,
         f"{rankEarned(game) + 1}. {game.player.name}, a Level {game.player.level} {CLASS_NAME[game.player.chrClass]}. Score {game.player.xp}",
@@ -197,6 +248,11 @@ def drawDeathScore(game):
 
 
 def save_scores(game):
+    """
+    Save the hiscores to a file.
+    We save both global and local to the file so you can see a little something
+    even when offline.
+    """
     print("Saving hiscores")
     with open("hiscores.dat", "wb") as f:
         hiscores = {"local": game.hiscores, "global": game.global_hiscores}
@@ -204,6 +260,9 @@ def save_scores(game):
 
 
 def load_scores(game):
+    """
+    Load the hiscores from a file.
+    """
     # if file exists, load it
     if os.path.exists("hiscores.dat"):
         loaded_dict = {}

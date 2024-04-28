@@ -432,8 +432,12 @@ def updatePlayer(game):
     else:
         # no foe adjacent
         player_guy.planTime -= 1
+        # every three ticks, decide what to do
         if player_guy.planTime == 0:
             player_guy.planTime = 3
+
+            # if we have food, there are still monsters, and we haven't been
+            # told to exit, hunt!
             if (
                 player.foodLeft()
                 and not game.map.levelEmpty()
@@ -441,19 +445,30 @@ def updatePlayer(game):
             ):
                 player_guy.plan = PLAN.HUNT
             else:
+                # if we have no food and we haven't said so, say so
                 if not player.foodLeft() and not player.haveSaidFood:
                     player.haveSaidFood = True
                     makeSound(SFX.NEEDFOOD)
+                # warrior needs food, badly
                 player_guy.plan = PLAN.EXIT
+
+        # if we're wandering, pick a random direction and go
         if player_guy.plan == PLAN.WANDER:
             a = random.randint(0, 3)
             moveMe(game, player_guy, offX[a], offY[a])
+
+        # if we're hunting, follow our nose 2
         elif player_guy.plan == PLAN.HUNT:
             if not followNose2(game, player_guy):
                 player_guy.plan = PLAN.WANDER
                 player_guy.planTime = 3
+        # if we're exiting, follow our nose 1
         elif player_guy.plan == PLAN.EXIT:
             followNose(game, player_guy)
+
+            # if we made it to a door, escape!
+            # this also means we can walk over doors safely. Only if we are
+            # trying to leave do we actually escape
             if (
                 game.map.map[player_guy.x + player_guy.y * MAP_WIDTH].type
                 == TILE_TYPE.DOOR
@@ -462,6 +477,9 @@ def updatePlayer(game):
 
 
 def getTarget(game, guy):
+    """
+    Find the nearest Guy to the current Guy.
+    """
     x = 0
     y = 0
 
@@ -492,23 +510,33 @@ def getTarget(game, guy):
 
 
 def updateGuy(game, guy):
+    """
+    Update this Guy
+    """
 
-    # updateMap()
+    # get our neighbors
     neighbors = getNeighbors(game, guy.x, guy.y)
     a = None
     if len(neighbors) > 0:
         a = neighbors[0]
+
+    # if the player is next to us, attack!
     if a:
         monsterAttack(game, guy, a)
     else:
         guy.planTime -= 1
+
+        # I think this works as like a periodic command to re-initiate a hunt
         if guy.planTime == 0:
             guy.planTime = 25
             guy.plan = PLAN.HUNT
 
+        # if we're wandering, pick a random direction and go
         if guy.plan == PLAN.WANDER:
             a = random.randint(0, 3)
             moveMe(game, guy, offX[a], offY[a])
+
+        # if we're hunting, head towards the player
         elif guy.plan == PLAN.HUNT:
             tx, ty = getTarget(game, guy)
             if abs(tx - guy.x) > abs(ty - guy.y):
@@ -521,12 +549,19 @@ def updateGuy(game, guy):
                     a = 3
                 else:
                     a = 1
+
+            # if we cannot move in that direction, wander for a few ticks and
+            # then re-hunt
             if not moveMe(game, guy, offX[a], offY[a]):
                 guy.plan = PLAN.WANDER
                 guy.planTime = random.randint(0, 4)
 
 
 def followNose(game, guy):
+    """
+    Follow your nose!
+    i.e. Move one step in the direction with the highest "code" value
+    """
     best = 0
 
     for a in range(1, 4):
@@ -539,6 +574,11 @@ def followNose(game, guy):
 
 
 def followNose2(game, guy):
+    """
+    Follow your nose! 2
+    i.e. Move one step in the direction with the highest "monsNum" value
+    Yeah this can be rewritten
+    """
     best = 0
     for a in range(1, 4):
         if (

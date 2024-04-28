@@ -13,6 +13,13 @@ def printMe(
     bounding_box_color=pygame.Color("YELLOW"),
     buffer=2,
 ):
+    """
+    The only thing in this file.
+    Print text to the screen at x, y.
+    Optionally draw a bounding box around the text if it's hovered over.
+    Not even sure that is used anymore. Probably superceded by that
+    functionality in the Button class.
+    """
     text = game.font_8.render(text, True, color)
 
     rect = text.get_rect()
