@@ -33,11 +33,11 @@ from toast import Toast
 from utilities import resource_path
 
 
-def initGuys():
-    pass
-
-
 class Guy:
+    """
+    A Guy is a character on the map. Could be monster, could be the player.
+    """
+
     def __init__(
         self,
         game,
@@ -57,9 +57,15 @@ class Guy:
         self.x = x
         self.y = y
         self.life = life
+
+        # I think this is never used?
         self.reload = guy_reload
+
+        # Guys are controlled by the pathfinding, which uses their plan
+        # to decide what to do with them
         self.plan = plan
         self.planTime = planTime
+
         self.moves = moves
         self.foodClock = foodClock
         self.level = level
@@ -69,12 +75,22 @@ class Guy:
         self.sprite_offset_y = 0
 
         # hate this
+        # god I hate this
+        # I think I had issues loading images and just crammed this in here to
+        # make it work in a hurry
         self.berserkImage = None
 
     def __str__(self):
+        """
+        Return a string representation of the Guy.
+        """
         return f"Guy-> type: {self.type}, x: {self.x}, y: {self.y}, life: {self.life}, reload: {self.reload}, plan: {self.plan}, planTime: {self.planTime}, moves: {self.moves}, foodClock: {self.foodClock}, level: {self.level}"
 
     def load_image(self):
+        """
+        Load the image for the Guy.
+        Don't like this. But I think I had issues loading the image elsewhere.
+        """
         if self.type == GUYS.PLAYER:
             self.image = pygame.image.load(
                 resource_path(PLAYER_GFX[self.game.player.chrClass])
@@ -91,6 +107,7 @@ class Guy:
             ).convert_alpha()
 
             # aaaaahhhhh!
+            # the monster images are not a fixed size!
             if self.type in [GUYS.GNOME, GUYS.FATBIRD, GUYS.REINDEER, GUYS.BLUEY]:
                 self.sprite_offset_x = -9
                 self.sprite_offset_y = -22
@@ -102,15 +119,21 @@ class Guy:
         self.image.set_colorkey((255, 0, 255))
 
     def draw(self):
+        """
+        Draw the Guy on the screen.
+        """
         if not self.image:
             self.load_image()
+
         if self.type == GUYS.PLAYER:
             player = self.game.player
+
+            # draw player, or in extremely specific circumstances, draw the
+            # berserk image
+            # yikes!
             if player.chrClass != CLASS.WARRIOR or player.life > (
                 player.stat[STAT.LIF] / 4
             ):
-                # AddToDispList(playerGfx[player.chrClass],MAP_X+me->x*TILE_WIDTH+TILE_WIDTH/2,me->y*TILE_HEIGHT+TILE_HEIGHT*3/4,-9,-22);
-
                 # draw the sprite at the x/y tile in the map, adjusted for the
                 # sprite size to the tile, plus the map offset, plus
                 # (or minus, really) some completely arbitrary offset from the
@@ -141,6 +164,7 @@ class Guy:
                     ),
                 )
 
+            # display plan
             if self.plan == PLAN.HUNT:
                 printMe(self.game, "Hunting...", 8, 570)
             elif self.plan == PLAN.WANDER:
@@ -158,6 +182,9 @@ class Guy:
 
 
 def addGuy(game, guy_type, level):
+    """
+    Add a Guy to the map.
+    """
     for i in range(MAX_GUYS):
         if game.map.guys[i] is None:
             guy = Guy(game)
@@ -175,6 +202,11 @@ def addGuy(game, guy_type, level):
 
 
 def findReallyEmptySpot(game):
+    """
+    Find a spot on the map that is not occupied by a wall or another Guy.
+    If you weren't there for the original code, you miss the joke that
+    this is the replacement function for the unused "findEmptySpot" function.
+    """
     x = random.randint(0, MAP_WIDTH - 2) + 1
     y = random.randint(0, MAP_HEIGHT - 2) + 1
 
@@ -191,10 +223,14 @@ def findReallyEmptySpot(game):
 
 
 def updateGuys(game, timePassed, food):
+    """
+    Update all the Guys on the map.
+    """
     for i in range(MAX_GUYS):
         guy = game.map.guys[i]
         if guy and guy.type != GUYS.NONE:
             if guy.type == GUYS.PLAYER:
+                # The food clock!
                 guy.foodClock += food
                 if guy.foodClock > 120:
                     guy.foodClock -= 120
@@ -226,6 +262,9 @@ def updateGuys(game, timePassed, food):
 
 
 def isEnemy(me, you):
+    """
+    Check if two Guys are enemies.
+    """
     if me.type == GUYS.PLAYER and you.type != GUYS.PLAYER:
         return True
     if you.type == GUYS.PLAYER and me.type != GUYS.PLAYER:
@@ -234,6 +273,11 @@ def isEnemy(me, you):
 
 
 def getNeighbors(game, x, y):
+    """
+    This is some custom work. Essentially just returns a list of Guys for a
+    given map x/y that are in the cardinal directions.
+    Sort them by life, lowest first.
+    """
     neighbors = []
     # get guy at x, y
     guy = None
@@ -266,6 +310,11 @@ def getNeighbors(game, x, y):
 
 
 def moreBadGuysLive(game):
+    """
+    Yikes.
+    Called to determine whether we cleared the level or not.
+    If so, play the sound effect, give us the gold, and exit.
+    """
     if not game.map.levelEmpty():
         return
     if game.map.victory:
@@ -275,6 +324,7 @@ def moreBadGuysLive(game):
     x = 0
     y = 0
 
+    # get the x/y of the player so we can draw some text
     for i in range(MAX_GUYS):
         if game.map.guys[i] is not None:
             if game.map.guys[i].type != GUYS.PLAYER:
@@ -286,6 +336,8 @@ def moreBadGuysLive(game):
     makeSound(SFX.VICTORY)
     gold_earned = (game.level.value + 1) * 10
     game.player.gold += gold_earned
+
+    # draw gold earned
     game.toasts.append(
         Toast(
             game,
@@ -298,10 +350,14 @@ def moreBadGuysLive(game):
 
 
 def updatePlayer(game):
+    """
+    Player AI
+    """
     player = game.player
-    # get player's Guy
+    # get player's Guy. Don't like this!
     player_guy = game.map.get_player_guy()
 
+    # should we Go Berserk?
     if (
         player.chrClass == CLASS.WARRIOR
         and player.life <= (player.stat[STAT.LIF] / 4)
@@ -310,11 +366,13 @@ def updatePlayer(game):
         makeSound(SFX.BERSERK)
         player.goneBerserk = True
 
-    # updateMap()
+    # any bad guys left?
     moreBadGuysLive(game)
 
+    # should we drink a potion?
     player.drinkPotion()
 
+    # should we die of starvation?
     if player.food == 0:
         player.deathCause = DEATH_NAMES[DEATH_CAUSE.HUNGER]
         gotKilled(game, player.deathCause)
@@ -327,7 +385,9 @@ def updatePlayer(game):
     # attack nearby monster
     if a is not None and a.type != GUYS.NONE:
         playerAttack(game, player, a)
-        if player.chrClass == CLASS.THIEF:  # pickpocket
+
+        # Thief can pickpocket!
+        if player.chrClass == CLASS.THIEF:
             gotIt = False
             for guy in neighbors:
                 if random.randint(0, 10) == 0:
@@ -346,16 +406,25 @@ def updatePlayer(game):
 
             if gotIt:
                 makeSound(SFX.CHACHING)
-        elif player.chrClass == CLASS.GUARD:  # circular strike
+
+        # Guard can Circular Strike
+        elif player.chrClass == CLASS.GUARD:
+            # following the original logic on this one...
+            # Drop the player's strength and accuracy to half,
+            # attack all neighbors with whatever calculation that is,
+            # then restore the player's stats
+            # Note that the first attack is still normal. So that should be
+            # at full-power
             strength = player.stat[STAT.STR]
             player.stat[STAT.STR] /= 2  # why?
             acc = player.stat[STAT.ACC]
-            player.stat[STAT.ACC] /= 2  # dumb
+            player.stat[STAT.ACC] /= 2  # oof
             hit_second_enemy = False
             for neighbor in neighbors:
                 if neighbor.type != GUYS.NONE:
                     playerAttack(game, player, neighbor)
                     hit_second_enemy = True
+            # if we hit more than one enemy, make the sound effect
             if hit_second_enemy:
                 makeSound(SFX.CIRCLE)
             player.stat[STAT.STR] = strength

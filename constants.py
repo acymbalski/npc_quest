@@ -1,32 +1,54 @@
 from enum import Enum
 
+
+# What a gnarly file.
+# There is no real equivalent in the original game. There are a fair few enum-like
+# structures in the original code, I went ahead and updated... most of them...
+# to Enums. Not that it's really any better.
+# Tons of stuff is defined here, like window size and some things that control
+# the sizes of some of the fixed arrays.
+
+
+# used in a couple places as fixed number for some math calculations.
+# Could likely be done away with.
 FIXAMT = 256
 
+# Number of stats a player has. Defines a fixed array.
 NUM_STATS = 9
 
-MAX_NUMS = 16
-
+# Max number of guys on a map
 MAX_GUYS = 128
+
+# Max number of high scores to display. If the global leaderboard is displayed,
+# we may display less than this to fit the leaderboard.
 MAX_SCORES = 10
 
+# size of tiles in a map. If you are trying to resize the window, this needs
+# to be evaluated.
 TILE_WIDTH = 16
 TILE_HEIGHT = 16
 
+# Window dimensions
 XRES = 800
 YRES = 600
 
+# The window may be one size, but the actual map is smaller!
 MAP_X = 800 - 576  # 800 is technically supposed to be the screen width
 MAP_WIDTH = int(576 / TILE_WIDTH)
 MAP_HEIGHT = int(
     600 / TILE_HEIGHT
 )  # 600 is technically supposed to be the screen height
 
+# These are used in a ton of places to do the whole 1D-to-2D array thing.
+# You should not touch these unless you are doing a major overhaul of some kind.
 offX = [1, 0, -1, 0]
 offY = [0, 1, 0, -1]
 
+# Amount of items in the shop. This is a fixed array size.
 SHOP_AMT = 40
 
 
+# Character class
 class CLASS(Enum):
     PEASANT = 0
     WARRIOR = 1
@@ -40,6 +62,7 @@ class CLASS(Enum):
     MULE = 9
 
 
+# Monster type
 class MONSTER(Enum):
     NONE = 0
     NONEEITHER = 1
@@ -51,6 +74,8 @@ class MONSTER(Enum):
     BLUEY = 7
 
 
+# Guy type. Hate that this is not the same as Monster type. A future coder
+# should please do away with Monster type
 class GUYS(Enum):
     NONE = 0
     PLAYER = 1
@@ -62,6 +87,8 @@ class GUYS(Enum):
     BLUEY = 7
 
 
+# Not crazy about this, eventually just gave up. Defines the location of the
+# image assets
 PLAYER_GFX = {
     CLASS.PEASANT: "graphics/peasant.tga",
     CLASS.WARRIOR: "graphics/knight.tga",
@@ -85,30 +112,8 @@ MONSTER_GFX = {
 }
 
 
-# PLAYER_GFX = {
-#     CLASS.PEASANT: pygame.image.load("graphics/peasant.tga").convert_alpha(),
-#     CLASS.WARRIOR: pygame.image.load("graphics/knight.tga").convert_alpha(),
-#     CLASS.THIEF: pygame.image.load("graphics/thief.tga").convert_alpha(),
-#     CLASS.RANGER: pygame.image.load("graphics/ranger.tga").convert_alpha(),
-#     CLASS.WIZARD: pygame.image.load("graphics/wizard.tga").convert_alpha(),
-#     CLASS.GUARD: pygame.image.load("graphics/guard.tga").convert_alpha(),
-#     CLASS.CHEF: pygame.image.load("graphics/chef.tga").convert_alpha(),
-#     CLASS.SALESMAN: pygame.image.load("graphics/salesman.tga").convert_alpha(),
-#     CLASS.DOCTOR: pygame.image.load("graphics/doctor.tga").convert_alpha(),
-#     CLASS.MULE: pygame.image.load("graphics/mule.tga").convert_alpha(),
-# }
-# berserkerGfx = pygame.image.load("graphics/knight2.tga").convert_alpha()
-
-# MONSTER_GFX = {
-#     MONSTER.GNOME: pygame.image.load("graphics/gnome.tga").convert_alpha(),
-#     MONSTER.DOLPHIN: pygame.image.load("graphics/dolphin.tga").convert_alpha(),
-#     MONSTER.REINDEER: pygame.image.load("graphics/reindeer.tga").convert_alpha(),
-#     MONSTER.FATBIRD: pygame.image.load("graphics/fatbird.tga").convert_alpha(),
-#     MONSTER.HOTDOG: pygame.image.load("graphics/hotdog.tga").convert_alpha(),
-#     MONSTER.BLUEY: pygame.image.load("graphics/bluey.tga").convert_alpha(),
-# }
-
-
+# Wish this was an enum:string dict like some other items in this file.
+# Defines the string name of the class bonus for each class.
 classBonus = [
     "",  # peasant
     "Berserk Rage",  # warrior
@@ -123,6 +128,7 @@ classBonus = [
 ]
 
 
+# Item types!
 class ITEM_TYPE(Enum):
     FOOD = 1
     POTION = 2
@@ -136,6 +142,7 @@ class ITEM_TYPE(Enum):
     AMULET = 10
 
 
+# Item effect. basically "what stat does this effect manipulate?"
 class ITEM_EFFECT(Enum):
     NONE = 0
     ALL = 1  # boost all stats
@@ -150,6 +157,9 @@ class ITEM_EFFECT(Enum):
     IQ = 10
 
 
+# First enum made, that's why the case doesn't match elsewhere. Just never
+# fixed it.
+# Defines what screen to load/logic to use in main loop
 class GameState(Enum):
     QUIT = -1
     TITLE = 0
@@ -158,6 +168,8 @@ class GameState(Enum):
     NOTICE = 3
 
 
+# character stats
+# Uses original names. Wish I changed them to be more descriptive.
 class STAT(Enum):
     STR = 0
     SPD = 1
@@ -170,6 +182,7 @@ class STAT(Enum):
     CAR = 8
 
 
+# The sound effects!
 class SFX(Enum):
     HUZZAH = 0
     WHIFF = 1
@@ -194,6 +207,7 @@ class SFX(Enum):
     BERSERK = 20
 
 
+# Levels
 class LEVEL(Enum):
     GNOMEY_PLAINS = 0
     FLOOFY_WOODS = 1
@@ -208,6 +222,8 @@ class LEVEL(Enum):
     SHIFT_Q = 10
 
 
+# Level names. I like how dicts like this work but for some stupid reason
+# they don't all work this way
 LEVELS = {
     LEVEL.GNOMEY_PLAINS: "Gnomey Plains",
     LEVEL.FLOOFY_WOODS: "Floofy Woods",
@@ -223,12 +239,14 @@ LEVELS = {
 }
 
 
+# Tile types, used for map generation/movement
 class TILE_TYPE(Enum):
     FLOOR = 0
     WALL = 1
     DOOR = 2
 
 
+# How did we exit the level?
 class EXIT_CODE(Enum):
     NONE = 0
     ESCAPED = 2
@@ -236,18 +254,24 @@ class EXIT_CODE(Enum):
     STARVED = 4
 
 
+# AI plans, used for both character and monster AI
 class PLAN(Enum):
     WANDER = 0
     HUNT = 1
     EXIT = 2
 
 
+# Don't like this
+# Cause of death
 class DEATH_CAUSE(Enum):
     NONE = 0
     HUNGER = 1
     MONSTER = 2
 
 
+# A Notice is a full-screen popup basically. There are three - two for death,
+# one for level-up.
+# The two death notices can be consolidated
 class NOTICE(Enum):
     NONE = 0
     STARVED = 1
@@ -255,6 +279,7 @@ class NOTICE(Enum):
     LEVELUP = 3
 
 
+# Class names
 CLASS_NAME = {
     CLASS.PEASANT: "Peasant",
     CLASS.WARRIOR: "Warrior",
@@ -268,6 +293,7 @@ CLASS_NAME = {
     CLASS.MULE: "Pack Mule",
 }
 
+# Death names. Dont like that the key can be two different enum types
 DEATH_NAMES = {
     DEATH_CAUSE.HUNGER: "Starvation",
     DEATH_CAUSE.NONE: "DC_NONE",
@@ -281,6 +307,9 @@ DEATH_NAMES = {
 }
 
 
+# Used hither and thither to get the X/Y pixels for a given map location.
+# Are you resizing the window? You should look at this
+# Also it's here because I had some import loop issues
 def get_map_xy(x, y):
     return (
         x * TILE_WIDTH + MAP_X + TILE_WIDTH / 2,
@@ -288,6 +317,7 @@ def get_map_xy(x, y):
     )
 
 
+# String names of each stat
 STAT_NAMES = {
     STAT.STR: "Strength",
     STAT.SPD: "Speed",

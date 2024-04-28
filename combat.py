@@ -12,17 +12,14 @@ from constants import (
     GUYS,
     MAP_HEIGHT,
     MAP_WIDTH,
-    MAP_X,
     MAX_GUYS,
     NOTICE,
     PLAN,
     SFX,
     STAT,
-    TILE_HEIGHT,
     TILE_TYPE,
-    TILE_WIDTH,
 )
-from hiscore import addHiScore, retrieve_scores
+from hiscore import addHiScore
 
 from sound import makeSound
 from toast import Toast
@@ -31,6 +28,13 @@ from utilities import delGame
 
 
 def gotKilled(game, how):
+    """
+    Called when the player dies.
+    Not a big fan of this, in fact it's really confusing now with all this
+    mumbo-jumbo I had to add.
+    Please fix this.
+    """
+
     print(f"Player died via {how}")
     game.player.life = 0
     game.player.deathHow = how.value
@@ -41,15 +45,23 @@ def gotKilled(game, how):
     else:
         game.noticeType = NOTICE.MURDERED
     game.game_state = GameState.NOTICE
-    print("MAP = NONE")
     game.map = None
+
+    # remove player save
     delGame(game.player.slot)
+
+    # add to high score list
     addHiScore(game)
+
     # reload global high scores
     game.reload_global_scores()
 
 
 def getKicked(game, me, kicker):
+    """
+    Used when the Pack Mule kicks an enemy. Calculates where the enemy gets
+    pushed to.
+    """
     dx = 0
     dy = 0
     if kicker.x > me.x:
@@ -65,11 +77,15 @@ def getKicked(game, me, kicker):
         else:
             dx = 0
             dy = -1
+
     moveMe(game, me, dx, dy)
     moveMe(game, me, dx, dy)
 
 
 def playerAttack(game, me, you):
+    """
+    Player attacks a bad guy.
+    """
 
     hitChance = game.player.stat[STAT.ACC] * 20 - you.level * 10
     if hitChance < 5:
@@ -77,6 +93,8 @@ def playerAttack(game, me, you):
 
     if random.randint(1, 100) <= hitChance:
         makeSound(SFX.HITBADGUY)
+
+        # how much damage should we do?
         damage = (
             game.player.stat[STAT.STR]
             - game.monster[you.type.value].defense
@@ -85,6 +103,8 @@ def playerAttack(game, me, you):
         )
         if damage < 1:
             damage = 1
+
+        # Doctor can do a pre-emptive autopsy
         if (
             game.player.chrClass == CLASS.DOCTOR
             and random.randint(1, 100) < game.player.level
@@ -92,6 +112,8 @@ def playerAttack(game, me, you):
             makeSound(SFX.CRITICAL)
             if damage < 9999:
                 damage = 9999
+
+        # draw damage text
         x, y = get_map_xy(you.x, you.y)
         game.toasts.append(
             Toast(
@@ -102,13 +124,19 @@ def playerAttack(game, me, you):
                 color=pygame.Color(255, 0, 0),
             )
         )
+
+        # if player is a Pack Mule and the bad guy won't die from this attack,
+        # kick them
         if you.life > damage:
             you.life -= damage
             if game.player.chrClass == CLASS.MULE:
                 getKicked(game, you, me)
         else:
+            # otherwise, they're dead
             you.life = 0
             badGuyDie(game, you)
+
+            # Chef may be able to eat!
             if (
                 game.player.chrClass == CLASS.CHEF
                 and random.randint(1, 100) < game.player.level * 2
@@ -128,10 +156,15 @@ def playerAttack(game, me, you):
                         )
                     )
     else:
+        # Whiff!
         makeSound(SFX.WHIFF)
 
 
 def monsterAttack(game, me, you):
+    """
+    Bad guy attacks the player.
+    """
+
     hitChance = (
         game.monster[me.type.value].accuracy + me.level
     ) * 20 - game.player.level * 10
@@ -145,6 +178,8 @@ def monsterAttack(game, me, you):
         )
         if damage < 1:
             damage = 1
+
+        # draw damage text
         x, y = get_map_xy(you.x, you.y)
         game.toasts.append(
             Toast(
@@ -155,29 +190,40 @@ def monsterAttack(game, me, you):
                 color=pygame.Color(255, 0, 0),
             )
         )
+
         if game.player.life > damage:
             game.player.life -= damage
         else:
+            # killed player!
             game.player.deathCause = DEATH_NAMES[me.type]
             gotKilled(game, me.type)
             makeSound(SFX.PLAYERDIE)
     else:
+        # Whiff!
         makeSound(SFX.WHIFF)
 
 
 def badGuyDie(game, me):
+    """
+    Bad guy dies. Increment gold, XP, and check for a level up. Don't like this!
+    """
     amount = game.monster[me.type.value].xp * me.level * game.player.stat[STAT.INT] / 20
     if amount < 1:
         amount = 1
 
     game.player.xp += int(amount)
     game.player.gold += game.monster[me.type.value].gold + me.level
+
+    # mark this guy as dead. The cleanup is handled elsewhere for some reason.
     me.type = GUYS.NONE
     makeSound(SFX.DEADGUY)
     game.levelUp()
 
 
 def moveMe(game, guy, dx, dy):
+    """
+    Move a Guy in a direction. Check for walls, doors, and other Guys.
+    """
     if (
         guy.x + dx < 0
         or guy.y + dy < 0
@@ -197,6 +243,9 @@ def moveMe(game, guy, dx, dy):
 
 
 def zapBadGuys(game):
+    """
+    Zap all bad guys on the map!
+    """
     makeSound(SFX.ZAP)
     for i in range(MAX_GUYS):
         guy = game.map.guys[i]
@@ -205,7 +254,7 @@ def zapBadGuys(game):
             if guy.life == 0:
                 badGuyDie(game, guy)
 
-            # addNum
+            # draw damage text
             x, y = get_map_xy(guy.x, guy.y)
             game.toasts.append(
                 Toast(
@@ -219,6 +268,9 @@ def zapBadGuys(game):
 
 
 def chickenOut(game):
+    """
+    Exit the map!
+    """
     for i in range(MAX_GUYS):
         guy = game.map.guys[i]
         if guy and guy.type == GUYS.PLAYER:
