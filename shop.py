@@ -5,7 +5,16 @@ from basics import TextButton
 from character import renderCharacterData, statChangeFromItem
 from constants import GameState, ITEM_TYPE, LEVEL, LEVELS, SFX, SHOP_AMT, STAT
 from display import printMe
-from item import all_items, calcSwapCost, equipItem, get_item, getIcon, sortItems
+from item import (
+    all_items,
+    calcCost,
+    calcSell,
+    calcSwapCost,
+    equipItem,
+    get_item,
+    getIcon,
+    sortItems,
+)
 from sound import makeSound
 from utilities import resource_path
 
@@ -140,8 +149,9 @@ class Shop:
     def sellItem(self, item_index):
         # get item from player inventory
         item = self.game.player.inventory[item_index]
+        item_cost = calcSell(self.game.player, item)
         # add gold to player
-        self.game.player.gold += item.cost
+        self.game.player.gold += item_cost
         # unequip item
         # eqiupping is all done in one function but not unequipping.
         # should probably be cleaned up (yikes)
@@ -175,8 +185,9 @@ class Shop:
         # get item from button
         item = button.command
         # deduct cost of item from gold if affordable
-        if self.game.player.gold >= item.cost:
-            self.game.player.gold -= item.cost
+        item_cost = calcCost(self.game.player, item)
+        if self.game.player.gold >= item_cost:
+            self.game.player.gold -= item_cost
             # add item to player inventory
             # self.game.player.inventory.append(item)
             equipItem(self.game.player, item)
@@ -212,6 +223,7 @@ class Shop:
 
         for button in self.buttons:
             button.draw()
+
         # if SHIFT is held...
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
@@ -282,6 +294,7 @@ class Shop:
         # check for hover-over-item to display stat changes
         for _, button in enumerate(self.buttons):
             if button.bounding_rect.collidepoint(pygame.mouse.get_pos()):
+                # yikes
                 if button.command.__class__.__name__ == "Item":
                     item = button.command
                     # calculate stat changes
@@ -310,12 +323,23 @@ class Shop:
                             color=color,
                         )
                     # render gold cost minus sell price of item, if applicable
+                    # get the cost of swapping the item
+                    # multiply by -1 to properly display that your gold will increase, if true
+                    # if negative, we actuall GAIN money from selling. So display
+                    # that as a positive number, correctly formatting for the
+                    # dollar sign. Ugh
+                    cost = calcSwapCost(self.game.player, item)
+                    cost_str = f"-${cost}"
+                    color = pygame.Color("RED")
+                    if cost < 0:
+                        color = pygame.Color("GREEN")
+                        cost_str = f"+${cost * -1}"
                     printMe(
                         self.game,
-                        f"-${calcSwapCost(self.game.player, item)}",
+                        cost_str,
                         150,
                         138,
-                        color=pygame.Color("RED"),
+                        color=color,
                     )
                 elif button.command.__class__.__name__ == "int":
                     # render stat change from selling item
@@ -342,7 +366,7 @@ class Shop:
                     # render gold value of item to sell
                     printMe(
                         self.game,
-                        f"+${item.cost}",
+                        f"+${calcSell(self.game.player, item)}",
                         150,
                         138,
                         color=pygame.Color("GREEN"),
