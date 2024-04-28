@@ -220,7 +220,7 @@ class Shop:
                 print("Loading Shift Q...")
             # and if A is pressed...
             if keys[pygame.K_a]:
-                # give player 10 gold! What the heck!
+                # give player gold! What the heck!
                 # note: because we are looping so much faster than the original game,
                 # this is dropped from 100 to 1. We probably still give
                 # more cash per second

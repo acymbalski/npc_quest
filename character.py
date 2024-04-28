@@ -315,37 +315,6 @@ def renderCharacterData(game, shop=False, levelUp=False):
     printMe(game, f"Food In Tummy: {int(character.food)}", 8, 580)
 
 
-def renderLevelUpLine(c: int, name: str, stat: int):
-    pass
-
-
-def renderLevelUpData(c: int):
-    pass
-
-
-def printItemEffect(amt: int, y: int):
-    pass
-
-
-def printItemEffectReverse(amt: int, y: int):
-    pass
-
-
-def renderItemEffects():
-    pass
-
-
-def calcItemEffects(itm: int):
-    # calculate the effects of an item without actually equipping it
-    # there is a better way to do this once some logic is ironed out
-
-    pass
-
-
-def calcSellEffects(itm: int):
-    pass
-
-
 def eatFood(game):
     player = game.player
 
