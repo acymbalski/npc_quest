@@ -25,3 +25,6 @@ build/*
 package/*
 # we'll probably keep the spec files once we know what we're doing
 *.spec
+
+# Ignore the config file
+config.ini
