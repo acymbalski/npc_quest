@@ -1,7 +1,8 @@
-from constants import MONSTER
-
-
 class Monster:
+    """
+    Monster class. Just holds values for the monster.
+    """
+
     def __init__(self, strength, speed, accuracy, maxLife, defense, xp, gold):
         self.strength = strength
         self.speed = speed
@@ -12,6 +13,10 @@ class Monster:
         self.gold = gold
 
 
+# Monsters defined here. Not even with their names!
+# This should be really cleaned up and defined elsewhere.
+# The first two blank values are a quirk of the original code I think,
+# possibly a fixed array thing.
 monsters = [
     None,
     None,

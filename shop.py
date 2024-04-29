@@ -22,14 +22,28 @@ background_image = pygame.image.load(resource_path("graphics/shop.tga"))
 
 
 class Shop:
+    """
+    The Shop!
+    Basically a listing of 40 items to the player. Mostly random.
+    Prices listed are the "cost" value of the item, but the player will
+    actually pay a different amount based on their charisma.
+    I don't think the original game showed the listed price as the
+    actual, final price, so we won't either.
+    """
 
     def __init__(self, game):
+        """
+        Initialize the Shop object with a reference to the game object.
+        """
         self.game = game
         self.buttons = []
         self.available_items = []
+
+        # fill the shop with items
         self.populateItems()
 
         max_text_width = 55
+        # make buttons for all the items for sale
         for item in self.available_items:
             price_str = f"${item.cost}"
             price_width = max_text_width - len(item.name)
@@ -45,6 +59,8 @@ class Shop:
                 icon=getIcon(item),
             )
 
+            # items are highlighted red if you can't afford them, green if you
+            # can
             item_button.bounding_rect_bg_color = self.getItemHighlightColor(item)
             item_button.bounding_rect_color = None
 
@@ -62,24 +78,33 @@ class Shop:
                 300,
                 20 + 10 * SHOP_AMT + i * 10,
                 f"Enter {LEVELS[level]}",
-                icon=pygame.Surface((10, 10), pygame.SRCALPHA),
+                icon=pygame.Surface((10, 10), pygame.SRCALPHA),  # blank icon
             )
             level_button.setBoundingRectSize(width=450)
             level_button.bounding_rect_bg_color = pygame.Color("GREEN")
             level_button.bounding_rect_color = None
             self.buttons.append(level_button)
+
+        # because players can sell objects, list their inventory as buttons.
         self.setUpInventory()
 
     def getItemHighlightColor(self, item):
+        """
+        Return the color to highlight the item with based on the player's gold.
+        """
         # if player can afford item, it is highlighted green on mouseover
         if item.cost > self.game.player.gold:
             return pygame.Color("RED")
         return pygame.Color("GREEN")
 
     def getValidItems(self):
-        # ensure item is not already in shop
-        # ensure item is not in player inventory
-        # unless it is a potion, food, or ring
+        """
+        Return a list of items that can be sold in the shop.
+        Items sold in shop:
+            - Are not in the players inventory
+                - Unless they are Food, Potion, or Rings
+            - Are not already listed in the shop
+        """
         valid_items = all_items.copy()
         for item in self.game.player.inventory:
             if item in valid_items and item.type not in [
@@ -94,6 +119,18 @@ class Shop:
         return valid_items
 
     def populateItems(self):
+        """
+        Populate the shop with items.
+        When you are Level 1, the shop will always include some items:
+            - Polka-Dot Garden Gloves
+            - Pointy Stick
+            - Orthopedic Sandals
+        Regardless of your level, the shop wil also always include some items:
+            - Potion Of Health
+            - Ramen Noodles
+        The rest are random based on some validity criteria defined in
+        getValidItems.
+        """
         # don't like this
         # if we are level 1, we have three pre-populated items
         # this offset lets us fill the shop with the max number of items
@@ -116,12 +153,18 @@ class Shop:
             valid_item = random.choice(self.getValidItems())
             if valid_item:
                 self.available_items.append(valid_item)
+            # no more valid items? Just give up
+            # (note that there are enough items that this should not happen)
             else:
                 break
 
+        # sort items
         self.available_items = sortItems(self.available_items)
 
     def setUpInventory(self):
+        """
+        Set up the player's inventory as buttons.
+        """
         # remove old inventory buttons
         self.buttons = [
             button
@@ -147,6 +190,16 @@ class Shop:
                 self.buttons.append(item_button)
 
     def sellItem(self, item_index):
+        """
+        Sell an item from the player's inventory.
+        Remove item from inventory, give gold (based on calcSell), change stats,
+        and update the highlights on the items in the shop (because we have
+        more gold now).
+
+        This can easily be cleaned up by updating the equipItem function to
+        allow unequips.
+
+        """
         # get item from player inventory
         item = self.game.player.inventory[item_index]
         item_cost = calcSell(self.game.player, item)
@@ -170,6 +223,10 @@ class Shop:
         makeSound(SFX.CHACHING)
 
     def updateItemHighlights(self):
+        """
+        Update the mouseover highlights on the items in the shop based on the
+        player's gold.
+        """
         for button in self.buttons:
             # if button.command is an item...
             if button.command.__class__.__name__ == "Item":
@@ -181,6 +238,13 @@ class Shop:
                 button.bounding_rect.topleft = (button.x, button.y)
 
     def buyItem(self, button):
+        """
+        Buy an item from the shop.
+        Deduct the cost of the item from the player's gold, add the item to the
+        player's inventory, and remove the item from the shop.
+
+        Actually I don't think we remove from the shop. Why is that line there?
+        """
 
         # get item from button
         item = button.command
@@ -207,6 +271,14 @@ class Shop:
             makeSound(SFX.PRICEY)
 
     def update(self):
+        """
+        Update the shop screen.
+        Draw shop items, character data, handle mouse clicks, etc.
+        If the player holds SHIFT and presses Q, load Shift Q.
+        If the player holds SHIFT and presses A, give them gold.
+        If the player holds SHIFT and presses D, buff some stats.
+        QAD.
+        """
 
         screen = self.game.screen
 
@@ -307,7 +379,7 @@ class Shop:
                         prefix = "+" if stat_changes[stat] > 0 else ""
 
                         color = pygame.Color("GREEN")
-
+                        # if the stat change is a negative, render it in red
                         if stat_changes[stat] < 0:
                             color = pygame.Color("RED")
 
@@ -347,11 +419,15 @@ class Shop:
                     stat_changes = self.game.player.getStatChanges(item, False)
                     for i in range(len(stat_changes.keys())):
                         stat = list(stat_changes.keys())[i]
+
+                        # don't show text for a +0 stat change
                         if stat_changes[stat] == 0:
                             continue
+
                         # render text
                         prefix = "+" if stat_changes[stat] > 0 else ""
 
+                        # if stat will decrease, color it red. else green
                         color = pygame.Color("GREEN")
                         if stat_changes[stat] < 0:
                             color = pygame.Color("RED")

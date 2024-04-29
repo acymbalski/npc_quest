@@ -5,6 +5,8 @@ import pygame
 from constants import SFX
 from utilities import resource_path
 
+# Sound effects : file names
+# should this be here or in constants.py?
 SOUNDS = {
     SFX.HUZZAH: "huzzah.wav",
     SFX.WHIFF: "whiff.wav",
@@ -38,6 +40,11 @@ def change_frequency(sound_array, factor):
 
 
 def makeSound(sound: SFX):
+    """
+    Play a sound effect!
+    This fun bit of code will tweak the frequency of the sound effect just
+    a little bit to make it sound fun.
+    """
     # play sound effect
     # get a random number between 0 and 255
     freq_mod = random.randint(0, 255)

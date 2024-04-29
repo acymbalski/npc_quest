@@ -3,7 +3,20 @@ from display import printMe
 
 
 class Toast:
+    """
+    Toasts!
+    These are the little messages that pop up when you gain or lose life,
+    level up, etc.
+
+    They float up the screen and disappear after a while.
+    """
+
     def __init__(self, game, text, x, y, duration=120, color=pygame.Color("WHITE")):
+        """
+        Initialize the Toast object with a reference to the game object,
+        the text to display, the x, y position, and the duration (in ticks)
+         to display the text.
+        """
         self.game = game
         self.text = text
         self.x = x
@@ -12,8 +25,12 @@ class Toast:
         self.color = color
 
     def update(self):
+        """
+        Update the Toast. Draw the text, move up, and reduce duration.
+        """
 
         # get rounded y so we can move in smaller increments
+        # i.e. not trying to draw at 0.5 pixels
         draw_y = round(self.y)
 
         # draw text shadow
