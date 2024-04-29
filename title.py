@@ -96,7 +96,14 @@ class Title:
         printMe(self.game, "(Right-click a slot to erase it)", 40, 170)
         printMe(self.game, "Press ESC to stop being entertained", 40, 320)
 
-        printMe(self.game, "Credits: Everything by Mike Hommel", 20, 460)
+        printMe(
+            self.game,
+            "Credits: Original code, concept,",
+            20,
+            460,
+        )
+        printMe(self.game, " and assets by Mike Hommel", 20, 470)
+        printMe(self.game, "Python port by Andrew Cymbalski", 20, 480)
         printMe(self.game, "Copyright 2003, by Hamumu Software", 20, 500)
 
         # if we have upload_scores from the config.ini, show the player name
