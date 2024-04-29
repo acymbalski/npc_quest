@@ -16,6 +16,29 @@ It will take awhile.
 
 There are not many rules here. No linter will survive this repo. However, all files should have sorted imports and be formatted using Black formatter, if possible.
 
+## Possible Future Work
+
+- Resizeable window
+- Code refactoring
+  - Conform to snake case, follow style convention, remove weird strong typing stuff, optimizations, etc.
+- Error logging
+- Additional items
+- Additional maps
+- Additional monsters
+- How do we keep having fun after Shift-Q?
+  - Scaling level difficulties
+  - XP adjustments
+  - Scaling items
+- Adjust graphics to use a single width/height, add real transparancies
+- Pathfinding optimizations
+- Packaging (Windows/Linux/macOS)
+- notice.py - condense STARVED and MURDERED code
+- Notify user when updated version is available
+- More secure high score posting (score validation, etc)
+- Volume control
+- Idle mode
+- Inventory expansions
+
 # Credits
 
 This project is an adaptation of work done by Mike Hommel (Hamumu Software) and is released with their permission.
