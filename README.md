@@ -1,5 +1,15 @@
 # NPC Quest Remake
 
+## High Scores
+
+Upon running, it should automatically populate the `config.ini` file with the high score URL. In case it doesn't, you can use line
+
+```
+SCORE_URL = http://npcquest.hamburger.house:8077
+```
+
+in `config.ini` for it to connect.
+
 ## Compiling to binary
 
 At the moment, you will need to have Python 3.11 installed for nuitka to successfully compile
